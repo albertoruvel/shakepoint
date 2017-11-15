@@ -1,0 +1,61 @@
+/* 
+    Document   : login-card
+    Created on : Aug 13, 2015, 9:34:12 PM
+    Author     : root
+    Description:
+        Purpose of the stylesheet follows.
+*/
+.login-progress{
+    width: 50%; 
+}
+.row{
+    margin-top: 5%; 
+}
+a{
+    margin-right: 5%;
+}
+
+.mdl-textfield__input{
+    width: 100%;
+}
+.mdl-textfield{
+    width: 70%;
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+}
+.mdl-card{
+    width: 50%; 
+    padding-left: 10%;
+    padding-right: 10%;
+}            
+.mdl-card__supporting-text{
+    width: 100%;
+}
+.waterfall-header-container {
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+        0 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    width: 100%;
+    position: relative;
+    height: 300px;
+}
+.waterfall-header-container .page-content {
+    height: 100%;
+    background: white;
+}
+.waterfall-demo-header-nav .mdl-navigation__link:last-of-type  {
+    padding-right: 0;
+}
+.center {
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+}
+.form-control{
+    width: 80%;
+}
+
+.form-group{
+    margin-bottom: 0; 
+}

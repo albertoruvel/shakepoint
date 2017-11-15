@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+        
+    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="favorPathExtension" value="false" />
+        <property name="favorParameter" value="false" />
+        <property name="ignoreAcceptHeader" value="false" />
+        <property name="mediaTypes" >
+            <value>
+                atom=application/atom+xml
+                html=text/html
+                json=application/json
+                *=*/*
+            </value>
+        </property>
+    </bean>
+    <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager">
+    	<mvc:message-converters register-defaults="true">
+        	<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+            	<property name="objectMapper">
+                	<bean class="com.fasterxml.jackson.databind.ObjectMapper">
+                    	<property name="serializationInclusion">
+                        	<value type="com.fasterxml.jackson.annotation.JsonInclude.Include">NON_NULL</value>
+                    	</property>
+                	</bean>
+            	</property>
+        	</bean>
+    	</mvc:message-converters>
+        <mvc:argument-resolvers>
+            <bean id="argumentResolver" class="org.springframework.security.web.bind.support.AuthenticationPrincipalArgumentResolver"></bean>
+        </mvc:argument-resolvers>
+    </mvc:annotation-driven>
+    
+    <mvc:default-servlet-handler/>
+    <context:annotation-config/>
+    <mvc:interceptors>
+        <bean id="webContentInterceptor" 
+              class="org.springframework.web.servlet.mvc.WebContentInterceptor">
+            <property name="cacheSeconds" value="0"/>
+            <property name="useExpiresHeader" value="true"/>
+            <property name="useCacheControlHeader" value="true"/>
+            <property name="useCacheControlNoStore" value="true"/>
+        </bean>
+    </mvc:interceptors>
+        
+    <mvc:resources mapping="/resources/**" location="/resources/"/>
+    <mvc:resources mapping="/static/qr-codes/**" location="file:///C:/shakepoint-tmp/qr/"/>
+    <mvc:resources mapping="/static/logos/**" location="file:///C:/shakepoint-tmp/logos/"/>
+ 
+    <bean id="mainViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".jsp"/> 
+        <property name="order" value="0" />
+    </bean>
+    
+    <bean id="technicianViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/views/tech/"/>
+        <property name="suffix" value=".jsp"/> 
+        <property name="order" value="1" />
+    </bean>
+    
+    <bean id="adminViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/views/admin/"/>
+        <property name="suffix" value=".jsp"/> 
+        <property name="order" value="2" />
+    </bean>
+    
+    <bean id="userDetailsService" class="com.shakepoint.web.auth.AuthenticationService">
+        <constructor-arg index="0" ref="userRepository"/> 
+    </bean>
+    
+    <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">  
+    	<constructor-arg name="strength" value="11" />  
+	</bean>
+	
+    <bean id="authProvicer" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <property name="userDetailsService" ref="userDetailsService" />
+        <property name="passwordEncoder" ref="passwordEncoder" />
+            
+    </bean>
+  
+    
+    <security:authentication-manager alias="authenticationManager" erase-credentials="false">
+        <security:authentication-provider user-service-ref="userDetailsService">
+            <security:password-encoder ref="passwordEncoder"/>
+        </security:authentication-provider>
+    </security:authentication-manager>
+    
+    <bean id="qrCodeCreator" class="com.shakepoint.web.core.qr.impl.QrCodeCreatorImpl"/>
+        
+    <context:component-scan base-package="com.shakepoint.web.controller"/>
+    
+    <bean id="emailManager" class="com.shakepoint.web.core.mail.impl.EmailManagerImpl"></bean>
+        
+</beans>
+

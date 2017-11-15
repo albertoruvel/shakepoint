@@ -1,0 +1,22 @@
+{
+  "name": "ShakePoint-Resources",
+  "version": "0.001",
+  "authors": [
+    "Alberto Rubalcaba <albertoruvel@gmail.com>"
+  ],
+  "description": "ShakePoint resources, bitch",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "3.0",
+    "jquery": "~2.1.4",
+    "material-design-lite": "~1.0.4",
+    "eonasdan-bootstrap-datetimepicker": "~4.17.37"
+  }
+}
