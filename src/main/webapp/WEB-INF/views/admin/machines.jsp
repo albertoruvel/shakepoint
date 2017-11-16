@@ -38,7 +38,7 @@
                     <div class="page-content text-center center-block">
                         <div id="main-card" class="mdl-card mdl-shadow--2dp center-block">
                             <c:choose>
-                                <c:when test="${machines.pageItems.isEmpty()}">
+                                <c:when test="${machines.isEmpty()}">
                                     <h4>No hay máquinas registradas<br/>
                                         Agrega una presionando el botón principal</h4>
                                     </c:when>
@@ -53,7 +53,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <c:forEach items="${machines.pageItems}" var="machine" varStatus="i">
+                                            <c:forEach items="${machines}" var="machine" varStatus="i">
                                                 <tr>
                                                     <td class="mdl-data-table__cell--non-numeric">${machine.name}</td>
                                                     <td class="mdl-data-table__cell--non-numeric">${machine.description}</td>
@@ -63,16 +63,15 @@
                                             </c:forEach>
                                         </tbody>
                                     </table>
+                                    <%--
                                     <c:if test="${machines.pageNumber < machines.pagesAvailable}">
 					<ul class="pager">
 						<c:set var="previous" scope="request"
 							value="?page_number=${machines.pageNumber - 1}" />
 						<c:set var="next" scope="request"
 							value="?page_number=${machines.pageNumber + 1}" />
-						<%-- Create previous button --%>
 						<c:choose>
 							<c:when test="${machines.pageNumber == 1}">
-								<%-- No page 0 --%>
 								<li id="disabledPrevious" class="disabled"><a href="#">Previous</a></li>
 								<div class="mdl-tooltip" for="disabledPrevious">There is
 									no page 0</div>
@@ -81,11 +80,8 @@
 								<li><a href="${previous}">Previous</a></li>
 							</c:otherwise>
 						</c:choose>
-
-						<%-- create next button --%>
 						<c:choose>
 							<c:when test="${machines.pageNumber == machines.pagesAvailable}">
-								<%-- no more pages --%>
 								<li id="disabledNext" class="disabled"><a href="#">Next</a></li>
 								<div class="mdl-tooltip" for="disabledNext">No more pages</div>
 							</c:when>
@@ -95,9 +91,9 @@
 						</c:choose>
 					</ul>
 				</c:if>
+				--%>
                                 </c:otherwise>
                             </c:choose>
-                            <!-- Colored FAB button with ripple -->
                             <a href="<c:url value="new-machine"/>" class="new-item mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
                                 <i class="material-icons">add</i>
                             </a>

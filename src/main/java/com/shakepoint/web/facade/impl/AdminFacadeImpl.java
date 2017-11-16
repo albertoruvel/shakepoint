@@ -15,6 +15,7 @@ import com.shakepoint.web.data.entity.Machine;
 import com.shakepoint.web.data.entity.MachineProductModel;
 import com.shakepoint.web.data.entity.Product;
 import com.shakepoint.web.data.entity.User;
+import com.shakepoint.web.data.security.SecurityRole;
 import com.shakepoint.web.facade.AdminFacade;
 
 import com.shakepoint.web.util.ShakeUtils;
@@ -550,7 +551,7 @@ public class AdminFacadeImpl implements AdminFacade{
         user.setActive(true);
         user.setCreationDate(ShakeUtils.DATE_FORMAT.format(new Date()));
         user.setAddedBy(addedBy);
-        user.setRole("technician");
+        user.setRole(SecurityRole.TECHNICIAN.toString());
         return user; 
     }
     

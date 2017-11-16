@@ -59,12 +59,12 @@
 			<div class="page-content center-block">
 				<div id="main-card" class="mdl-card mdl-shadow--2dp center-block">
 					<c:choose>
-						<c:when test="${products.pageItems.isEmpty()}">
+						<c:when test="${products.isEmpty()}">
 							<h4>No hay productos registrados</h4>
 							<button class="mdl-button mdl-js-button mdl-color--accent">Agrega un nuevo producto</button>
 						</c:when>
 						<c:otherwise>
-							<c:forEach items="${products.pageItems}" var="product"
+							<c:forEach items="${products}" var="product"
 								varStatus="i">
 								<%-- add a new card --%>
 								<c:choose>
@@ -84,7 +84,7 @@
 												</jsp:include>
 											</div>
 											<%-- Check if this is the last element --%>
-											<c:if test="${(i.index + 1) == products.pageItems.size()}">
+											<c:if test="${(i.index + 1) == products.size()}">
 										</div>
 										</c:if>
 									</c:when>
@@ -111,17 +111,17 @@
 					class="new-item mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
 					<i class="material-icons">add</i>
 				</a>
-				<%-- create the pager buttons --%>
+
+				<%--
 				<c:if test="${products.pageNumber < products.pagesAvailable}">
 					<ul class="pager">
 						<c:set var="previous" scope="request"
 							value="?page_number=${products.pageNumber - 1}" />
 						<c:set var="next" scope="request"
 							value="?page_number=${products.pageNumber + 1}" />
-						<%-- Create previous button --%>
+
 						<c:choose>
 							<c:when test="${products.pageNumber == 1}">
-								<%-- No page 0 --%>
 								<li id="disabledPrevious" class="disabled"><a href="#">Previous</a></li>
 								<div class="mdl-tooltip" for="disabledPrevious">There is
 									no page 0</div>
@@ -130,11 +130,8 @@
 								<li><a href="${previous}">Previous</a></li>
 							</c:otherwise>
 						</c:choose>
-
-						<%-- create next button --%>
 						<c:choose>
 							<c:when test="${products.pageNumber == products.pagesAvailable}">
-								<%-- no more pages --%>
 								<li id="disabledNext" class="disabled"><a href="#">Next</a></li>
 								<div class="mdl-tooltip" for="disabledNext">No more pages</div>
 							</c:when>
@@ -143,7 +140,7 @@
 							</c:otherwise>
 						</c:choose>
 					</ul>
-				</c:if>
+				</c:if>--%>
 				</c:otherwise>
 				</c:choose>
 

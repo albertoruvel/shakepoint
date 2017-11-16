@@ -53,7 +53,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<c:forEach items="${logs.pageItems}" var="machine">
+									<c:forEach items="${logs}" var="machine">
 										<tr>
 											<td class="mdl-data-table__cell--non-numeric">${logs.failDate}</td>
 											<td class="mdl-data-table__cell--non-numeric">${logs.message}</td>
@@ -62,16 +62,14 @@
 								</tbody>
 							</table>
 							<button class="mdl-button mdl-js-button mdl-button--accent center-block">Borrar todos los registros para esta máquina</button>
-							<c:if test="${logs.pageNumber < logs.pagesAvailable}">
+							<%--<c:if test="${logs.pageNumber < logs.pagesAvailable}">
 								<ul class="pager">
 									<c:set var="previous" scope="request"
 										value="?page_number=${logs.pageNumber - 1}" />
 									<c:set var="next" scope="request"
 										value="?page_number=${logs.pageNumber + 1}" />
-									<%-- Create previous button --%>
 									<c:choose>
 										<c:when test="${logs.pageNumber == 1}">
-											<%-- No page 0 --%>
 											<li id="disabledPrevious" class="disabled"><a href="#">Previous</a></li>
 											<div class="mdl-tooltip" for="disabledPrevious">There
 												is no page 0</div>
@@ -80,12 +78,9 @@
 											<li><a href="${previous}">Previous</a></li>
 										</c:otherwise>
 									</c:choose>
-
-									<%-- create next button --%>
 									<c:choose>
 										<c:when
 											test="${logs.pageNumber == logs.pagesAvailable}">
-											<%-- no more pages --%>
 											<li id="disabledNext" class="disabled"><a href="#">Next</a></li>
 											<div class="mdl-tooltip" for="disabledNext">No more
 												pages</div>
@@ -95,7 +90,7 @@
 										</c:otherwise>
 									</c:choose>
 								</ul>
-							</c:if>
+							</c:if>--%>
 						</c:otherwise>
 					</c:choose>
 				</div>

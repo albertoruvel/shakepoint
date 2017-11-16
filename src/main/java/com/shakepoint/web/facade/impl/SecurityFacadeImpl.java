@@ -6,6 +6,7 @@ import com.shakepoint.web.core.repository.UserRepository;
 import com.shakepoint.web.data.dto.req.rest.SignupRequest;
 import com.shakepoint.web.data.dto.res.rest.AuthenticationResult;
 import com.shakepoint.web.data.entity.User;
+import com.shakepoint.web.data.security.SecurityRole;
 import com.shakepoint.web.util.ShakeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -54,7 +55,7 @@ public class SecurityFacadeImpl implements SecurityFacade{
 		user.setEmail(request.getEmail());
 		user.setName(request.getName());
 		user.setPassword(encoder.encode(request.getPassword()));
-		user.setRole("member");
+		user.setRole(SecurityRole.MEMBER.toString());
 		return user; 
 	}
 }

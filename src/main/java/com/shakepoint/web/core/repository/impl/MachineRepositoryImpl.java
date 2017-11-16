@@ -258,11 +258,11 @@ public class MachineRepositoryImpl implements MachineRepository {
         }
     }
 
-    private static final String GET_MACHINES = "select m.id, m.name, m.description, m.location, m.slots, m.technicianId, "
+    private static final String GET_MACHINES = "select m.id, m.name, m.description, m.location, m.slots, m.technician_id as technicianId, "
             + "(select count(*) from machine_product mp where mp.machine_id = m.id) productsCount "
             + "from machine m ";
 
-    private static final String GET_MACHINES_COUNT = "select count(*) from machine";
+
 
     @Override
     public List<MachineDTO> getMachines(int pageNumber) {

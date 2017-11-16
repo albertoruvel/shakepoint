@@ -32,7 +32,7 @@
                     <div class="page-content text-center center-block">
                         <div id="main-card" class="mdl-card mdl-shadow--4dp center-block" >
                         	<c:choose>
-                        		<c:when test="${machines.pageItems.isEmpty()}">
+                        		<c:when test="${machines.isEmpty()}">
                         			<h4>No tienes máquinas asignadas, pónte en contacto con el administrador del sistema.</h4>
                         		</c:when>
                         		<c:otherwise>
@@ -48,15 +48,13 @@
                         					</tr>
                         				</thead>
                         				<tbody>
-                        					<c:forEach var="machine" items="${machines.pageItems}">
+                        					<c:forEach var="machine" items="${machines}">
                         						<tr>
                         							<td class="mdl-data-table__cell--non-numeric">${machine.name}</td>
                         							<td class="mdl-data-table__cell--non-numeric">${machine.description}</td>
                         							<td class="mdl-data-table__cell--non-numeric">
                         								<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="${machine.id}">
   															<input type="checkbox" id="${machine.id}" class="mdl-checkbox__input" checked="${machine.alerted}" readonly>
-  															<%--<span class="mdl-checkbox__label">Checkbox</span>--%>
-  															
 														</label>	
                         							</td>
                         							<td class="mdl-data-table__cell--non-numeric">${machine.products} (<a href="#">Ver productos</a>)</td>

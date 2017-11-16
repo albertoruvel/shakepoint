@@ -41,7 +41,7 @@
                         		</thead>
                         		
                         		<tbody>
-                        			<c:forEach var="user" items="${users.pageItems}">
+                        			<c:forEach var="user" items="${users}">
                         				<tr>
                         					<td class="mdl-data-table__cell--non-numeric">${user.name}</td>
                         					<td class="mdl-data-table__cell--non-numeric">${user.email}</td>
@@ -50,16 +50,17 @@
                         			</c:forEach>
                         		</tbody>
                         	</table>
-                        	<c:if test="${users.pageNumber < users.pagesAvailable}">
+
+
+                        	<%--<c:if test="${users.pageNumber < users.pagesAvailable}">
 					<ul class="pager">
 						<c:set var="previous" scope="request"
 							value="?page_number=${users.pageNumber - 1}" />
 						<c:set var="next" scope="request"
 							value="?page_number=${users.pageNumber + 1}" />
-						<%-- Create previous button --%>
+
 						<c:choose>
 							<c:when test="${users.pageNumber == 1}">
-								<%-- No page 0 --%>
 								<li id="disabledPrevious" class="disabled"><a href="#">Previous</a></li>
 								<div class="mdl-tooltip" for="disabledPrevious">There is
 									no page 0</div>
@@ -69,10 +70,8 @@
 							</c:otherwise>
 						</c:choose>
 
-						<%-- create next button --%>
 						<c:choose>
 							<c:when test="${users.pageNumber == users.pagesAvailable}">
-								<%-- no more pages --%>
 								<li id="disabledNext" class="disabled"><a href="#">Next</a></li>
 								<div class="mdl-tooltip" for="disabledNext">No more pages</div>
 							</c:when>
@@ -81,7 +80,7 @@
 							</c:otherwise>
 						</c:choose>
 					</ul>
-				</c:if>
+				</c:if>--%>
                         </div>
                     </div>
                 </main>

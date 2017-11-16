@@ -37,7 +37,7 @@
                     <div class="page-content text-center center-block">
                         <div class="mdl-card mdl-shadow--2dp center-block">
                             <c:choose>
-                                <c:when test="${technicians.pageItems.isEmpty()}">
+                                <c:when test="${technicians.isEmpty()}">
                                     <div class="center-block text-center">
                                         <h3>No hay técnicos registrados</h3>
                                         <a href="<c:url value="new-technician" />" class="mdl-button mdl-js-button mdl-js-ripple-effect">Crear técnico</a>
@@ -53,23 +53,23 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <c:forEach var="tech" items="${technicians.pageItems}" varStatus="i">
+                                            <c:forEach var="tech" items="${technicians}" varStatus="i">
                                                 <tr>
                                                     <td class="mdl-data-table__cell--non-numeric">${tech.name}</td>
                                                     <td class="mdl-data-table__cell--non-numeric">${tech.email}</td>
                                                     <td class="mdl-data-table__cell--non-numeric"><a href="<c:url value="/admin/technician/${tech.id}/machines"/>">Ver máquinas</a></a></td>
                                                 </tr>
                                             </c:forEach>
-                                            <c:if test="${technicians.pageNumber < technicians.pagesAvailable}">
+
+
+                                            <%--<c:if test="${technicians.pageNumber < technicians.pagesAvailable}">
 					<ul class="pager">
 						<c:set var="previous" scope="request"
 							value="?page_number=${technicians.pageNumber - 1}" />
 						<c:set var="next" scope="request"
 							value="?page_number=${technicians.pageNumber + 1}" />
-						<%-- Create previous button --%>
 						<c:choose>
 							<c:when test="${technicians.pageNumber == 1}">
-								<%-- No page 0 --%>
 								<li id="disabledPrevious" class="disabled"><a href="#">Previous</a></li>
 								<div class="mdl-tooltip" for="disabledPrevious">There is
 									no page 0</div>
@@ -78,11 +78,8 @@
 								<li><a href="${previous}">Previous</a></li>
 							</c:otherwise>
 						</c:choose>
-
-						<%-- create next button --%>
 						<c:choose>
 							<c:when test="${technicians.pageNumber == technicians.pagesAvailable}">
-								<%-- no more pages --%>
 								<li id="disabledNext" class="disabled"><a href="#">Next</a></li>
 								<div class="mdl-tooltip" for="disabledNext">No more pages</div>
 							</c:when>
@@ -91,7 +88,7 @@
 							</c:otherwise>
 						</c:choose>
 					</ul>
-				</c:if>
+				</c:if>--%>
                                         </tbody>
                                     </table>
                                 </c:otherwise>

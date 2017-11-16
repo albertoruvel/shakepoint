@@ -10,6 +10,8 @@ import com.shakepoint.web.data.entity.User;
 import com.shakepoint.web.data.security.UserInfo;
 import com.shakepoint.web.util.ShakeUtils;
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -111,6 +113,10 @@ public class UserRepositoryImpl implements UserRepository {
     public void updateLastSignin(String email) {
         //get id
         String id = getUserId(email);
+        if (id == null){
+            //super admin user
+            return;
+        }
         //updates
         try {
             em.createNativeQuery(UPDATE_LAST_SIGNIN).setParameter(1, ShakeUtils.SIMPLE_DATE_FORMAT.format(new Date())).setParameter(2, id).executeUpdate();
@@ -163,6 +169,7 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String ADD_USER = "insert into user(id, name, email, creation_date, password, is_confirmed, role, active, added_by) "
             + "values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public String addUser(User user) {
         try {

@@ -10,6 +10,7 @@ import java.util.List;
 import com.shakepoint.web.core.repository.UserRepository;
 import com.shakepoint.web.data.security.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -28,7 +29,14 @@ public class AuthenticationService implements UserDetailsService{
     
     @Autowired
     private BCryptPasswordEncoder encoder; 
-    
+
+    @Value("${com.shakepoint.web.admin.user}")
+    private String adminUsername;
+
+    @Value("${com.shakepoint.web.admin.pass}")
+    private String adminPass;
+
+
     public AuthenticationService(UserRepository repository){
         this.repository = repository; 
     }
@@ -37,10 +45,10 @@ public class AuthenticationService implements UserDetailsService{
         UserDetails details = null; 
         List<SimpleGrantedAuthority> coll = new ArrayList<SimpleGrantedAuthority>(); 
         UserInfo info = null;
-        if(string.equals("albertoruvel@gmail.com")){
+        if(adminUsername.equals(string)){
         	info = new UserInfo(); 
         	info.setEmail(string);
-        	info.setPassword(encoder.encode("admininaction"));
+        	info.setPassword(encoder.encode(adminPass));
         	info.setRole("super-admin");
         }else{
         	try{
