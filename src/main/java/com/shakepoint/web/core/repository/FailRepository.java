@@ -1,11 +1,7 @@
 package com.shakepoint.web.core.repository;
 
-import com.shakepoint.web.data.entity.Fail;
-
-import java.util.List;
+import com.shakepoint.web.data.v1.entity.ShakepointMachineFail;
 
 public interface FailRepository {
-	public void addFail(Fail fail);
-	public List<Fail> getMachineFails(String machineId, int pageNumber);
-	public List<Fail> getMachineFails(String machineId, String[] range, int pageNumber);
+	public void addFail(ShakepointMachineFail fail);
 }

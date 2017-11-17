@@ -2,21 +2,27 @@ package com.shakepoint.web.facade.impl;
 
 import java.io.File;
 import java.security.Principal;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 
+import com.shakepoint.web.core.machine.ProductType;
 import com.shakepoint.web.core.repository.MachineRepository;
 import com.shakepoint.web.core.repository.ProductRepository;
 import com.shakepoint.web.core.repository.PurchaseRepository;
 import com.shakepoint.web.core.repository.UserRepository;
-import com.shakepoint.web.data.dto.req.rest.PurchaseEventRequest;
-import com.shakepoint.web.data.dto.req.rest.PurchaseRequest;
-import com.shakepoint.web.data.dto.req.rest.UserProfileRequest;
+import com.shakepoint.web.data.v1.dto.rest.request.PurchaseEventRequest;
+import com.shakepoint.web.data.v1.dto.rest.request.PurchaseRequest;
+import com.shakepoint.web.data.v1.dto.rest.request.UserProfileRequest;
 import com.shakepoint.web.data.dto.res.MachineDTO;
 import com.shakepoint.web.data.dto.res.rest.*;
 import com.shakepoint.web.data.entity.*;
+import com.shakepoint.web.data.v1.dto.rest.response.MachineSearch;
+import com.shakepoint.web.data.v1.dto.rest.response.PurchaseQRCode;
+import com.shakepoint.web.data.v1.dto.rest.response.PurchaseResponse;
+import com.shakepoint.web.data.v1.entity.ShakepointPurchase;
+import com.shakepoint.web.data.v1.entity.ShakepointPurchaseQRCode;
+import com.shakepoint.web.data.v1.entity.ShakepointUserProfile;
 import com.shakepoint.web.util.ShakeUtils;
+import com.shakepoint.web.util.TransformationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.shakepoint.web.core.qr.QrCodeCreator;
 import com.shakepoint.web.facade.ShopFacade;
@@ -39,40 +45,12 @@ public class ShopFacadeImpl implements ShopFacade{
 
 	
 	@Override 
-	public UserProfile saveProfile(Principal p, UserProfileRequest request){
+	public UserProfileResponse saveProfile(Principal p, UserProfileRequest request){
 		//get user id 
 		final String userId = userRepository.getUserId(p.getName());
-		Profile profile = getProfile(userId, request);
-		UserProfile userProfile = null; 
-		//check if user already has a profile 
-		if(userRepository.hasProfile(userId)){
-			userRepository.updateProfile(profile); 
-			//return the current profile;
-			userProfile = userRepository.getUserProfile(userId) ;
-		}else{
-			//save the current profile  
-			userRepository.saveProfile(profile);
-			userProfile = userRepository.getUserProfile(userId); 
-		}
-		return userProfile; 
-	}
-	
-	private Profile getProfile(String userId, UserProfileRequest request){
-		Profile profile = new Profile();
-		profile.setAge(request.getAge());
-		try{
-			//creates a date 
-			Date date = ShakeUtils.SLASHES_SIMPLE_DATE_FORMAT.parse(request.getBirthday());
-			//format with shakepoint default format
-			String birth = ShakeUtils.SIMPLE_DATE_FORMAT.format(date); 
-			profile.setBirthday(birth);
-		}catch(ParseException ex){
-
-		}
-		profile.setHeight(request.getHeight());
-		profile.setUserId(userId);
-		profile.setWeight(request.getWeight());
-		return profile; 
+		ShakepointUserProfile profile = TransformationUtils.getProfile(userId, request);
+		userRepository.saveProfile(profile);
+		return null; //TODO: implement here
 	}
 	
 	@Override 
@@ -90,13 +68,8 @@ public class ShopFacadeImpl implements ShopFacade{
 		
 		//validates request
 		purchaseRepository.confirmPurchase(request.getReference(), request.getId());
-		//check if the purchased item is a combo package 
-		/**if(purchaseRepository.isComboPurchase(request.getReference())){
-			
-		}else{
-			
-		}**/
-		code = purchaseRepository.getCode(request.getReference());
+
+		//code = purchaseRepository.getCode(request.getReference());
 		return code; 
 	}
 	
@@ -104,9 +77,9 @@ public class ShopFacadeImpl implements ShopFacade{
 	public PurchaseResponse requestPurchase(PurchaseRequest request, Principal principal){
 		PurchaseResponse response = new PurchaseResponse();
 		final String userId = userRepository.getUserId(principal.getName()); 
-		Purchase purchase = null;
+		ShakepointPurchase purchase = null;
 		Product product = null;
-		PurchaseQRCode code = null; 
+		ShakepointPurchaseQRCode code = null;
 		String qrCode = "";
 		String resourcesQrCode = ""; 
 		List<Product> comboProducts = null;
@@ -117,7 +90,7 @@ public class ShopFacadeImpl implements ShopFacade{
 			response.setTotal(0.0);
 		}else{
 			//create a new purchase 
-			purchase = getPurchase(request, userId);
+			purchase = TransformationUtils.getPurchase(request, userId);
 			//check if the product is a combo 
 			product = productRepository.getProduct(purchase.getProductId());
 			//add it 
@@ -128,7 +101,7 @@ public class ShopFacadeImpl implements ShopFacade{
 				//iterate to create a qr code with each product 
 				for(Product p : comboProducts){
 					//get a different qr code
-					code = getQrCode(purchase);
+					code = TransformationUtils.getQrCode(purchase);
 					//create the code image 
 					qrCode = qrCodeCreator.createQRCode(purchase.getId(), purchase.getMachineId(), 
 							p.getId(), code.getId());
@@ -144,7 +117,7 @@ public class ShopFacadeImpl implements ShopFacade{
 						true, purchase.getTotal(), "N/A"); 
 			}else{
 				//create the qr code 
-				code = getQrCode(purchase);  
+				code = TransformationUtils.getQrCode(purchase);
 				qrCode = qrCodeCreator.createQRCode(purchase.getId(), purchase.getMachineId(), 
 						purchase.getProductId(), code.getId());
 				//add qr code to resources folder (MAPPED TO A URL BY THIS HOST)
@@ -184,25 +157,9 @@ public class ShopFacadeImpl implements ShopFacade{
 		return String.format(ShakeUtils.LOCALHOST_QR_CODE_FORMAT, resFile.getName());  
 	}
 	
-	private PurchaseQRCode getQrCode(Purchase purchase){
-		PurchaseQRCode code = new PurchaseQRCode();
-		code.setCashed(false);
-		code.setCreationDate(ShakeUtils.DATE_FORMAT.format(new Date()));
-		code.setPurchaseId(purchase.getId());
-		return code; 
-	}
+
 	
-	private Purchase getPurchase(PurchaseRequest request, String userId) {
-		Purchase purchase = new Purchase(); 
-		purchase.setMachineId(request.getMachineId());
-		purchase.setProductId(request.getProductId());
-		purchase.setPurchaseDate(ShakeUtils.DATE_FORMAT.format(new Date()));
-		purchase.setStatus(Purchase.PurchaseStatus.PRE_AUTHORIZED);
-		purchase.setTotal(request.getPrice());
-		purchase.setUserId(userId);
-		
-		return purchase;
-	}
+
 
 	@Override
 	public MachineSearch searchMachine(double longitude, double latitude) {
@@ -269,7 +226,7 @@ public class ShopFacadeImpl implements ShopFacade{
 
 	@Override
 	public List<Product> getMachineProducts(String machineId, int pageNumber) {
-		return productRepository.getProducts(machineId, pageNumber, Product.ProductType.SIMPLE);
+		return productRepository.getProducts(machineId, pageNumber, ProductType.SIMPLE);
 	}
 
 	@Override
@@ -281,9 +238,9 @@ public class ShopFacadeImpl implements ShopFacade{
 	}
 
 	@Override
-	public UserProfile getUserProfile(Principal principal) {
+	public UserProfileResponse getUserProfile(Principal principal) {
 		final String userId = userRepository.getUserId(principal.getName()); 
-		UserProfile profile = null; 
+		UserProfileResponse profile = null;
 		try{
 			profile = userRepository.getUserProfile(userId);
 			if(profile.isAvailableProfile()){

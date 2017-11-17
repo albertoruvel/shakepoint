@@ -6,13 +6,17 @@
 package com.shakepoint.web.core.repository.impl;
 
 
+import com.shakepoint.web.core.machine.ProductType;
 import com.shakepoint.web.core.repository.ProductRepository;
 import com.shakepoint.web.data.dto.res.ProductDTO;
 import com.shakepoint.web.data.entity.Combo;
 import com.shakepoint.web.data.entity.ComboProduct;
 import com.shakepoint.web.data.entity.Product;
+import com.shakepoint.web.data.v1.entity.ShakepointProduct;
 import com.shakepoint.web.util.ShakeUtils;
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -56,7 +60,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     private static final String GET_PRODUCTS = "select id, name, price, creation_date as creationDate, logo_url as logoUrl, description, type as productType from product where type = ?";
 
     @Override
-    public List<Product> getProducts(int pageNumber, Product.ProductType type) {
+    public List<Product> getProducts(int pageNumber, ProductType type) {
         try {
             return em.createNativeQuery(GET_PRODUCTS)
                     .setParameter(1, type.getValue())
@@ -68,42 +72,26 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     private static final String GET_ALL_PRODUCTS = "select id, name, price, creation_date as creationDate, logo_url as logoUrl, description, type as productType from product";
-    private static final String GET_ALL_PRODUCTS_COUNT = "select count(*) from product";
 
     @Override
-    public List<Product> getProducts(int pageNumber) {
+    public List<ShakepointProduct> getProducts(int pageNumber) {
         List<Product> page = null;
 
         try {
-            return em.createNativeQuery(GET_ALL_PRODUCTS)
-                    .getResultList();
+            return em.createQuery("SELECT p FROM Product p").getResultList();
         } catch (Exception ex) {
             log.error("Could not get all products", ex);
             return null;
         }
     }
 
-    private static final String CREATE_PRODUCT = "insert into product(id, name, logo_url, price, creation_date, description, type) "
-            + "values(?, ?, ?, ?, ?, ?, ?)";
-
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    public String createProduct(Product p) {
-        Object[] args = {p.getId(), p.getName(), p.getLogoUrl(), p.getPrice(),
-                ShakeUtils.DATE_FORMAT.format(new Date()), p.getDescription(), p.getProductType().getValue()};
+    public void createProduct(ShakepointProduct p) {
         try {
-            em.createNativeQuery(CREATE_PRODUCT)
-                    .setParameter(1, p.getId())
-                    .setParameter(2, p.getName())
-                    .setParameter(3, p.getLogoUrl())
-                    .setParameter(4, p.getPrice())
-                    .setParameter(5, ShakeUtils.DATE_FORMAT.format(new Date()))
-                    .setParameter(6, p.getDescription())
-                    .setParameter(7, p.getProductType().getValue())
-                    .executeUpdate();
-            return p.getId();
+            em.persist(p);
         } catch (Exception ex) {
             log.error("Could not create product", ex);
-            return null;
         }
     }
 
@@ -129,7 +117,7 @@ public class ProductRepositoryImpl implements ProductRepository {
             + "where m.machine_id = ? and p.type = ?";
 
     @Override
-    public List<Product> getProducts(String machineId, int pageNumber, Product.ProductType type) {
+    public List<Product> getProducts(String machineId, int pageNumber, ProductType type) {
         try {
             return em.createNativeQuery(GET_MACHINE_PRODUCTS_SIMPLE)
                     .setParameter(1, machineId)
@@ -153,53 +141,6 @@ public class ProductRepositoryImpl implements ProductRepository {
         } catch (Exception ex) {
             log.error("Could not get machine products", ex);
             return null;
-        }
-    }
-
-    /**
-     * static class ProductRepositoryMappers{
-     * public static ParameterizedRowMapper<Product> PRODUCT_MAPPER = new ParameterizedRowMapper<Product>() {
-     *
-     * @Override public Product mapRow(ResultSet rs, int i) throws SQLException {
-     * Product p = new Product();
-     * p.setId(rs.getString(ID));
-     * p.setName(rs.getString(NAME));
-     * p.setLogoUrl(rs.getString(LOGO_URL));
-     * p.setPrice(rs.getBigDecimal(PRICE));
-     * p.setCreationDate(rs.getString(CREATION_DATE));
-     * p.setDescription(rs.getString(DESCRIPTION));
-     * p.setProductType(Product.ProductType.get(rs.getInt(TYPE)));
-     * p.setCombo(p.getProductType() == ProductType.COMBO);
-     * return p;
-     * }
-     * };
-     * <p>
-     * public static ParameterizedRowMapper<ProductDTO> PRODUCT_DTO_MAPPER = new ParameterizedRowMapper<ProductDTO>() {
-     * @Override public ProductDTO mapRow(ResultSet rs, int i) throws SQLException {
-     * ProductDTO p = new ProductDTO();
-     * p.setId(rs.getString(ID));
-     * p.setName(rs.getString(NAME));
-     * p.setLogoUrl(rs.getString(LOGO_URL));
-     * p.setPercentage(rs.getInt(AVAILABLE_PERCENTAGE));
-     * <p>
-     * /**p.setPrice(rs.getBigDecimal(PRICE));
-     * p.setCreationDate(rs.getString(CREATION_DATE));
-     * return p;
-     * }
-     * };
-     * }
-     **/
-
-    @Override
-    public void createComboProduct(Combo combo) {
-        //create a product
-        Product p = (Product) combo;
-        createProduct(p);
-        //iterates over all combo products and add a combo_product registry
-        for (Product product : combo.getItems()) {
-            //create
-            ComboProduct cp = getComboProduct(combo.getId(), product);
-            createComboProduct(cp);
         }
     }
 

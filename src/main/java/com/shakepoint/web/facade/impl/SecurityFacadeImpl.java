@@ -1,13 +1,10 @@
 package com.shakepoint.web.facade.impl;
 
-import java.util.Date;
-
 import com.shakepoint.web.core.repository.UserRepository;
-import com.shakepoint.web.data.dto.req.rest.SignupRequest;
-import com.shakepoint.web.data.dto.res.rest.AuthenticationResult;
-import com.shakepoint.web.data.entity.User;
-import com.shakepoint.web.data.security.SecurityRole;
-import com.shakepoint.web.util.ShakeUtils;
+import com.shakepoint.web.data.v1.dto.rest.request.SignupRequest;
+import com.shakepoint.web.data.v1.dto.rest.response.AuthenticationResult;
+import com.shakepoint.web.data.v1.entity.ShakepointUser;
+import com.shakepoint.web.util.TransformationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.codec.Base64;
@@ -33,8 +30,8 @@ public class SecurityFacadeImpl implements SecurityFacade{
 			
 		}else{
 			//get the user 
-			User user = getUser(request);
-			userRepository.addUser(user); 
+			ShakepointUser user = TransformationUtils.getUser(request, encoder);
+			userRepository.addShakepointUser(user);
 			ar.setAuthenticationToken(getAuthToken(request.getEmail(), request.getPassword()));
 			ar.setMessage("User signed up successfully");
 			ar.setSuccess(true);
@@ -46,16 +43,5 @@ public class SecurityFacadeImpl implements SecurityFacade{
 		return new String(Base64.encode((email + ":" + pass).getBytes())); 
 	}
 
-	private User getUser(SignupRequest request){
-		User user = new User(); 
-		user.setActive(true);
-		user.setAddedBy("");
-		user.setConfirmed(false);
-		user.setCreationDate(ShakeUtils.DATE_FORMAT.format(new Date()));
-		user.setEmail(request.getEmail());
-		user.setName(request.getName());
-		user.setPassword(encoder.encode(request.getPassword()));
-		user.setRole(SecurityRole.MEMBER.toString());
-		return user; 
-	}
+
 }

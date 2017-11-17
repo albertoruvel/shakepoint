@@ -1,10 +1,10 @@
 package com.shakepoint.web.core.repository.impl;
 import com.shakepoint.web.core.repository.FailRepository;
-import com.shakepoint.web.data.entity.Fail;
+import com.shakepoint.web.data.v1.entity.ShakepointMachineFail;
+import org.apache.log4j.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 
 
 public class FailRepositoryImpl implements FailRepository {
@@ -12,26 +12,30 @@ public class FailRepositoryImpl implements FailRepository {
 	@PersistenceContext
 	private EntityManager em;
 
+	private final Logger log = Logger.getLogger(getClass());
+
 	public FailRepositoryImpl() {
 
 	}
 
-	private static final String ADD_FAIL = "insert into fail(id, machine_id, message, fail_date) values(?, ?, ?, ?)";
-
 	@Override
-	public void addFail(Fail fail) {
-		em.persist(fail);
+	public void addFail(ShakepointMachineFail fail) {
+		try{
+			em.persist(fail);
+		}catch(Exception ex){
+			log.error("Could not add fail", ex);
+		}
 	}
 
-	private static final String GET_MACHINE_FAILS = "select id, message, machine_id, fail_date from fail where machine_id = ? limit %d,%d";
+	/**private static final String GET_MACHINE_FAILS = "select id, message, machine_id, fail_date from fail where machine_id = ? limit %d,%d";
 	private static final String GET_MACHINE_FAILS_COUNT = "select count(*) from fail where machine_id = ?";
 	@Override
 	public List<Fail> getMachineFails(String machineId, int pageNumber) {
 		return em.createQuery("SELECT f FROM Fail f where f.machineId = :machineId").setParameter("machineId", machineId)
 				.getResultList();
-	}
+	}**/
 
-	private static final String GET_MACHINE_FAILS_RANGE = "select id, message, machine_id, fail_date from fail where machine_id = ? and fail_date >= ? and fail_date <= ? limit %d,%d";
+	/**private static final String GET_MACHINE_FAILS_RANGE = "select id, message, machine_id, fail_date from fail where machine_id = ? and fail_date >= ? and fail_date <= ? limit %d,%d";
 	private static final String GET_MACHINE_FAILS_COUNT_RANGE = "select count(*) from fail where machine_id = ?";
 	@Override
 	public List<Fail> getMachineFails(String machineId, String[] range, int pageNumber) {
@@ -40,6 +44,6 @@ public class FailRepositoryImpl implements FailRepository {
 				.setParameter("failDateAfter", range[0])
 				.setParameter("failDateBefore", range[1])
 				.getResultList();
-	}
+	}**/
 
 }

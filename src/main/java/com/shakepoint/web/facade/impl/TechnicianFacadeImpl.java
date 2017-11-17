@@ -7,7 +7,7 @@ import com.shakepoint.web.core.repository.FailRepository;
 import com.shakepoint.web.core.repository.MachineRepository;
 import com.shakepoint.web.core.repository.UserRepository;
 import com.shakepoint.web.data.dto.res.MachineDTO;
-import com.shakepoint.web.data.dto.res.TechnicianDTO;
+import com.shakepoint.web.data.v1.dto.mvc.response.Technician;
 import com.shakepoint.web.data.dto.res.TechnicianMachine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
@@ -31,7 +31,7 @@ public class TechnicianFacadeImpl implements TechnicianFacade{
 		//get principal id 
 		String id = userRepository.getUserId(principal.getName()); 
 		//get user info 
-		TechnicianDTO dto = userRepository.getTechnician(id);
+		Technician dto = userRepository.getTechnician(id);
 		//add to the model 
 		ModelAndView mav = new ModelAndView("/tech/index");
 		mav.addObject("user", dto); 

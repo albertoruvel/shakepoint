@@ -84,7 +84,7 @@
 								<input class="mdl-button mdl-js-button center-block" name="file" type="file">
 							</div>
 							
-							<div id="urlGroup" style="display:none;" class="form-group">
+							<div id="urlGroup" class="form-group">
 								<div class="mdl-textfield mdl-js-textfield">
 									<input name="logoUrl" class="mdl-textfield__input center"
 										path="logoUrl" type="text" id="logoUrl" /> <label
@@ -92,7 +92,7 @@
 								</div>
 							</div>
 							
-							<div id="url-selection-options" class="form-group">
+							<%--<div id="url-selection-options" class="form-group">
 							 	<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect"
 									for="selectFileInput">
 									<input data-bind="value: urlOption" type="radio" id="selectFileInput"
@@ -103,7 +103,7 @@
 									class="mdl-radio__button" name="options" value="2"> <span
 									class="mdl-radio__label">URL del logo</span>
 								</label>
-							</div>
+							</div>--%>
 							<div class="form-group">
 
 								<label

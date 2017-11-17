@@ -61,7 +61,10 @@
 					<c:choose>
 						<c:when test="${products.isEmpty()}">
 							<h4>No hay productos registrados</h4>
-							<button class="mdl-button mdl-js-button mdl-color--accent">Agrega un nuevo producto</button>
+							<a href="<c:url value="new-product"/>"
+                            					class="new-item mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+                            					<i class="material-icons">add</i>
+                            				</a>
 						</c:when>
 						<c:otherwise>
 							<c:forEach items="${products}" var="product"
@@ -77,7 +80,7 @@
 													<jsp:param name="name" value="${product.name}" />
 													<jsp:param name="price" value="${product.price}" />
 													<jsp:param name="logoUrl" value="${product.logoUrl}" />
-													<jsp:param name="combo" value="${product.combo}" />
+													<jsp:param name="combo" value="${product.type}" />
 													<jsp:param name="creationDate"
 														value="${product.creationDate}" />
 													<jsp:param name="location" value="left" />
@@ -95,18 +98,16 @@
 												<jsp:param name="name" value="${product.name}" />
 												<jsp:param name="price" value="${product.price}" />
 												<jsp:param name="logoUrl" value="${product.logoUrl}" />
-												<jsp:param name="combo" value="${product.combo}" />
+												<jsp:param name="combo" value="${product.type}" />
 												<jsp:param name="creationDate"
 													value="${product.creationDate}" />
 												<jsp:param name="location" value="right" />
 											</jsp:include>
 										</div>
-										<%-- closes the row --%>
 				</div>
 				</c:otherwise>
 				</c:choose>
 				</c:forEach>
-				<!-- Colored FAB button with ripple -->
 				<a href="<c:url value="new-product"/>"
 					class="new-item mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
 					<i class="material-icons">add</i>

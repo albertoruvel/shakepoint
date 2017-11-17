@@ -5,21 +5,18 @@
  */
 package com.shakepoint.web.controller;
 
-import com.shakepoint.web.data.dto.res.MachineDTO;
 import com.shakepoint.web.data.dto.res.MachineProduct;
-import com.shakepoint.web.data.dto.res.TechnicianDTO;
-import com.shakepoint.web.data.dto.res.rest.*;
 import com.shakepoint.web.data.entity.Product;
+import com.shakepoint.web.data.v1.dto.mvc.request.NewMachineRequest;
+import com.shakepoint.web.data.v1.dto.mvc.request.NewTechnicianRequest;
+import com.shakepoint.web.data.v1.dto.mvc.response.*;
 import com.shakepoint.web.facade.AdminFacade;
 import java.security.Principal;
-import java.util.List;
-import java.util.Map;
 
 import com.shakepoint.web.util.ShakeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -100,8 +97,8 @@ public class AdminController {
     }
     
     @RequestMapping(value="/technicians", method=RequestMethod.GET)
-    public ModelAndView techniciansView(@RequestParam(value="page_number", required=false, defaultValue="1") int pageNumber){
-        return adminFacade.getTechnicians(pageNumber);
+    public ModelAndView techniciansView(){
+        return adminFacade.getTechnicians();
     }
     
     @RequestMapping(value="/new-technician", method=RequestMethod.GET)
@@ -110,7 +107,7 @@ public class AdminController {
     }
     
     @RequestMapping(value="/new-technician", method=RequestMethod.POST)
-    public ModelAndView createTechnician(@ModelAttribute("technician") TechnicianDTO dto,
+    public ModelAndView createTechnician(@ModelAttribute("technician") NewTechnicianRequest dto,
             @AuthenticationPrincipal Principal principal, RedirectAttributes atts){
         
         return adminFacade.createNewTechnician(dto, principal, atts); 
@@ -127,7 +124,7 @@ public class AdminController {
     }
     
     @RequestMapping(value="/new-machine", method=RequestMethod.POST)
-    public ModelAndView createMachine(@ModelAttribute("machine") MachineDTO dto, @AuthenticationPrincipal Principal principal, RedirectAttributes atts){
+    public ModelAndView createMachine(@ModelAttribute("machine") NewMachineRequest dto, @AuthenticationPrincipal Principal principal, RedirectAttributes atts){
         return adminFacade.createNewMachine(dto, principal, atts); 
     }
     
@@ -191,7 +188,8 @@ public class AdminController {
     
     @RequestMapping(value="/product/{productId}/get_content", 
     		produces="application/json")
-    public @ResponseBody ComboContentResponse getComboContent(@PathVariable("productId")String productId){
+    public @ResponseBody
+    ComboContentResponse getComboContent(@PathVariable("productId")String productId){
     	return adminFacade.getComboContent(productId); 
     }
     

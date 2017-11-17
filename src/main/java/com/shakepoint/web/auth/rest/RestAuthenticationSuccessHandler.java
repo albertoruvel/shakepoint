@@ -6,7 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.shakepoint.web.data.dto.res.rest.AuthenticationResult;
+import com.shakepoint.web.data.v1.dto.rest.response.AuthenticationResult;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;

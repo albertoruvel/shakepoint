@@ -5,25 +5,21 @@
  */
 package com.shakepoint.web.core.repository.impl;
 
-
 import com.shakepoint.web.core.repository.MachineRepository;
 import com.shakepoint.web.core.repository.ProductRepository;
-import com.shakepoint.web.data.dto.plc.PlcProduct;
 import com.shakepoint.web.data.dto.res.MachineDTO;
 import com.shakepoint.web.data.dto.res.MachineProduct;
 import com.shakepoint.web.data.dto.res.ProductDTO;
 import com.shakepoint.web.data.dto.res.TechnicianMachine;
-import com.shakepoint.web.data.entity.Machine;
 import com.shakepoint.web.data.entity.MachineProductModel;
-import com.shakepoint.web.data.entity.Product;
+import com.shakepoint.web.data.v1.entity.ShakepointMachine;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,27 +39,6 @@ public class MachineRepositoryImpl implements MachineRepository {
 
     public MachineRepositoryImpl() {
 
-    }
-
-    private static final String SEARCH_MACHINE = "select m.id, m.name, m.description, m.location, m.slots, m.technician_id as technicianId, m.city, m.state, "
-            + "(select count(*) from machine_product mp where mp.machine_id = m.id) productsCount "
-            + "from machine m inner join machine_product mp on mp.machine_id = m.id "
-            + "where m.name like '%s' or (m.state like '%s' or m.city like '%s')";
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<MachineDTO> searchMachine(final String queryString, int pageNumber) {
-        List<MachineDTO> page = new ArrayList();
-        String query = "%" + queryString + "%";
-        List<Map<String, Object>> list = null;
-        final String sql = String.format(SEARCH_MACHINE, query, query, query);
-        try {
-            page = entityManager.createNativeQuery(sql).getResultList();
-            return page;
-        } catch (Exception ex) {
-            log.error("Could not get machines by query", ex);
-            return null;
-        }
     }
 
     private static final String GET_TECHNICIAN_ALERTED_MACHINES = "select m.id, m.name, m.description, m.location, m.slots, m.technician_id as technicianId, "
@@ -233,36 +208,19 @@ public class MachineRepositoryImpl implements MachineRepository {
         }
     }
 
-
-    private static final String ADD_MACHINE = "insert into machine(id, name, description, location, creation_date, added_by, technician_id, state, city) "
-            + "values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    public String addMachine(Machine machine) {
+    public void addMachine(ShakepointMachine machine) {
         try {
-            entityManager.createNativeQuery(ADD_MACHINE)
-                    .setParameter(1, machine.getId())
-                    .setParameter(2, machine.getName())
-                    .setParameter(3, machine.getDescription())
-                    .setParameter(4, machine.getLocation())
-                    .setParameter(5, machine.getCreationDate())
-                    .setParameter(6, machine.getAddedBy())
-                    .setParameter(7, machine.getTechnicianId())
-                    .setParameter(8, machine.getState())
-                    .setParameter(9, machine.getCity())
-                    .executeUpdate();
-            return machine.getId();
+            entityManager.persist(machine);
         } catch (Exception ex) {
             log.error("Could not add machine expender", ex);
-            return null;
         }
     }
 
     private static final String GET_MACHINES = "select m.id, m.name, m.description, m.location, m.slots, m.technician_id as technicianId, "
             + "(select count(*) from machine_product mp where mp.machine_id = m.id) productsCount "
             + "from machine m ";
-
-
 
     @Override
     public List<MachineDTO> getMachines(int pageNumber) {
@@ -275,22 +233,6 @@ public class MachineRepositoryImpl implements MachineRepository {
         } catch (Exception ex) {
             log.error("Could not get machines", ex);
             return page;
-        }
-    }
-
-    private static final String MACHINE_EXISTS = "select count(*) from machine where id = ?";
-
-    @Override
-    public boolean machineExists(String machineId) {
-        try {
-            Long count = (Long) entityManager.createNativeQuery(MACHINE_EXISTS)
-                    .setParameter(1, machineId)
-                    .getSingleResult();
-            return count > 0;
-            //get products 
-        } catch (Exception ex) {
-            log.error("Could not get machine count", ex);
-            return false;
         }
     }
 
@@ -392,67 +334,6 @@ public class MachineRepositoryImpl implements MachineRepository {
         }
     }
 
-    /**
-     * static class MachineRepositoryMappers {
-     * public static ParameterizedRowMapper<MachineDTO> MACHINES_MAPPER = new ParameterizedRowMapper<MachineDTO>() {
-     *
-     * @Override public MachineDTO mapRow(ResultSet rs, int i) throws SQLException {
-     * MachineDTO dto = new MachineDTO();
-     * dto.setId(rs.getString(ID));
-     * dto.setDescription(rs.getString(DESCRIPTION));
-     * dto.setLocation(rs.getString(LOCATION));
-     * dto.setName(rs.getString(NAME));
-     * dto.setProductsCount(rs.getInt(PRODUCTS_COUNT));
-     * dto.setSlots(rs.getInt(SLOTS));
-     * dto.setTechnicianId(rs.getString(TECHNICIAN_ID));
-     * return dto;
-     * }
-     * };
-     * <p>
-     * public static ParameterizedRowMapper<MachineProduct> MACHINE_PRODUCT_MAPPER = new ParameterizedRowMapper<MachineProduct>() {
-     * @Override public MachineProduct mapRow(ResultSet rs, int i) throws SQLException {
-     * MachineProduct dto = new MachineProduct();
-     * dto.setId(rs.getString(ID));
-     * dto.setMachineId(rs.getString(MACHINE_ID));
-     * dto.setProductId(rs.getString(PRODUCT_ID));
-     * dto.setProductName(rs.getString(NAME));
-     * dto.setProductPrice(rs.getDouble(PRICE));
-     * dto.setSlotNumber(rs.getInt(SLOT_NUMBER));
-     * dto.setProductLogoUrl(rs.getString(LOGO_URL));
-     * return dto;
-     * }
-     * };
-     * <p>
-     * public static ParameterizedRowMapper<com.shakepoint.model.res.TechnicianMachine> TECHNICIAN_MACHINE_MAPPER = new ParameterizedRowMapper<com.shakepoint.model.res.TechnicianMachine>() {
-     * @Override public com.shakepoint.model.res.TechnicianMachine mapRow(ResultSet rs, int i) throws SQLException {
-     * com.shakepoint.model.res.TechnicianMachine dto = new com.shakepoint.model.res.TechnicianMachine();
-     * dto.setId(rs.getString(ID));
-     * dto.setName(rs.getString(NAME));
-     * dto.setDescription(rs.getString(DESCRIPTION));
-     * dto.setAlerted(rs.getInt(ALERTS) > 0);
-     * dto.setProducts(rs.getInt(PRODUCTS_COUNT));
-     * dto.setSlots(rs.getInt(SLOTS));
-     * return dto;
-     * }
-     * };
-     * public static ParameterizedRowMapper<Machine> MACHINE_MAPPER = new ParameterizedRowMapper<Machine>() {
-     * @Override public Machine mapRow(ResultSet rs, int i) throws SQLException {
-     * Machine dto = new Machine();
-     * dto.setId(rs.getString(ID));
-     * dto.setName(rs.getString(NAME));
-     * dto.setDescription(rs.getString(DESCRIPTION));
-     * dto.setLocation(rs.getString(LOCATION));
-     * dto.setCreationDate(rs.getString(CREATION_DATE));
-     * dto.setAddedBy(rs.getString(ADDED_BY));
-     * dto.setTechnicianId(rs.getString(TECHNICIAN_ID));
-     * dto.setCity(rs.getString(CITY));
-     * dto.setState(rs.getString(STATE));
-     * return dto;
-     * }
-     * };
-     * }
-     **/
-
     private static final String CONTAINS_PRODUCT = "select count(*) from machine_product where machine_id = ? and product_id = ?";
 
     @Override
@@ -484,66 +365,4 @@ public class MachineRepositoryImpl implements MachineRepository {
 
     }
 
-    private static final String UPDATE_MACHINE_STATUS = "update machine set status = ? where id = ?";
-
-    @Override
-    public void updateMachineStatus(Machine.Status status, String machineId) {
-        try {
-            entityManager.createNativeQuery(UPDATE_MACHINE_STATUS)
-                    .setParameter(1, status.getValue())
-                    .setParameter(2, machineId)
-                    .executeUpdate();
-        } catch (Exception ex) {
-            log.error("Could not update machine status", ex);
-        }
-    }
-
-
-    private static final String GET_MACHINE_PRODUCTS_CPU = "select p.id, p.description, p.name, mp.available_percentage as availablePercentage, mp.slot_number as slotNumber, "
-            + "from machine_product mp "
-            + "inner join product p on p.id = mp.product_id "
-            + "where machine_id = ?";
-
-    @Override
-    public List<PlcProduct> getMachineProducts(String machineId) {
-        try {
-            List<PlcProduct> products = entityManager.createNativeQuery(GET_MACHINE_PRODUCTS_CPU)
-                    .setParameter(1, machineId)
-                    .getResultList();
-            return products;
-        } catch (Exception ex) {
-            log.error("Could not get products from machine", ex);
-            return null;
-        }
-    }
-
-    private static final String GET_MACHINE_ENTITY = "select id, name, description, location, creation_date as creationDate, added_by as addedBy, technician_id as technicianId, state, city from machine where id = ?";
-
-    @Override
-    public Machine getMachineEntity(String machineId) {
-        try {
-            Machine machine = (Machine) entityManager.createNativeQuery(GET_MACHINE_ENTITY)
-                    .setParameter(1, machineId)
-                    .getSingleResult();
-            return machine;
-        } catch (Exception ex) {
-            log.error("Could not get machine", ex);
-            return null;
-        }
-    }
-
-    private static final String GET_TECHNICIAN_ID = "select technician_id from machine where id = ?";
-
-    @Override
-    public String getTechnicianId(String machineId) {
-        try {
-            String techId = (String) entityManager.createNativeQuery(GET_TECHNICIAN_ID)
-                    .setParameter(1, machineId)
-                    .getSingleResult();
-            return techId;
-        } catch (Exception ex) {
-            log.error("Could not get technician id from machine", ex);
-            return null;
-        }
-    }
 }

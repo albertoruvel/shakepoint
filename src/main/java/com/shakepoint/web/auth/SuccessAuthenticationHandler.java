@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import com.shakepoint.web.core.repository.UserRepository;
 import com.shakepoint.web.data.security.SecurityRole;
+import com.shakepoint.web.data.v1.entity.ShakepointUser;
 import com.shakepoint.web.util.ShakeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -48,7 +49,7 @@ public class SuccessAuthenticationHandler implements AuthenticationSuccessHandle
                 String id = userRepository.getUserId(user.getUsername());
                 if (id == null) {
                     //create it, may be first time use
-                    userRepository.addUser(createAdminUser(user));
+                    userRepository.addShakepointUser(createAdminUser(user));
                 }
             } else if (user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_TECHNICIAN"))) {
                 redirect = "tech/";
@@ -62,8 +63,8 @@ public class SuccessAuthenticationHandler implements AuthenticationSuccessHandle
         response.sendRedirect(redirect);
     }
 
-    private com.shakepoint.web.data.entity.User createAdminUser(User user) {
-        com.shakepoint.web.data.entity.User newUser = new com.shakepoint.web.data.entity.User();
+    private ShakepointUser createAdminUser(User user) {
+        ShakepointUser newUser = new ShakepointUser();
         newUser.setActive(true);
         newUser.setAddedBy(null);
         newUser.setConfirmed(true);

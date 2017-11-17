@@ -1,18 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.shakepoint.web.core.repository;
 
 
-import com.shakepoint.web.data.dto.plc.PlcProduct;
 import com.shakepoint.web.data.dto.res.MachineDTO;
 import com.shakepoint.web.data.dto.res.MachineProduct;
 import com.shakepoint.web.data.dto.res.TechnicianMachine;
-import com.shakepoint.web.data.entity.Machine;
 import com.shakepoint.web.data.entity.MachineProductModel;
-import com.shakepoint.web.data.entity.Product;
+import com.shakepoint.web.data.v1.entity.ShakepointMachine;
 
 import java.util.List;
 
@@ -23,9 +16,8 @@ import java.util.List;
 public interface MachineRepository {
 	public void updateMachineProductLevel(String machineId, String productId, int level); 
 	public boolean containProduct(String machineId, String productId); 
-    public String addMachine(Machine machine);
+    public void addMachine(ShakepointMachine machine);
     public List<MachineDTO> getMachines(int pageNumber);
-    public boolean machineExists(String machineId);
     public MachineDTO getMachine(String machineId);
     public int getAlertedproducts(String machineId); 
     public List<MachineProduct> getMachineProducts(String machineId, int pageNumber);
@@ -41,9 +33,4 @@ public interface MachineRepository {
     public int getAlertedMachines();
     public int getAlertedMachines(String technicianId);
     public List<TechnicianMachine> getTechnicianMachines(String id, int pageNumber);
-    public List<MachineDTO> searchMachine(String queryString, int pageNumber);
-    public void updateMachineStatus(Machine.Status status, String machineId);
-    public List<PlcProduct> getMachineProducts(String machineId);
-    public Machine getMachineEntity(String machineId); 
-    public String getTechnicianId(String machineId); 
 }

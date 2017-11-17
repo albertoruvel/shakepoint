@@ -46,7 +46,7 @@
                         <div id="main-card" class="mdl-card mdl-shadow--2dp center-block">
                             <h4 class="text-center">Crear máquina</h4>
                             <c:choose>
-                                <c:when test="${technicians.pageItems.isEmpty()}">
+                                <c:when test="${technicians.isEmpty()}">
                                     <div class="alert alert-warning alert-dismissible" role="alert">
                                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                         <strong>Alerta!</strong> No hay técnicos registrados
@@ -75,10 +75,10 @@
                                        name="${_csrf.parameterName}" value="${_csrf.token}"/>
                                 <div class="form-group">
                                     <c:choose>
-                                        <c:when test="${! technicians.pageItems.isEmpty()}">
+                                        <c:when test="${! technicians.isEmpty()}">
                                             <form:select path="technicianId" cssClass="mdl-shadow--2dp center-block" style="width:60%; height: 35px;border:none;" name="technicianId" >
                                                 <form:option value="NONE" label="Select a technician" />
-                                                <form:options items="${technicians.pageItems}" itemValue="id" itemLabel="name"/>
+                                                <form:options items="${technicians}" itemValue="id" itemLabel="name"/>
                                             </form:select>
                                         </c:when>
                                     </c:choose>

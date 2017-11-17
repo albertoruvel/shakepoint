@@ -7,7 +7,7 @@
        http://www.springframework.org/schema/tx
        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 
-    <tx:annotation-driven />
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="false" />
     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiName" value="java:jboss/datasources/shakepoint"/>
     </bean>
@@ -17,7 +17,7 @@
 
     <bean id="entityManager" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <property name="packagesToScan" value="com.shakepoint.web.data.entity"/>
+        <property name="packagesToScan" value="com.shakepoint.web.data.v1.entity"/>
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
         </property>

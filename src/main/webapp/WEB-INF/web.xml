@@ -8,8 +8,7 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>
             /WEB-INF/datasource.xml
-            /WEB-INF/repositories.xml
-            /WEB-INF/facades.xml
+            /WEB-INF/common-beans.xml
             /WEB-INF/spring-mvc-servlet.xml
             /WEB-INF/spring-security.xml
             </param-value>

@@ -99,8 +99,8 @@ public class Product {
         return productType;
     }
 
-    public void setProductType(ProductType productType) {
-        this.productType = productType;
+    public void setProductType(int producType) {
+        this.productType = ProductType.get(producType);
     }
 
 

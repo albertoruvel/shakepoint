@@ -8,11 +8,11 @@ package com.shakepoint.web.facade;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
 
-import com.shakepoint.web.data.dto.res.MachineDTO;
 import com.shakepoint.web.data.dto.res.MachineProduct;
-import com.shakepoint.web.data.dto.res.TechnicianDTO;
-import com.shakepoint.web.data.dto.res.rest.*;
 import com.shakepoint.web.data.entity.Product;
+import com.shakepoint.web.data.v1.dto.mvc.request.NewMachineRequest;
+import com.shakepoint.web.data.v1.dto.mvc.request.NewTechnicianRequest;
+import com.shakepoint.web.data.v1.dto.mvc.response.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -29,18 +29,18 @@ public interface AdminFacade {
     public ModelAndView createNewProduct(Product product, RedirectAttributes atts, MultipartFile file);
 
     //TECHNICIANS
-    public ModelAndView getTechnicians(int pageNumber);
+    public ModelAndView getTechnicians();
 
     public ModelAndView createTechnicianView();
 
-    public ModelAndView createNewTechnician(TechnicianDTO dto, Principal principal, RedirectAttributes attrs);
+    public ModelAndView createNewTechnician(NewTechnicianRequest dto, Principal principal, RedirectAttributes attrs);
 
     //MACHINES
     public ModelAndView getMachinesView(int pageNumber);
 
     public ModelAndView createMachineView();
 
-    public ModelAndView createNewMachine(MachineDTO dto, Principal principal, RedirectAttributes attrs);
+    public ModelAndView createNewMachine(NewMachineRequest dto, Principal principal, RedirectAttributes attrs);
 
     public ModelAndView createMachineProductsView(String machineId);
 

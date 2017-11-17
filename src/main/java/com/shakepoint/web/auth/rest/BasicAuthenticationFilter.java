@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.shakepoint.web.core.repository.UserRepository;
-import com.shakepoint.web.data.dto.res.rest.UnauthorizedResponse;
+import com.shakepoint.web.data.v1.dto.rest.response.UnauthorizedResponse;
 import com.shakepoint.web.data.security.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -1,7 +1,7 @@
 package com.shakepoint.web.controller.rest;
 
-import com.shakepoint.web.data.dto.req.rest.SignupRequest;
-import com.shakepoint.web.data.dto.res.rest.AuthenticationResult;
+import com.shakepoint.web.data.v1.dto.rest.request.SignupRequest;
+import com.shakepoint.web.data.v1.dto.rest.response.AuthenticationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
