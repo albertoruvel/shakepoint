@@ -9,10 +9,12 @@ import java.security.Principal;
 import java.text.SimpleDateFormat;
 
 import com.shakepoint.web.data.dto.res.MachineProduct;
-import com.shakepoint.web.data.entity.Product;
+import com.shakepoint.web.data.entity.ProductEntityOld;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewMachineRequest;
+import com.shakepoint.web.data.v1.dto.mvc.request.NewProductRequest;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewTechnicianRequest;
 import com.shakepoint.web.data.v1.dto.mvc.response.*;
+import com.shakepoint.web.data.v1.entity.ShakepointProduct;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -26,7 +28,7 @@ public interface AdminFacade {
 
     public ModelAndView getNewProductView();
 
-    public ModelAndView createNewProduct(Product product, RedirectAttributes atts, MultipartFile file);
+    public ModelAndView createNewProduct(NewProductRequest product, RedirectAttributes atts, MultipartFile file);
 
     //TECHNICIANS
     public ModelAndView getTechnicians();
@@ -50,7 +52,7 @@ public interface AdminFacade {
 
     public MachineProduct addMachineProduct(String machineId, String productId, int slotNumber, Principal principal);
 
-    public Product deleteMachineProduct(String id);
+    public ShakepointProduct deleteMachineProduct(String id);
 
     public ModelAndView getTechnicianMachinesView(String techId);
 
@@ -66,7 +68,7 @@ public interface AdminFacade {
 
     public ModelAndView getComboView(String productId);
 
-    public ComboContentResponse getComboContent(String productId);
+    //public ComboContentResponse getComboContent(String productId);
 
-    public Product updateComboProduct(String comboId, String productId, int value);
+    //public ProductEntityOld updateComboProduct(String comboId, String productId, int value);
 }

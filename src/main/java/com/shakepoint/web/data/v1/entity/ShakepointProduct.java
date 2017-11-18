@@ -1,12 +1,11 @@
 package com.shakepoint.web.data.v1.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.shakepoint.web.core.machine.ProductType;
+
+import javax.persistence.*;
 import java.util.UUID;
 
-@Entity(name = "Product")
+@Entity(name = "ProductEntityOld")
 @Table(name = "product")
 public class ShakepointProduct {
 
@@ -28,8 +27,9 @@ public class ShakepointProduct {
     @Column(name = "description")
     private String description;
 
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "type")
-    private int type;
+    private ProductType type;
 
     public ShakepointProduct() {
         id = UUID.randomUUID().toString();
@@ -83,11 +83,11 @@ public class ShakepointProduct {
         this.description = description;
     }
 
-    public int getType() {
+    public ProductType getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(ProductType type) {
         this.type = type;
     }
 }

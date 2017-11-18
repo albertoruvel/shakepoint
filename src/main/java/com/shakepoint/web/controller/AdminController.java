@@ -6,10 +6,12 @@
 package com.shakepoint.web.controller;
 
 import com.shakepoint.web.data.dto.res.MachineProduct;
-import com.shakepoint.web.data.entity.Product;
+import com.shakepoint.web.data.entity.ProductEntityOld;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewMachineRequest;
+import com.shakepoint.web.data.v1.dto.mvc.request.NewProductRequest;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewTechnicianRequest;
 import com.shakepoint.web.data.v1.dto.mvc.response.*;
+import com.shakepoint.web.data.v1.entity.ShakepointProduct;
 import com.shakepoint.web.facade.AdminFacade;
 import java.security.Principal;
 
@@ -81,7 +83,7 @@ public class AdminController {
     }
     
     @RequestMapping(value="/new-product", method=RequestMethod.POST)
-    public ModelAndView createProduct(@ModelAttribute("product")Product product, RedirectAttributes atts,
+    public ModelAndView createProduct(@ModelAttribute("product")NewProductRequest product, RedirectAttributes atts,
                                       @RequestParam("file")MultipartFile file){
         return adminFacade.createNewProduct(product, atts, file);
     }
@@ -157,10 +159,12 @@ public class AdminController {
                                      @AuthenticationPrincipal Principal auth){
         return adminFacade.addMachineProduct(machineId, productId, slotNumber, auth);  
     }
-    
+
+    //todo: convert to dto
     @RequestMapping(value="/delete_machine_product", method=RequestMethod.POST, 
     		produces = "application/json")
-    public @ResponseBody Product deleteMachineProduct(@RequestParam(value="mp_id", required=true)String machineProductId){
+    public @ResponseBody
+    ShakepointProduct deleteMachineProduct(@RequestParam(value="mp_id", required=true)String machineProductId){
         return adminFacade.deleteMachineProduct(machineProductId);  
     }
     
@@ -185,19 +189,22 @@ public class AdminController {
     public ModelAndView editCombo(@PathVariable("productId")String productId){
     	return adminFacade.getComboView(productId); 
     }
-    
-    @RequestMapping(value="/product/{productId}/get_content", 
+
+    //TODO: check after fixing queries
+    /**@RequestMapping(value="/product/{productId}/get_content",
     		produces="application/json")
     public @ResponseBody
     ComboContentResponse getComboContent(@PathVariable("productId")String productId){
     	return adminFacade.getComboContent(productId); 
-    }
-    
-    @RequestMapping(value="/product/{comboId}/update_combo", method=RequestMethod.POST, 
+    }**/
+
+    //TODO: check after fixing queries
+    /**@RequestMapping(value="/product/{comboId}/update_combo", method=RequestMethod.POST,
     		produces="application/json")
-    public @ResponseBody Product updateComboProduct(@PathVariable(value="comboId")String comboId, 
-    								  @RequestParam(value="product_id", required=true)String productId, 
-    								  @RequestParam(value="value", required=true)int value){
+    public @ResponseBody
+    ProductEntityOld updateComboProduct(@PathVariable(value="comboId")String comboId,
+                                        @RequestParam(value="product_id", required=true)String productId,
+                                        @RequestParam(value="value", required=true)int value){
     	return adminFacade.updateComboProduct(comboId, productId, value); 
-    }
+    }**/
 }

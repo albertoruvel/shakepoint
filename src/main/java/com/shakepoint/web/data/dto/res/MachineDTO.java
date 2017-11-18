@@ -5,6 +5,8 @@
  */
 package com.shakepoint.web.data.dto.res;
 
+import com.shakepoint.web.data.v1.dto.mvc.response.MachineProductData;
+
 import javax.persistence.ColumnResult;
 import javax.persistence.SqlResultSetMapping;
 import java.util.ArrayList;
@@ -43,7 +45,7 @@ public class MachineDTO {
     private String technicianId;
     
     private int productsCount;
-    private List<ProductDTO> products;
+    private List<MachineProductData> products;
 
     public MachineDTO() {
         products = new ArrayList();
@@ -105,11 +107,11 @@ public class MachineDTO {
         this.productsCount = productsCount;
     }
 
-    public List<ProductDTO> getProducts() {
+    public List<MachineProductData> getProducts() {
         return products;
     }
 
-    public void setProducts(List<ProductDTO> products) {
+    public void setProducts(List<MachineProductData> products) {
         this.products = products;
     }
 

@@ -7,11 +7,12 @@ import com.shakepoint.web.data.v1.dto.rest.request.PurchaseEventRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.PurchaseRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.UserProfileRequest;
 import com.shakepoint.web.data.dto.res.rest.*;
-import com.shakepoint.web.data.entity.Combo;
-import com.shakepoint.web.data.entity.Product;
+import com.shakepoint.web.data.v1.dto.rest.response.Combo;
+import com.shakepoint.web.data.entity.ProductEntityOld;
 import com.shakepoint.web.data.v1.dto.rest.response.PurchaseQRCode;
 import com.shakepoint.web.data.v1.dto.rest.response.MachineSearch;
 import com.shakepoint.web.data.v1.dto.rest.response.PurchaseResponse;
+import com.shakepoint.web.data.v1.entity.ShakepointProduct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,12 +39,13 @@ public class ShopRestController {
         return shopFacade.searchMachine(longitude, latitude);
     }
 
+    //todo: convert to dto
     @RequestMapping(value = "/get_products", method = RequestMethod.GET,
             produces = "application/json")
     public
     @ResponseBody
-    List<Product> getMachineProducts(@RequestParam(value = "page_number", required = false, defaultValue = "1") int pageNumber,
-                                     @RequestParam(value = "machine_id", required = true) String machineId) {
+    List<ShakepointProduct> getMachineProducts(@RequestParam(value = "page_number", required = false, defaultValue = "1") int pageNumber,
+                                               @RequestParam(value = "machine_id", required = true) String machineId) {
         return shopFacade.getMachineProducts(machineId, pageNumber);
     }
 
@@ -90,12 +92,14 @@ public class ShopRestController {
         return shopFacade.saveProfile(p, request);
     }
 
-    @RequestMapping(value = "/combos", method = RequestMethod.GET,
+
+    //TODO: NEED TO WORK THIS METHOD QUERY (INNER JOINS)
+    /**@RequestMapping(value = "/combos", method = RequestMethod.GET,
             produces = "application/json")
     public
     @ResponseBody
     List<Combo> getCombos(@RequestParam(value = "machine_id", required = true) String machineId,
                           @RequestParam(value = "page_number", required = false, defaultValue = "1") int pageNumber) {
         return shopFacade.getMachineCombos(machineId, pageNumber);
-    }
+    }**/
 }

@@ -8,23 +8,17 @@ package com.shakepoint.web.core.repository.impl;
 
 import com.shakepoint.web.core.machine.ProductType;
 import com.shakepoint.web.core.repository.ProductRepository;
-import com.shakepoint.web.data.dto.res.ProductDTO;
-import com.shakepoint.web.data.entity.Combo;
+import com.shakepoint.web.data.entity.ProductEntityOld;
+import com.shakepoint.web.data.v1.dto.rest.response.Combo;
 import com.shakepoint.web.data.entity.ComboProduct;
-import com.shakepoint.web.data.entity.Product;
 import com.shakepoint.web.data.v1.entity.ShakepointProduct;
-import com.shakepoint.web.util.ShakeUtils;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,42 +35,31 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     }
 
-
-    private static final String GET_PRODUCT = "select id, name, price, creation_date as creationDate, description, logo_url as logoUrl, type as productType from product where id = ?";
-
     @Override
-    public Product getProduct(String id) {
-        Product p = null;
+    public ShakepointProduct getProduct(String id) {
+
         try {
-            p = (Product) em.createNativeQuery(GET_PRODUCT)
-                    .setParameter(1, id).getSingleResult();
-            return p;
+            return (ShakepointProduct) em.createQuery("SELECT p FROM Product WHERE p.id = :id")
+                    .setParameter("id", id).getSingleResult();
         } catch (Exception ex) {
             log.error("Could not get product", ex);
+            return null;
         }
-        return p;
     }
 
-    private static final String GET_PRODUCTS = "select id, name, price, creation_date as creationDate, logo_url as logoUrl, description, type as productType from product where type = ?";
-
     @Override
-    public List<Product> getProducts(int pageNumber, ProductType type) {
+    public List<ShakepointProduct> getProducts(int pageNumber, ProductType type) {
         try {
-            return em.createNativeQuery(GET_PRODUCTS)
-                    .setParameter(1, type.getValue())
+            return em.createQuery("SELECT ´FROM Product p WHERE p.type = :type")
+                    .setParameter("type", type.getValue())
                     .getResultList();
         } catch (Exception ex) {
             log.error("Could not get products list", ex);
             return null;
         }
     }
-
-    private static final String GET_ALL_PRODUCTS = "select id, name, price, creation_date as creationDate, logo_url as logoUrl, description, type as productType from product";
-
     @Override
     public List<ShakepointProduct> getProducts(int pageNumber) {
-        List<Product> page = null;
-
         try {
             return em.createQuery("SELECT p FROM Product p").getResultList();
         } catch (Exception ex) {
@@ -95,29 +78,13 @@ public class ProductRepositoryImpl implements ProductRepository {
         }
     }
 
-    private static final String GET_MACHINE_DTO_PRODUCTS = "select p.id, p.name, p.logo_url as logoUrl, mp.available_percentage as percentage from "
-            + "product p inner join machine_product mp on p.id = mp.product_id where mp.machine_id = ?";
-
-    @Override
-    public List<ProductDTO> getMachineProductsDTO(String machineId, int pageNumber) {
-        List<ProductDTO> page = null;
-        try {
-            return em.createNativeQuery(GET_MACHINE_DTO_PRODUCTS)
-                    .setParameter(1, machineId)
-                    .getResultList();
-        } catch (Exception ex) {
-            log.error("Could not get machine products", ex);
-            return null;
-        }
-    }
-
     private static final String GET_MACHINE_PRODUCTS_SIMPLE = "select p.id, p.name, p.description, p.logo_url as logoUrl, p.creation_date as creationDate, p.price, p.type as productType"
             + "from product p "
             + "inner join machine_product m on p.id = m.product_id "
             + "where m.machine_id = ? and p.type = ?";
 
     @Override
-    public List<Product> getProducts(String machineId, int pageNumber, ProductType type) {
+    public List<ShakepointProduct> getProducts(String machineId, int pageNumber, ProductType type) {
         try {
             return em.createNativeQuery(GET_MACHINE_PRODUCTS_SIMPLE)
                     .setParameter(1, machineId)
@@ -131,39 +98,16 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     private static final String GET_MACHINE_PRODUCTS = "select p.id, p.name, p.description, p.logo_url as logoUrl, p.creation_date as creationDate, p.price, p.type as productType from product p inner join machine_product m on "
             + "p.id = m.product_id where m.machine_id = ?";
-
     @Override
-    public List<Product> getMachineProducts(String machineId, int pageNumber) {
+    public List<ShakepointProduct> getMachineProducts(String machineId, int pageNumber) {
         try {
-            return em.createNativeQuery(GET_MACHINE_PRODUCTS)
-                    .setParameter(1, machineId)
+            return em.createNativeQuery("SELECT p FROM Product p WHERE p.machineId = :machineId")
+                    .setParameter("machineId", machineId)
                     .getResultList();
         } catch (Exception ex) {
             log.error("Could not get machine products", ex);
             return null;
         }
-    }
-
-    private static final String CREATE_COMBO_PRODUCT = "insert into combo_product(id, combo_item, product_id) values(?, ?, ?)";
-
-    private void createComboProduct(ComboProduct cp) {
-        try {
-            em.createNativeQuery(CREATE_COMBO_PRODUCT)
-                    .setParameter(1, cp.getId())
-                    .setParameter(2, cp.getItemId())
-                    .setParameter(3, cp.getProductId())
-                    .executeUpdate();
-        } catch (Exception ex) {
-            log.error("Could not add combo product", ex);
-        }
-    }
-
-    private ComboProduct getComboProduct(String comboId, Product p) {
-        ComboProduct cp = new ComboProduct();
-        cp.setItemId(p.getId());
-        cp.setProductId(comboId);
-
-        return cp;
     }
 
 
@@ -174,7 +118,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public List<Combo> getMachineCombos(String machineId, int pageNumber) {
-        List<Product> page = null;
+        List<ShakepointProduct> page = null;
         //get all combo products
         List<Combo> combos = new ArrayList();
         try {
@@ -183,10 +127,10 @@ public class ProductRepositoryImpl implements ProductRepository {
                     .getResultList();
             //iterates over each product
             Combo c = null;
-            List<Product> ps = null;
-            for (Product p : page) {
+            List<ShakepointProduct> ps = null;
+            for (ShakepointProduct p : page) {
                 //create a new combo
-                c = new Combo(p);
+                c = new Combo();
                 ps = getComboProducts(c.getId(), 1);
                 c.setItems(ps);
                 combos.add(c);
@@ -204,7 +148,7 @@ public class ProductRepositoryImpl implements ProductRepository {
             + "where cp.product_id = ?";
 
     @Override
-    public List<Product> getComboProducts(String productId, int i) {
+    public List<ShakepointProduct> getComboProducts(String productId, int i) {
         try {
             return em.createNativeQuery(GET_COMBO_PRODUCTS)
                     .setParameter(1, productId).getResultList();
@@ -216,25 +160,25 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     private static final String DELETE_COMBO_PRODUCT = "delete from combo_product where combo_item = ? and product_id = ?";
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    public Product deleteComboProduct(String comboId, String productId) {
+    public void deleteComboProduct(String comboId, String productId) {
         try {
             em.createNativeQuery(DELETE_COMBO_PRODUCT)
                     .setParameter(1, comboId)
                     .setParameter(2, productId).executeUpdate();
-            //get product
-            return getProduct(productId);
+
         } catch (Exception ex) {
             log.error("Could not delete combo product", ex);
-            return null;
         }
     }
 
 
     private static final String ADD_COMBO_PRODUCT = "insert into combo_product(id, combo_item, product_id) values(?, ?, ?)";
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    public Product addComboProduct(String comboId, String productId) {
+    public void addComboProduct(String comboId, String productId) {
         ComboProduct cp = new ComboProduct();
         cp.setItemId(comboId);
         cp.setProductId(productId);
@@ -244,10 +188,8 @@ public class ProductRepositoryImpl implements ProductRepository {
                     .setParameter(2, cp.getItemId())
                     .setParameter(3, cp.getProductId())
                     .executeUpdate();
-            return getProduct(productId);
         } catch (Exception ex) {
             log.error("Could not add new combo product", ex);
-            return null;
         }
     }
 

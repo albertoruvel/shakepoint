@@ -24,7 +24,7 @@ import java.util.UUID;
             @ColumnResult(name = "productType"),
             @ColumnResult(name = "combo"),
         })
-public class Product {
+public class ProductEntityOld {
     private String id;
     protected String name;
     protected String logoUrl;
@@ -50,7 +50,7 @@ public class Product {
         this.combo = combo;
     }
 
-    public Product() {
+    public ProductEntityOld() {
         id = UUID.randomUUID().toString();
     }
 

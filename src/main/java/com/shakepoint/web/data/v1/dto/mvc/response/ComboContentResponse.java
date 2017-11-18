@@ -1,14 +1,16 @@
 package com.shakepoint.web.data.v1.dto.mvc.response;
 
-import com.shakepoint.web.data.entity.Product;
+import com.shakepoint.web.data.entity.ProductEntityOld;
+import com.shakepoint.web.data.v1.entity.ShakepointMachine;
+import com.shakepoint.web.data.v1.entity.ShakepointProduct;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ComboContentResponse {
-	private Product combo;
-	private List<Product> products;
-	private List<Product> comboProducts;
+	private MachineProductData combo;
+	private List<ShakepointProduct> products;
+	private List<ShakepointProduct> comboProducts;
 	
 	
 	public ComboContentResponse() {
@@ -16,22 +18,22 @@ public class ComboContentResponse {
 		products = new ArrayList();
 		comboProducts = new ArrayList();
 	}
-	public Product getCombo() {
+	public MachineProductData getCombo() {
 		return combo;
 	}
-	public void setCombo(Product combo) {
+	public void setCombo(MachineProductData combo) {
 		this.combo = combo;
 	}
-	public List<Product> getProducts() {
+	public List<ShakepointProduct> getProducts() {
 		return products;
 	}
-	public void setProducts(List<Product> products) {
+	public void setProducts(List<ShakepointProduct> products) {
 		this.products = products;
 	}
-	public List<Product> getComboProducts() {
+	public List<ShakepointProduct> getComboProducts() {
 		return comboProducts;
 	}
-	public void setComboProducts(List<Product> comboProducts) {
+	public void setComboProducts(List<ShakepointProduct> comboProducts) {
 		this.comboProducts = comboProducts;
 	}
 	

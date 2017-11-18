@@ -8,6 +8,7 @@ import com.shakepoint.web.data.dto.res.MachineDTO;
 import com.shakepoint.web.data.dto.res.rest.PurchaseCodeResponse;
 import com.shakepoint.web.data.dto.res.rest.UserPurchaseResponse;
 import com.shakepoint.web.data.v1.dto.rest.response.PurchaseQRCode;
+import com.shakepoint.web.data.v1.entity.ShakepointMachine;
 import com.shakepoint.web.data.v1.entity.ShakepointPurchase;
 import com.shakepoint.web.data.v1.entity.ShakepointPurchaseQRCode;
 import com.shakepoint.web.util.ShakeUtils;
@@ -126,11 +127,11 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
         List<Double> values = null;
 
         //get all machines
-        List<MachineDTO> machines = machineRepository.getMachines(1);
+        List<ShakepointMachine> machines = machineRepository.getMachines(1);
         Double avg = 0.0;
         Object[] args = null;
         String format = "";
-        for (MachineDTO machine : machines) {
+        for (ShakepointMachine machine : machines) {
             values = new ArrayList();
             for (String rangeValue : range) {
                 //get the current range total purchases total average

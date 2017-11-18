@@ -1,15 +1,13 @@
 package com.shakepoint.web.data.v1.dto.mvc.response;
 
-
-import com.shakepoint.web.data.dto.res.MachineDTO;
-import com.shakepoint.web.data.v1.dto.mvc.response.Technician;
+import com.shakepoint.web.data.v1.entity.ShakepointMachine;
 
 import java.util.List;
 
 public class TechnicianMachinesContent {
 	private Technician technician;
-	private List<MachineDTO> allMachines;
-	private List<MachineDTO> asignedMachines;
+	private List<ShakepointMachine> allMachines;
+	private List<ShakepointMachine> asignedMachines;
 	public TechnicianMachinesContent() {
 		super();
 	}
@@ -19,16 +17,16 @@ public class TechnicianMachinesContent {
 	public void setTechnician(Technician technician) {
 		this.technician = technician;
 	}
-	public List<MachineDTO> getAllMachines() {
+	public List<ShakepointMachine> getAllMachines() {
 		return allMachines;
 	}
-	public void setAllMachines(List<MachineDTO> allMachines) {
+	public void setAllMachines(List<ShakepointMachine> allMachines) {
 		this.allMachines = allMachines;
 	}
-	public List<MachineDTO> getAsignedMachines() {
+	public List<ShakepointMachine> getAsignedMachines() {
 		return asignedMachines;
 	}
-	public void setAsignedMachines(List<MachineDTO> asignedMachines) {
+	public void setAsignedMachines(List<ShakepointMachine> asignedMachines) {
 		this.asignedMachines = asignedMachines;
 	} 
 	

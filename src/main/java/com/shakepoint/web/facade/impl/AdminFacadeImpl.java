@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.shakepoint.web.facade.impl;
 
 import com.shakepoint.web.core.machine.MachineMessageCode;
@@ -13,8 +8,9 @@ import com.shakepoint.web.core.repository.PurchaseRepository;
 import com.shakepoint.web.core.repository.UserRepository;
 import com.shakepoint.web.data.dto.res.*;
 import com.shakepoint.web.data.entity.MachineProductModel;
-import com.shakepoint.web.data.entity.Product;
+import com.shakepoint.web.data.entity.ProductEntityOld;
 import com.shakepoint.web.data.security.SecurityRole;
+import com.shakepoint.web.data.v1.dto.mvc.request.NewProductRequest;
 import com.shakepoint.web.data.v1.dto.mvc.response.*;
 import com.shakepoint.web.data.v1.entity.ShakepointMachine;
 import com.shakepoint.web.data.v1.entity.ShakepointProduct;
@@ -183,9 +179,9 @@ public class AdminFacadeImpl implements AdminFacade {
         //get technician
         ShakepointUser dto = userRepository.getTechnician(techId);
         content.setTechnician(TransformationUtils.createTechnician(dto));
-        List<MachineDTO> allMachines = machineRepository.getMachines(1);
+        List<ShakepointMachine> allMachines = machineRepository.getMachines(1);
         content.setAllMachines(allMachines);
-        List<MachineDTO> asignedMachines = machineRepository.getTechnicianAsignedMachines(techId, 1);
+        List<ShakepointMachine> asignedMachines = machineRepository.getTechnicianAssignedMachines(techId, 1);
         content.setAsignedMachines(asignedMachines);
         return content;
     }
@@ -210,12 +206,12 @@ public class AdminFacadeImpl implements AdminFacade {
         String message = "No se puede agregar el paquete a la m�quina. \nLa m�quina debe de contener los productos del paquete para ofrecerlos: \n";
         String productsMessage = "";
         //check the product
-        Product p = productRepository.getProduct(productId);
-        if (p.isCombo()) {
+        ShakepointProduct p = productRepository.getProduct(productId);
+        if (p.getType() == ProductType.COMBO) {
             boolean success = true;
             //check if the machine already has the needed products
-            List<Product> products = productRepository.getComboProducts(p.getId(), 1);
-            for (Product cp : products) {
+            List<ShakepointProduct> products = productRepository.getComboProducts(p.getId(), 1);
+            for (ShakepointProduct cp : products) {
                 if (!machineRepository.containProduct(machineId, cp.getId())) {
                     productsMessage += cp.getName() + "\n";
                     if (success)
@@ -250,9 +246,10 @@ public class AdminFacadeImpl implements AdminFacade {
         return response;
     }
 
+    // todo: convert to dto
     @Override
-    public Product deleteMachineProduct(String id) {
-        Product p = null;
+    public ShakepointProduct deleteMachineProduct(String id) {
+        ShakepointProduct p = null;
 
         //delete the machine product
         machineRepository.deleteMachineProduct(id);
@@ -282,7 +279,7 @@ public class AdminFacadeImpl implements AdminFacade {
     public ModelAndView getNewProductView() {
         ModelAndView mav = new ModelAndView("admin/new-product");
         //create a new product 
-        Product product = new Product();
+        NewProductRequest product = new NewProductRequest();
         mav.addObject("product", product);
 
         return mav;
@@ -292,8 +289,8 @@ public class AdminFacadeImpl implements AdminFacade {
     public ModelAndView getComboView(String productId) {
         ModelAndView mav = new ModelAndView("/admin/combo");
         //get product
-        Product p = productRepository.getProduct(productId);
-        if (p.isCombo()) {
+        ShakepointProduct p = productRepository.getProduct(productId);
+        if (p.getType() == ProductType.COMBO) {
             mav.addObject("productId", productId);
         } else {
             mav.addObject("error", "Este producto no es un paquete, asegurate de seleccionar un producto que se haya definido como paquete");
@@ -303,7 +300,7 @@ public class AdminFacadeImpl implements AdminFacade {
 
 
     @Override
-    public ModelAndView createNewProduct(Product product, RedirectAttributes atts, MultipartFile file) {
+    public ModelAndView createNewProduct(NewProductRequest product, RedirectAttributes atts, MultipartFile file) {
         ModelAndView mav = null;
         //validate product
         if (product != null) {
@@ -311,11 +308,11 @@ public class AdminFacadeImpl implements AdminFacade {
             if (validateProduct(product, file)) {
                 //TODO: should create file here and upload to S3 or save it
                 //TODO: check if file have content
-                ShakepointProduct productEntity;
+                ShakepointProduct productEntity = new ShakepointProduct();
                 //product is valid
                 if (product.isCombo()) {
                     //create a new combo
-                    product.setProductType(ProductType.COMBO.getValue());
+                    productEntity.setType(ProductType.COMBO);
                     //save the product
                     productEntity = TransformationUtils.createProductFromDto(product);
                     productRepository.createProduct(productEntity);
@@ -323,7 +320,7 @@ public class AdminFacadeImpl implements AdminFacade {
                     atts.addFlashAttribute("message", "Se ha creado el paquete con ID: " + productEntity.getId());
                     atts.addFlashAttribute("newCombo", productEntity.getId());
                 } else {
-                    product.setProductType(ProductType.SIMPLE.getValue());
+                    productEntity.setType(ProductType.SIMPLE);
                     productEntity = TransformationUtils.createProductFromDto(product);
                     productRepository.createProduct(productEntity);
                     mav = new ModelAndView("redirect:/admin/success");
@@ -387,10 +384,11 @@ public class AdminFacadeImpl implements AdminFacade {
         return mav;
     }
 
+    //todo: convert to dto
     @Override
     public ModelAndView getMachinesView(int pageNumber) {
         ModelAndView mav = new ModelAndView();
-        List<MachineDTO> page = null;
+        List<ShakepointMachine> page = null;
 
         try {
             page = machineRepository.getMachines(pageNumber);
@@ -459,13 +457,14 @@ public class AdminFacadeImpl implements AdminFacade {
         return result;
     }
 
+    //todo: convert to dtos CORRECTLY
     @Override
     public MachineProductsContent getMachineProductsContent(String machineId) {
         MachineProductsContent content = new MachineProductsContent();
         int alertedProducts = machineRepository.getAlertedproducts(machineId);
-        List<MachineProduct> productsPage = machineRepository.getMachineProducts(machineId, 1);
+        List<ShakepointMachine> productsPage = machineRepository.getMachineProducts(machineId, 1);
         List<ShakepointProduct> all = productRepository.getProducts(1);
-        MachineDTO machine = machineRepository.getMachine(machineId);
+        ShakepointMachine machine = machineRepository.getMachine(machineId);
         //if the machine has a technician
         Technician technician = null;
         if (machine != null && machine.getTechnicianId() != null && !machine.getTechnicianId().isEmpty()) {
@@ -507,17 +506,55 @@ public class AdminFacadeImpl implements AdminFacade {
         return user;
     }
 
-    private boolean validateProduct(Product product, MultipartFile file) {
+    private boolean validateProduct(NewProductRequest product, MultipartFile file) {
         if (product.getName() == null || product.getName().isEmpty())
             return false;
         if (product.getLogoUrl() == null || product.getLogoUrl().isEmpty()) {
             //check if there is a file present
             if (file == null)
                 return false;
-        } else if (product.getPrice().doubleValue() <= 0)
+        } else if (product.getPrice() <= 0)
             return false;
         return true;
     }
 
+
+    /**
+    @Override
+    public ComboContentResponse getComboContent(String productId) {
+        ComboContentResponse response = new ComboContentResponse();
+        //get current combo product
+        ShakepointProduct combo = productRepository.getProduct(productId);
+        if(combo.getType() == ProductType.COMBO){
+            //get all products
+            List<ShakepointProduct> comboProducts = productRepository.getComboProducts(productId, 1);
+            List<ShakepointProduct> allProducts = productRepository.getProducts(1, ProductType.SIMPLE);
+
+            response.setCombo(combo);
+            response.setComboProducts(comboProducts);
+            response.setProducts(allProducts);
+        }
+        return response;
+    }**/
+
+    /**@Override
+    public ProductEntityOld updateComboProduct(String comboId, String productId, int value){
+        ProductEntityOld p = null;
+
+        //switch among values
+        switch(value){
+            case 0:
+                //delete
+                log.info("Deleting combo product");
+                p = productRepository.deleteComboProduct(comboId, productId);
+                break;
+            case 1:
+                //add
+                log.info("Adding new combo product");
+                p = productRepository.addComboProduct(comboId, productId);
+                break;
+        }
+        return p;
+    }**/
 
 }

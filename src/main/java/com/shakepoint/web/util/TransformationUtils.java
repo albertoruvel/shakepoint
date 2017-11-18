@@ -1,11 +1,12 @@
 package com.shakepoint.web.util;
 
+import com.shakepoint.web.core.machine.ProductType;
 import com.shakepoint.web.core.machine.PurchaseStatus;
+import com.shakepoint.web.data.v1.dto.mvc.request.NewProductRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.PurchaseRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.SignupRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.UserProfileRequest;
 import com.shakepoint.web.data.v1.dto.mvc.response.Technician;
-import com.shakepoint.web.data.entity.Product;
 import com.shakepoint.web.data.security.SecurityRole;
 import com.shakepoint.web.data.v1.entity.*;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewMachineRequest;
@@ -17,14 +18,14 @@ import java.util.Date;
 import java.util.List;
 
 public class TransformationUtils {
-    public static ShakepointProduct createProductFromDto(Product product) {
+    public static ShakepointProduct createProductFromDto(NewProductRequest product) {
         ShakepointProduct p = new ShakepointProduct();
         p.setName(product.getName());
         p.setCreationDate(ShakeUtils.DATE_FORMAT.format(new Date()));
         p.setDescription(product.getDescription());
         p.setLogoUrl(product.getLogoUrl());
-        p.setPrice(product.getPrice().doubleValue());
-        p.setType(product.getProductType().getValue());
+        p.setPrice(product.getPrice());
+        p.setType(product.isCombo() ? ProductType.COMBO : ProductType.SIMPLE);
         return p;
     }
 

@@ -1,32 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.shakepoint.web.data.dto.res;
+package com.shakepoint.web.data.v1.dto.mvc.response;
 
-import javax.persistence.ColumnResult;
-import javax.persistence.SqlResultSetMapping;
-
-/**
- * @author Alberto Rubalcaba
- */
-@SqlResultSetMapping(name = "ProductDTOMapper",
-        columns = {
-            @ColumnResult(name = "id"),
-            @ColumnResult(name = "name"),
-            @ColumnResult(name = "logoUrl"),
-            @ColumnResult(name = "percentage"),
-            @ColumnResult(name = "slotNumber")
-        })
-public class ProductDTO {
+public class MachineProductData {
     private String id;
     private String name;
     private String logoUrl;
     private int percentage;
     private int slotNumber;
 
-    public ProductDTO() {
+    public MachineProductData() {
     }
 
     public String getId() {
