@@ -38,6 +38,8 @@ public class ShakepointUser {
     @Column(name = "last_signin")
     private String lastSignin;
 
+
+
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", orphanRemoval = true)
     private List<ShakepointPurchase> purchases;
 

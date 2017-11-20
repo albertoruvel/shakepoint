@@ -75,6 +75,7 @@ public class MachineRepositoryImpl implements MachineRepository {
         return page;
     }
 
+
     @Override
     public List<ShakepointMachine> getTechnicianMachines(String id, int pageNumber) {
         try {
@@ -85,6 +86,19 @@ public class MachineRepositoryImpl implements MachineRepository {
             log.error("Could not get technician machines" + ex);
             return null;
         }
+    }
+
+    @Override
+    public boolean isMachineAlerted(String id) {
+        try{
+            BigInteger integer = (BigInteger)entityManager.createNativeQuery("SELECT count(*) FROM machine_product WHERE machine_id = ? AND available_percentage < 30")
+                    .setParameter(1, id)
+                    .getSingleResult();
+            return integer.intValue() > 0;
+        }catch(Exception ex){
+            return false;
+        }
+
     }
 
     private static final String GET_ALERTED_MACHINES_COUNT = "select count(*) from machine m "

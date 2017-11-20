@@ -1,18 +1,17 @@
 package com.shakepoint.web.data.v1.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.UUID;
 
-@Entity
+@Entity(name = "Profile")
 @Table(name = "user_profile")
 public class ShakepointUserProfile {
     @Id
     private String id;
 
-    @Column(name ="user_id")
-    private String userId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_id")
+    private ShakepointUser user;
 
     @Column(name = "age")
     private int age;
@@ -26,6 +25,10 @@ public class ShakepointUserProfile {
     @Column(name = "height")
     private double height;
 
+    public ShakepointUserProfile() {
+        id = UUID.randomUUID().toString();
+    }
+
     public String getId() {
         return id;
     }
@@ -34,12 +37,12 @@ public class ShakepointUserProfile {
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
+    public ShakepointUser getUser() {
+        return user;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser(ShakepointUser user) {
+        this.user = user;
     }
 
     public int getAge() {

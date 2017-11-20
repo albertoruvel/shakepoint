@@ -1,21 +1,5 @@
 package com.shakepoint.web.data.dto.res.rest;
 
-import javax.persistence.ColumnResult;
-import javax.persistence.SqlResultSetMapping;
-
-@SqlResultSetMapping(name = "UserPurchaseResponseMapper", columns = {
-		@ColumnResult(name = "purchaseId"),
-		@ColumnResult(name = "productid"),
-		@ColumnResult(name = "machineId"),
-		@ColumnResult(name = "total"),
-		@ColumnResult(name = "productName"),
-		@ColumnResult(name = "machineName"),
-		@ColumnResult(name = "purchaseDate"),
-		@ColumnResult(name = "cashed"),
-		@ColumnResult(name = "qrCodeUrl"),
-		@ColumnResult(name = "productLogoUrl"),
-		@ColumnResult(name = "status"),
-})
 public class UserPurchaseResponse {
 	
 	private String purchaseId; 

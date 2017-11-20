@@ -28,7 +28,7 @@ public interface UserRepository {
     public void updateLastSignin(String email); 
     public String getLastSignin(String id); 
     public boolean userExists(String email);
-    public UserProfileResponse getUserProfile(String userId);
+    public ShakepointUserProfile getUserProfile(String userId);
     public void saveProfile(ShakepointUserProfile profile);
 
     //JTA

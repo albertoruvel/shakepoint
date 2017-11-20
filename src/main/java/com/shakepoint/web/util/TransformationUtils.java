@@ -2,10 +2,13 @@ package com.shakepoint.web.util;
 
 import com.shakepoint.web.core.machine.ProductType;
 import com.shakepoint.web.core.machine.PurchaseStatus;
+import com.shakepoint.web.core.repository.MachineRepository;
+import com.shakepoint.web.data.dto.res.rest.UserProfileResponse;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewProductRequest;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewTechnicianRequest;
 import com.shakepoint.web.data.v1.dto.mvc.response.SimpleMachine;
 import com.shakepoint.web.data.v1.dto.mvc.response.SimpleProduct;
+import com.shakepoint.web.data.v1.dto.mvc.response.TechnicianMachine;
 import com.shakepoint.web.data.v1.dto.rest.request.PurchaseRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.SignupRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.UserProfileRequest;
@@ -98,7 +101,6 @@ public class TransformationUtils {
 
         }
         profile.setHeight(request.getHeight());
-        profile.setUserId(userId);
         profile.setWeight(request.getWeight());
         return profile;
     }
@@ -172,5 +174,28 @@ public class TransformationUtils {
                     code.getCreationDate(), code.getPurchase().getProduct().getName(), code.getPurchase().getProduct().getLogoUrl()));
         }
         return codes;
+    }
+
+    public static UserProfileResponse createUserProfile(ShakepointUserProfile userProfile) {
+        return new UserProfileResponse(userProfile.getUser().getName(), userProfile.getUser().getId(),
+                userProfile.getUser().getCreationDate(), true, userProfile.getAge(), userProfile.getBirthday(), userProfile.getWeight(),
+                userProfile.getHeight(), getTotalPurchases(userProfile.getUser().getPurchases()), userProfile.getUser().getEmail());
+    }
+
+    public static double getTotalPurchases(List<ShakepointPurchase> purchases){
+        double total = 0;
+        for (ShakepointPurchase p : purchases){
+            total += p.getTotal();
+        }
+        return total;
+    }
+
+    public static List<TechnicianMachine> createTechnicianMachinesList(List<ShakepointMachine> machines, MachineRepository instance) {
+        List<TechnicianMachine> dtos = new ArrayList();
+        for (ShakepointMachine machine : machines){
+            dtos.add(new TechnicianMachine(machine.getId(), machine.getName(), machine.getDescription(), instance.isMachineAlerted(machine.getId()),
+                    instance.getMachineProducts(machine.getId()).size(), 6));
+        }
+        return dtos;
     }
 }

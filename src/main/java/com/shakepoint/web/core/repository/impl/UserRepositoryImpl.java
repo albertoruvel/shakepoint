@@ -128,15 +128,15 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public UserInfo getUserInfo(String email) {
-        Object[] args = {email};
         UserInfo info = null;
         try {
-            return (UserInfo) em.createNativeQuery(GET_USER_INFO)
-                    .setParameter(1, email).getSingleResult();
+            ShakepointUser user =  (ShakepointUser) em.createQuery("SELECT u FROM User u WHERE u.email = :email")
+                    .setParameter("email", email).getSingleResult();
+            return new UserInfo(user.getEmail(), user.getPassword(), user.getRole());
         } catch (Exception ex) {
             log.error("UserInfo not found", ex);
+            return null;
         }
-        return info;
     }
 
     private static final String GET_TECHNICIANS_COUNT = "select count(*) from user where role = 'technician'";
@@ -182,21 +182,17 @@ public class UserRepositoryImpl implements UserRepository {
             + "from user_profile p inner join user u on p.user_id = u.id where p.user_id = ?";
 
     @Override
-    public UserProfileResponse getUserProfile(String userId) {
-        UserProfileResponse profile = null;
+    public ShakepointUserProfile getUserProfile(String userId) {
 
         try {
-            return (UserProfileResponse) em.createNativeQuery(GET_USER_PROFILE)
-                    .setParameter(1, userId)
+            return (ShakepointUserProfile) em.createNativeQuery("SELECT p FROM Profile p WHERE p.user.id = :id")
+                    .setParameter("id", userId)
                     .getSingleResult();
 
         } catch (Exception ex) {
             log.error("Could not get user profile", ex);
-            profile = new UserProfileResponse();
-            profile.setAvailableProfile(false);
-
+            return null;
         }
-        return profile;
     }
 
 

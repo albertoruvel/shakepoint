@@ -43,8 +43,10 @@ public class ShopFacadeImpl implements ShopFacade {
     @Override
     public UserProfileResponse saveProfile(Principal p, UserProfileRequest request) {
         //get user id
+        final ShakepointUser user = userRepository.getUserByEmail(p.getName());
         final String userId = userRepository.getUserId(p.getName());
         ShakepointUserProfile profile = TransformationUtils.getProfile(userId, request);
+        profile.setUser(user);
         userRepository.saveProfile(profile);
         return null; //TODO: implement here
     }
@@ -245,7 +247,7 @@ public class ShopFacadeImpl implements ShopFacade {
         final String userId = userRepository.getUserId(principal.getName());
         UserProfileResponse profile = null;
         try {
-            profile = userRepository.getUserProfile(userId);
+            profile = TransformationUtils.createUserProfile(userRepository.getUserProfile(userId));
             if (profile.isAvailableProfile()) {
                 profile.setPurchases(purchaseRepository.getUserPurchases(userId, 1));
             }
