@@ -8,9 +8,8 @@ package com.shakepoint.web.core.repository.impl;
 
 import com.shakepoint.web.core.machine.ProductType;
 import com.shakepoint.web.core.repository.ProductRepository;
-import com.shakepoint.web.data.entity.ProductEntityOld;
 import com.shakepoint.web.data.v1.dto.rest.response.Combo;
-import com.shakepoint.web.data.entity.ComboProduct;
+import com.shakepoint.web.data.v1.entity.ShakepointComboProduct;
 import com.shakepoint.web.data.v1.entity.ShakepointProduct;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Propagation;
@@ -39,7 +38,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     public ShakepointProduct getProduct(String id) {
 
         try {
-            return (ShakepointProduct) em.createQuery("SELECT p FROM Product WHERE p.id = :id")
+            return (ShakepointProduct) em.createQuery("SELECT p FROM Product p WHERE p.id = :id")
                     .setParameter("id", id).getSingleResult();
         } catch (Exception ex) {
             log.error("Could not get product", ex);
@@ -50,7 +49,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public List<ShakepointProduct> getProducts(int pageNumber, ProductType type) {
         try {
-            return em.createQuery("SELECT ´FROM Product p WHERE p.type = :type")
+            return em.createQuery("SELECT p FROM Product p WHERE p.type = :type")
                     .setParameter("type", type.getValue())
                     .getResultList();
         } catch (Exception ex) {
@@ -173,21 +172,14 @@ public class ProductRepositoryImpl implements ProductRepository {
         }
     }
 
-
-    private static final String ADD_COMBO_PRODUCT = "insert into combo_product(id, combo_item, product_id) values(?, ?, ?)";
-
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public void addComboProduct(String comboId, String productId) {
-        ComboProduct cp = new ComboProduct();
-        cp.setItemId(comboId);
-        cp.setProductId(productId);
+        ShakepointComboProduct cp = new ShakepointComboProduct();
+        cp.setProduct(getProduct(productId));
+        cp.setComboProduct(getProduct(comboId));
         try {
-            em.createNativeQuery(ADD_COMBO_PRODUCT)
-                    .setParameter(1, cp.getId())
-                    .setParameter(2, cp.getItemId())
-                    .setParameter(3, cp.getProductId())
-                    .executeUpdate();
+            em.persist(cp);
         } catch (Exception ex) {
             log.error("Could not add new combo product", ex);
         }

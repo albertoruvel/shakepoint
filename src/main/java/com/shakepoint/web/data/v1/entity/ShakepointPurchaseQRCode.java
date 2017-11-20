@@ -1,9 +1,6 @@
 package com.shakepoint.web.data.v1.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity(name = "Code")
@@ -22,8 +19,9 @@ public class ShakepointPurchaseQRCode {
     @Column(name = "creation_date")
     private String creationDate;
 
-    @Column(name = "purchase_id")
-    private String purchaseId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "purchase_id")
+    private ShakepointPurchase purchase;
 
     public ShakepointPurchaseQRCode() {
         id = UUID.randomUUID().toString();
@@ -61,11 +59,11 @@ public class ShakepointPurchaseQRCode {
         this.creationDate = creationDate;
     }
 
-    public String getPurchaseId() {
-        return purchaseId;
+    public ShakepointPurchase getPurchase() {
+        return purchase;
     }
 
-    public void setPurchaseId(String purchaseId) {
-        this.purchaseId = purchaseId;
+    public void setPurchase(ShakepointPurchase purchase) {
+        this.purchase = purchase;
     }
 }

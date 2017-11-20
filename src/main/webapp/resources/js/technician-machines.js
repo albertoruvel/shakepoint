@@ -40,17 +40,11 @@ function TechnicianMachinesViewModel(){
 function bindContent(self, content){
 	self.technicianName(content.technician.name);
 	self.technicianEmail(content.technician.email); 
-	$.each(content.allMachines.pageItems, function(i, v){
-		var grep = $.grep(content.asignedMachines.pageItems, function(element, index){
-			if(element.id === v.id)
-				return element; 
-		}); 
-		if(! grep[0]){
-			self.allMachines.push(v);
-		}
+	$.each(content.allMachines, function(i, v){
+		self.allMachines.push(v);
 	}); 
 	
-	$.each(content.asignedMachines.pageItems, function(i, v){
+	$.each(content.asignedMachines, function(i, v){
 		self.asignedMachines.push(v);
 	}); 
 }

@@ -5,7 +5,7 @@ import com.shakepoint.web.core.machine.ProductType;
 import javax.persistence.*;
 import java.util.UUID;
 
-@Entity(name = "ProductEntityOld")
+@Entity(name = "Product")
 @Table(name = "product")
 public class ShakepointProduct {
 

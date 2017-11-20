@@ -3,11 +3,16 @@ package com.shakepoint.web.util;
 import com.shakepoint.web.core.machine.ProductType;
 import com.shakepoint.web.core.machine.PurchaseStatus;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewProductRequest;
+import com.shakepoint.web.data.v1.dto.mvc.request.NewTechnicianRequest;
+import com.shakepoint.web.data.v1.dto.mvc.response.SimpleMachine;
+import com.shakepoint.web.data.v1.dto.mvc.response.SimpleProduct;
 import com.shakepoint.web.data.v1.dto.rest.request.PurchaseRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.SignupRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.UserProfileRequest;
 import com.shakepoint.web.data.v1.dto.mvc.response.Technician;
 import com.shakepoint.web.data.security.SecurityRole;
+import com.shakepoint.web.data.v1.dto.rest.response.PurchaseCodeResponse;
+import com.shakepoint.web.data.v1.dto.rest.response.SimpleMachineProduct;
 import com.shakepoint.web.data.v1.entity.*;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewMachineRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -62,7 +67,7 @@ public class TransformationUtils {
         machine.setCreationDate(ShakeUtils.DATE_FORMAT.format(new Date()));
         machine.setDescription(dto.getDescription());
         machine.setName(dto.getName());
-        machine.setTechnicianId(dto.getTechnicianId());
+
         machine.setLocation(dto.getLocation().replace("(", "\u0000").replace(")", "\u0000"));
         machine.setAddedBy(id);
         machine.setActive(false);
@@ -71,14 +76,11 @@ public class TransformationUtils {
         return machine;
     }
 
-    public static ShakepointPurchase getPurchase(PurchaseRequest request, String userId) {
+    public static ShakepointPurchase getPurchase(PurchaseRequest request) {
         ShakepointPurchase purchase = new ShakepointPurchase();
-        purchase.setMachineId(request.getMachineId());
-        purchase.setProductId(request.getProductId());
         purchase.setPurchaseDate(ShakeUtils.DATE_FORMAT.format(new Date()));
         purchase.setStatus(PurchaseStatus.PRE_AUTHORIZED);
         purchase.setTotal(request.getPrice());
-        purchase.setUserId(userId);
         purchase.setReference(""); //TODO: CHECK REFERENCE HERE
         return purchase;
     }
@@ -105,11 +107,70 @@ public class TransformationUtils {
         ShakepointPurchaseQRCode code = new ShakepointPurchaseQRCode();
         code.setCashed(false);
         code.setCreationDate(ShakeUtils.DATE_FORMAT.format(new Date()));
-        code.setPurchaseId(purchase.getId());
         return code;
     }
 
     public static Technician createTechnician(ShakepointUser dto) {
         return new Technician(dto.getId(), dto.getName(), dto.getEmail(), dto.getCreationDate(), dto.isActive());
+    }
+
+    public static List<SimpleProduct> createSimpleProducts(List<ShakepointProduct> page) {
+        List<SimpleProduct> products = new ArrayList();
+        for (ShakepointProduct p : page) {
+            products.add(createSimpleProduct(p));
+        }
+        return products;
+    }
+
+    public static List<SimpleMachine> createSimpleMachines(List<ShakepointMachine> page) {
+        List<SimpleMachine> machines = new ArrayList();
+        for (ShakepointMachine m : page) {
+            machines.add(new SimpleMachine(m.getId(), m.getName(), m.getDescription()));
+        }
+
+        return machines;
+    }
+
+    public static ShakepointUser getUserFromTechnician(NewTechnicianRequest dto, String addedBy) {
+        ShakepointUser user = new ShakepointUser();
+        user.setName(dto.getName());
+        user.setEmail(dto.getEmail());
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(11);
+        final String encryptedPass = encoder.encode(dto.getPassword());
+        user.setPassword(encryptedPass);
+        user.setConfirmed(false);
+        user.setActive(true);
+        user.setCreationDate(ShakeUtils.DATE_FORMAT.format(new Date()));
+        user.setAddedBy(addedBy);
+        user.setRole(SecurityRole.TECHNICIAN.toString());
+        return user;
+    }
+
+    public static SimpleMachineProduct createSimpleMachineProduct(ShakepointMachineProductStatus machineProduct) {
+        return new SimpleMachineProduct(machineProduct.getId(), machineProduct.getProduct().getName(),
+                machineProduct.getProduct().getLogoUrl(), machineProduct.getProduct().getType().getValue(),
+                machineProduct.getSlotNumber());
+    }
+
+    public static List<SimpleMachineProduct> createSimpleMachineProducts(List<ShakepointMachineProductStatus> s) {
+        List<SimpleMachineProduct> list = new ArrayList();
+        for (ShakepointMachineProductStatus status : s) {
+            list.add(createSimpleMachineProduct(status));
+        }
+
+        return list;
+    }
+
+    public static SimpleProduct createSimpleProduct(ShakepointProduct p) {
+        return new SimpleProduct(p.getId(), p.getName(), p.getCreationDate(), p.getPrice(), p.getLogoUrl());
+    }
+
+    public static List<PurchaseCodeResponse> createPurchaseCodes(List<ShakepointPurchaseQRCode> activeCodes) {
+        List<PurchaseCodeResponse> codes = new ArrayList();
+        for (ShakepointPurchaseQRCode code : activeCodes) {
+            codes.add(new PurchaseCodeResponse(code.getId(), code.getPurchase().getId(), code.getPurchase().getTotal(),
+                    code.getCreationDate(), code.getPurchase().getProduct().getName(), code.getPurchase().getProduct().getLogoUrl()));
+        }
+        return codes;
     }
 }

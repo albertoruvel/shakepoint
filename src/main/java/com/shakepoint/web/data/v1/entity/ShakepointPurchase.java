@@ -2,12 +2,11 @@ package com.shakepoint.web.data.v1.entity;
 
 import com.shakepoint.web.core.machine.PurchaseStatus;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.UUID;
 
+@Entity(name = "Purchase")
+@Table(name = "purchase")
 public class ShakepointPurchase {
     @Id
     private String id;
@@ -21,16 +20,21 @@ public class ShakepointPurchase {
 
     @Column(name = "total")
     private double total;
-    private String machineId;
 
-    @Column(name = "product_id")
-    private String productId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "machine_id")
+    private ShakepointMachine machine;
 
-    @Column(name = "user_id")
-    private String userId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id")
+    private ShakepointProduct product;
 
     @Column(name = "reference")
     private String reference;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private ShakepointUser user;
 
     public ShakepointPurchase() {
         id = UUID.randomUUID().toString();
@@ -68,28 +72,12 @@ public class ShakepointPurchase {
         this.total = total;
     }
 
-    public String getMachineId() {
-        return machineId;
+    public ShakepointMachine getMachine() {
+        return machine;
     }
 
-    public void setMachineId(String machineId) {
-        this.machineId = machineId;
-    }
-
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setMachine(ShakepointMachine machine) {
+        this.machine = machine;
     }
 
     public String getReference() {
@@ -98,5 +86,21 @@ public class ShakepointPurchase {
 
     public void setReference(String reference) {
         this.reference = reference;
+    }
+
+    public ShakepointUser getUser() {
+        return user;
+    }
+
+    public void setUser(ShakepointUser user) {
+        this.user = user;
+    }
+
+    public ShakepointProduct getProduct() {
+        return product;
+    }
+
+    public void setProduct(ShakepointProduct product) {
+        this.product = product;
     }
 }

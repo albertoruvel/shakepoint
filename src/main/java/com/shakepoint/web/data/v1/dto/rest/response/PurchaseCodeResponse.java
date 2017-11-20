@@ -1,16 +1,5 @@
-package com.shakepoint.web.data.dto.res.rest;
+package com.shakepoint.web.data.v1.dto.rest.response;
 
-import javax.persistence.ColumnResult;
-import javax.persistence.SqlResultSetMapping;
-
-@SqlResultSetMapping(name = "PurchaseCodeResponseMapper", columns = {
-        @ColumnResult(name = "id"),
-        @ColumnResult(name = "purchaseId"),
-        @ColumnResult(name = "total"),
-        @ColumnResult(name = "creationDate"),
-        @ColumnResult(name = "productName"),
-        @ColumnResult(name = "imageUrl")
-})
 public class PurchaseCodeResponse {
     private String id;
     private String purchaseId;
@@ -20,8 +9,15 @@ public class PurchaseCodeResponse {
     private String imageUrl;
 
     public PurchaseCodeResponse() {
-        super();
-        // TODO Auto-generated constructor stub
+    }
+
+    public PurchaseCodeResponse(String id, String purchaseId, double total, String creationDate, String productName, String imageUrl) {
+        this.id = id;
+        this.purchaseId = purchaseId;
+        this.total = total;
+        this.creationDate = creationDate;
+        this.productName = productName;
+        this.imageUrl = imageUrl;
     }
 
     public String getId() {

@@ -3,9 +3,7 @@ package com.shakepoint.web.core.repository.impl;
 import com.shakepoint.web.core.machine.PurchaseStatus;
 import com.shakepoint.web.core.repository.MachineRepository;
 import com.shakepoint.web.core.repository.PurchaseRepository;
-
-import com.shakepoint.web.data.dto.res.MachineDTO;
-import com.shakepoint.web.data.dto.res.rest.PurchaseCodeResponse;
+import com.shakepoint.web.data.v1.dto.rest.response.PurchaseCodeResponse;
 import com.shakepoint.web.data.dto.res.rest.UserPurchaseResponse;
 import com.shakepoint.web.data.v1.dto.rest.response.PurchaseQRCode;
 import com.shakepoint.web.data.v1.entity.ShakepointMachine;
@@ -111,6 +109,9 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
         double total = 0;
         try {
             BigDecimal bigDecimal = (BigDecimal) em.createNativeQuery(sql).getSingleResult();
+            if(bigDecimal == null){
+                return 0;
+            }
             return bigDecimal.doubleValue();
         } catch (Exception ex) {
             log.error("Could not get today total purchases", ex);
@@ -161,8 +162,7 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
         Double total = 0.0;
         for (String s : range) {
             format = String.format(GET_TOTAL_INCOME, s + "%");
-            total = (Double) em.createNativeQuery(GET_TOTAL_INCOME)
-                    .setParameter(1, format).getSingleResult();
+            total = (Double) em.createNativeQuery(format).getSingleResult();
             if (total == null)
                 total = 0.0;
             values.add(total);
@@ -171,31 +171,16 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
         return values;
     }
 
-    private static final String GET_ACTIVE_CODES = "select qr.id, qr.creation_date, qr.purchase_id, p.total, qr.cashed, qr.image_url, pr.name from purchase_qrcode qr "
-            + "inner join purchase p on p.id = qr.purchase_id "
-            + "inner join product pr on pr.id = p.product_id "
-            + "inner join machine m on m.id = p.machine_id "
-            + "inner join user u on p.user_id = u.id where u.id = ? and m.id = ? and p.status = 1 and qr.cashed = ?";
-
     @Override
-    public List<PurchaseCodeResponse> getActiveCodes(String userId, String machineId, int pageNumber) {
-        List<PurchaseCodeResponse> page = null;
+    public List<ShakepointPurchaseQRCode> getActiveCodes(String userId, String machineId, int pageNumber) {
         try {
-            return em.createNativeQuery(GET_ACTIVE_CODES)
-                    .setParameter(1, userId)
-                    .setParameter(2, machineId)
-                    .setParameter(3, PurchaseQRCode.QRCodeStatus.AUTHORIZED.getValue())
-                    .getResultList();
+            return em.createQuery("SELECT q FROM Code WHERE q.purchase.user.id = :userId AND q.purchase.machine.id = :machineId AND q.purchase.status = 1 AND q.cashed = 1")
+                    .setParameter("userId", userId)
+                    .setParameter("machineId", machineId)
+                    .getResultList() ;
         } catch (Exception ex) {
             log.error("Could not get active codes", ex);
             return null;
         }
     }
-
-    //private static final String GET_QR_CODES = "select c.id codeId, c.image_url as codeUrl, p.status, "
-    //        + "p.id purchase_id as purchaseId, p.purchase_date as purchaseDate, p.product_id as productId "
-    //        + "from purchase_qrcode c "
-    //        + "inner join purchase p on p.id = c.purchase_id "
-    //        + "where p.status = ? and p.machine_id = ? and c.cashed = ?";
-    //TODO: FOR FUTURE USE
 }

@@ -133,7 +133,7 @@
 											width="50" height="40"></td>
 										<td class="mdl-data-table__cell--non-numeric" data-bind="text: product.name"></td>
 										<td class="mdl-data-table__cell--non-numeric"><input
-											type="number" style="width: 30px;" data-bind="visible: product.combo == false, attr: {id: id, max: $root.maxSlots, min: $root.minSlots}"></td>
+											type="number" style="width: 30px;" data-bind="visible: product.type == 0, attr: {id: id, max: $root.maxSlots, min: $root.minSlots}"></td>
 										<td class="mdl-data-table__cell--non-numeric">
 											<button class="mdl-button mdl-js-button" data-bind="click: $parent.addProduct">Agregar</button>
 										</td>
@@ -167,7 +167,7 @@
 											height="40" data-bind="attr: {src: product.productLogoUrl}">
 										</td>
 										<td class="mdl-data-table__cell--non-numeric" data-bind="text: product.productName"></td>
-										<td class="mdl-data-table__cell--non-numeric"><p data-bind="visible: product.combo == false, text: product.slotNumber"></p></td>
+										<td class="mdl-data-table__cell--non-numeric"><p data-bind="visible: product.type == 0, text: product.slotNumber"></p></td>
 										<td class="mdl-data-table__cell--non-numeric">
 											<button class="mdl-button mdl-js-button" data-bind="click: $parent.deleteProduct">Eliminar</button>
 										</td>

@@ -1,8 +1,6 @@
 package com.shakepoint.web.data.v1.dto.mvc.response;
 
-import com.shakepoint.web.data.dto.res.MachineDTO;
-import com.shakepoint.web.data.dto.res.MachineProduct;
-import com.shakepoint.web.data.v1.dto.mvc.response.Technician;
+import com.shakepoint.web.data.v1.dto.rest.response.SimpleMachineProduct;
 import com.shakepoint.web.data.v1.entity.ShakepointMachine;
 import com.shakepoint.web.data.v1.entity.ShakepointProduct;
 
@@ -10,8 +8,8 @@ import java.util.List;
 
 public class MachineProductsContent {
 	private int alertedProducts;
-	private List<ShakepointMachine> machineProducts;
-	private List<ShakepointProduct> products;
+	private List<SimpleMachineProduct> machineProducts;
+	private List<SimpleProduct> products;
 	private ShakepointMachine machine;
 	private Technician technician;
 	private List<Technician> technicians;
@@ -24,16 +22,16 @@ public class MachineProductsContent {
 	public void setAlertedProducts(int alertedProducts) {
 		this.alertedProducts = alertedProducts;
 	}
-	public List<ShakepointMachine> getMachineProducts() {
+	public List<SimpleMachineProduct> getMachineProducts() {
 		return machineProducts;
 	}
-	public void setMachineProducts(List<ShakepointMachine> machineProducts) {
+	public void setMachineProducts(List<SimpleMachineProduct> machineProducts) {
 		this.machineProducts = machineProducts;
 	}
-	public List<ShakepointProduct> getProducts() {
+	public List<SimpleProduct> getProducts() {
 		return products;
 	}
-	public void setProducts(List<ShakepointProduct> products) {
+	public void setProducts(List<SimpleProduct> products) {
 		this.products = products;
 	}
 	public ShakepointMachine getMachine() {

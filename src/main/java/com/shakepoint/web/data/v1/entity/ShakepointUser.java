@@ -1,9 +1,7 @@
 package com.shakepoint.web.data.v1.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "User")
@@ -39,6 +37,9 @@ public class ShakepointUser {
 
     @Column(name = "last_signin")
     private String lastSignin;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", orphanRemoval = true)
+    private List<ShakepointPurchase> purchases;
 
     public ShakepointUser() {
         id = UUID.randomUUID().toString();
@@ -122,5 +123,13 @@ public class ShakepointUser {
 
     public void setLastSignin(String lastSignin) {
         this.lastSignin = lastSignin;
+    }
+
+    public List<ShakepointPurchase> getPurchases() {
+        return purchases;
+    }
+
+    public void setPurchases(List<ShakepointPurchase> purchases) {
+        this.purchases = purchases;
     }
 }

@@ -1,6 +1,6 @@
 package com.shakepoint.web.core.repository;
 
-import com.shakepoint.web.data.dto.res.rest.PurchaseCodeResponse;
+import com.shakepoint.web.data.v1.dto.rest.response.PurchaseCodeResponse;
 import com.shakepoint.web.data.dto.res.rest.UserPurchaseResponse;
 import com.shakepoint.web.data.v1.entity.ShakepointPurchase;
 import com.shakepoint.web.data.v1.entity.ShakepointPurchaseQRCode;
@@ -15,7 +15,7 @@ public interface PurchaseRepository {
 	public Map<String, List<Double>> getPerMachineValues(String[] range);
 	public List<Double> getTotalIncomeValues(String[] range);
 	public void createPurchase(ShakepointPurchase purchase);
-	public List<PurchaseCodeResponse> getActiveCodes(String userId, String machineId, int pageNumber);
+	public List<ShakepointPurchaseQRCode> getActiveCodes(String userId, String machineId, int pageNumber);
 	public void confirmPurchase(String purchaseId, String reference);
 	public void createQrCode(ShakepointPurchaseQRCode code);
 	public List<UserPurchaseResponse> getUserPurchases(String userId, int pageNumber);

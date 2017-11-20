@@ -1,9 +1,7 @@
 package com.shakepoint.web.data.v1.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "Machine")
@@ -28,9 +26,6 @@ public class ShakepointMachine {
     @Column(name = "added_by")
     private String addedBy;
 
-    @Column(name = "technician_id")
-    private String technicianId;
-
     @Column(name = "active")
     private boolean active;
 
@@ -39,6 +34,13 @@ public class ShakepointMachine {
 
     @Column(name = "has_error")
     private boolean error;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "technician_id")
+    private ShakepointUser technician;
+
+    @OneToMany(mappedBy = "machine")
+    private List<ShakepointMachineProductStatus> products;
 
     public ShakepointMachine() {
         id = UUID.randomUUID().toString();
@@ -92,14 +94,6 @@ public class ShakepointMachine {
         this.addedBy = addedBy;
     }
 
-    public String getTechnicianId() {
-        return technicianId;
-    }
-
-    public void setTechnicianId(String technicianId) {
-        this.technicianId = technicianId;
-    }
-
     public boolean isActive() {
         return active;
     }
@@ -122,5 +116,21 @@ public class ShakepointMachine {
 
     public void setError(boolean error) {
         this.error = error;
+    }
+
+    public ShakepointUser getTechnician() {
+        return technician;
+    }
+
+    public void setTechnician(ShakepointUser technician) {
+        this.technician = technician;
+    }
+
+    public List<ShakepointMachineProductStatus> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<ShakepointMachineProductStatus> products) {
+        this.products = products;
     }
 }

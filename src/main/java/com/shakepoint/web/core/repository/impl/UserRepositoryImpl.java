@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -42,18 +43,7 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    private static final String HAS_PROFILE = "select count(*) from user_profile where user_id = ?";
 
-    @Override
-    public boolean hasProfile(String userId) {
-        try {
-            Long count = (Long) em.createNativeQuery(HAS_PROFILE).setParameter(1, userId).getSingleResult();
-            return count > 0;
-        } catch (Exception ex) {
-            log.error("Could not get has profile value", ex);
-            return false;
-        }
-    }
 
     private static final String USER_EXISTS = "select count(*) from user where email = ?";
 
@@ -83,6 +73,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     private static final String UPDATE_LAST_SIGNIN = "update user set last_signin = ? where id = ?";
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public void updateLastSignin(String email) {
         //get id
@@ -102,7 +93,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public int getRegisteredTechnicians() {
         try {
-            Long count = (Long) em.createNativeQuery(GET_TECHNICIANS_COUNT).getSingleResult();
+            BigInteger count = (BigInteger) em.createNativeQuery(GET_TECHNICIANS_COUNT).getSingleResult();
             return count.intValue();
         } catch (Exception ex) {
             log.error("Could not get technicians count", ex);
@@ -113,7 +104,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public List<ShakepointUser> getUsers(int pageNumber) {
         try {
-            return em.createNativeQuery("SELECT u FROM User u")
+            return em.createQuery("SELECT u FROM User u WHERE u.role = 'member'")
                     .getResultList();
         } catch (Exception ex) {
             log.error("Could not get shakepoint users", ex);
@@ -122,6 +113,18 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     private static final String GET_USER_INFO = "select email, password, role from user where email = ?";
+
+    @Override
+    public ShakepointUser getUserByEmail(String email) {
+        try{
+            return (ShakepointUser)em.createQuery("SELECT u FROM User u WHERE u.email = :email")
+                    .setParameter("email", email)
+                    .getSingleResult();
+        }catch(Exception ex){
+            log.error("Could not get user by email", ex);
+            return null;
+        }
+    }
 
     @Override
     public UserInfo getUserInfo(String email) {

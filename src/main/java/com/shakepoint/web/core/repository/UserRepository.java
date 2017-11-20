@@ -18,8 +18,8 @@ import java.util.List;
  * @author Alberto Rubalcaba
  */
 public interface UserRepository {
+    public ShakepointUser getUserByEmail(String email);
     public UserInfo getUserInfo(String email);
-    //public String addUser(User user);
     public List<ShakepointUser> getTechnicians();
     public String getUserId(String email);
     public ShakepointUser getTechnician(String id);
@@ -29,9 +29,7 @@ public interface UserRepository {
     public String getLastSignin(String id); 
     public boolean userExists(String email);
     public UserProfileResponse getUserProfile(String userId);
-    public boolean hasProfile(String userId);
     public void saveProfile(ShakepointUserProfile profile);
-
 
     //JTA
     public void addShakepointUser(ShakepointUser shakepointUser);

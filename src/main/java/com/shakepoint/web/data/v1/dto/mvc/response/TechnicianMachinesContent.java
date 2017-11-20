@@ -6,8 +6,8 @@ import java.util.List;
 
 public class TechnicianMachinesContent {
 	private Technician technician;
-	private List<ShakepointMachine> allMachines;
-	private List<ShakepointMachine> asignedMachines;
+	private List<SimpleMachine> allMachines;
+	private List<SimpleMachine> asignedMachines;
 	public TechnicianMachinesContent() {
 		super();
 	}
@@ -17,16 +17,16 @@ public class TechnicianMachinesContent {
 	public void setTechnician(Technician technician) {
 		this.technician = technician;
 	}
-	public List<ShakepointMachine> getAllMachines() {
+	public List<SimpleMachine> getAllMachines() {
 		return allMachines;
 	}
-	public void setAllMachines(List<ShakepointMachine> allMachines) {
+	public void setAllMachines(List<SimpleMachine> allMachines) {
 		this.allMachines = allMachines;
 	}
-	public List<ShakepointMachine> getAsignedMachines() {
+	public List<SimpleMachine> getAsignedMachines() {
 		return asignedMachines;
 	}
-	public void setAsignedMachines(List<ShakepointMachine> asignedMachines) {
+	public void setAsignedMachines(List<SimpleMachine> asignedMachines) {
 		this.asignedMachines = asignedMachines;
 	} 
 	

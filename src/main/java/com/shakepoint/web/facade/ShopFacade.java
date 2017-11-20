@@ -1,11 +1,10 @@
 package com.shakepoint.web.facade;
 
-import com.shakepoint.web.data.entity.ProductEntityOld;
 import com.shakepoint.web.data.v1.dto.rest.request.PurchaseEventRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.PurchaseRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.UserProfileRequest;
 import com.shakepoint.web.data.dto.res.rest.*;
-import com.shakepoint.web.data.v1.dto.rest.response.Combo;
+import com.shakepoint.web.data.v1.dto.rest.response.PurchaseCodeResponse;
 import com.shakepoint.web.data.v1.dto.rest.response.PurchaseQRCode;
 import com.shakepoint.web.data.v1.dto.rest.response.MachineSearch;
 import com.shakepoint.web.data.v1.dto.rest.response.PurchaseResponse;

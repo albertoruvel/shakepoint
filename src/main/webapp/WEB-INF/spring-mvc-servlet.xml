@@ -109,8 +109,6 @@
     <bean id="qrCodeCreator" class="com.shakepoint.web.core.qr.impl.QrCodeCreatorImpl"/>
         
     <context:component-scan base-package="com.shakepoint.web.controller"/>
-    
-    <bean id="emailManager" class="com.shakepoint.web.core.mail.impl.EmailManagerImpl"></bean>
-        
+
 </beans>
 

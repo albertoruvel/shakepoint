@@ -6,9 +6,7 @@ import java.util.List;
 import com.shakepoint.web.core.repository.FailRepository;
 import com.shakepoint.web.core.repository.MachineRepository;
 import com.shakepoint.web.core.repository.UserRepository;
-import com.shakepoint.web.data.dto.res.MachineDTO;
 import com.shakepoint.web.data.v1.dto.mvc.response.Technician;
-import com.shakepoint.web.data.dto.res.TechnicianMachine;
 import com.shakepoint.web.data.v1.entity.ShakepointMachine;
 import com.shakepoint.web.data.v1.entity.ShakepointUser;
 import com.shakepoint.web.util.TransformationUtils;
@@ -64,7 +62,8 @@ public class TechnicianFacadeImpl implements TechnicianFacade{
 		//get technician id 
 		String id = userRepository.getUserId(principal.getName()); 
 		//get technician machines 
-		List<TechnicianMachine> machines = machineRepository.getTechnicianMachines(id, pageNumber);
+		List<ShakepointMachine> machines = machineRepository.getTechnicianMachines(id, pageNumber);
+		//todo: convert to dto here....
 		//add machines  
 		mav.addObject("machines", machines);
 		return mav;

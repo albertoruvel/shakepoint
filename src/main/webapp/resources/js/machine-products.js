@@ -79,10 +79,9 @@ function MachineProductsViewModel(){
 	}; 
 	
 	self.addProduct = function(product){
-		//slot number 
-		
+		//slot number
 		var slotNumber = $("input#" + product.id).val(); 
-		if(product.combo == false){
+		if(product.type != 1){
 			if(!slotNumber || slotNumber <= 0){
 				alert('Se debe de especificar un slot para el producto'); 
 				return;
@@ -95,7 +94,7 @@ function MachineProductsViewModel(){
 			headers: headers,
 			success: function(machineProduct){
 				//The product has been added to the machine 
-				if(machineProduct.success == true){
+				if(machineProduct.id != null){
 					self.machineProducts.push(machineProduct);
 					self.allProducts.remove(product); 
 				}else{
@@ -161,9 +160,9 @@ function bindContent(self, response){
 		self.showAllTechnicians(true);
 	}
 	//add all products 
-	$.each(response.products.pageItems, function(i, v){
+	$.each(response.products, function(i, v){
 		//add the new product if is not present in the machine
-		var product = $.grep(response.machineProducts.pageItems, function(element, index){
+		var product = $.grep(response.machineProducts, function(element, index){
 			if(element.productId === v.id)return element; 
 		}); 
 		if(! product[0]){
@@ -174,20 +173,21 @@ function bindContent(self, response){
 			
 	}); 
 	//add machine products 
-	$.each(response.machineProducts.pageItems, function(i, v){
+	$.each(response.machineProducts, function(i, v){
 		//add the new product if is not present in the machine
-		var product = $.grep(response.products.pageItems, function(element, index){
+		//add the current product
+        			self.machineProducts.push(v);
+		/**var product = $.grep(response.products, function(element, index){
 			if(element.productId === v.id)return element; 
 		}); 
 		if(! product[0]){
 			//the product is not on the machine
-			//add the current product 
-			self.machineProducts.push(v); 
-		}
+
+		}**/
 			
 	});
 	//add technicians 
-	$.each(response.technicians.pageItems, function(i, v){
+	$.each(response.technicians, function(i, v){
 		//add the technician 
 		self.technicians.push(v); 
 	}); 

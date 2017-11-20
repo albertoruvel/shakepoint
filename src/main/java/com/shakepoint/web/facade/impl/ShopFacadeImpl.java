@@ -1,6 +1,5 @@
 package com.shakepoint.web.facade.impl;
 
-import java.io.File;
 import java.security.Principal;
 import java.util.List;
 
@@ -12,15 +11,12 @@ import com.shakepoint.web.core.repository.UserRepository;
 import com.shakepoint.web.data.v1.dto.rest.request.PurchaseEventRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.PurchaseRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.UserProfileRequest;
-import com.shakepoint.web.data.dto.res.MachineDTO;
 import com.shakepoint.web.data.dto.res.rest.*;
-import com.shakepoint.web.data.entity.*;
-import com.shakepoint.web.data.v1.dto.rest.response.Combo;
 import com.shakepoint.web.data.v1.dto.rest.response.MachineSearch;
+import com.shakepoint.web.data.v1.dto.rest.response.PurchaseCodeResponse;
 import com.shakepoint.web.data.v1.dto.rest.response.PurchaseQRCode;
 import com.shakepoint.web.data.v1.dto.rest.response.PurchaseResponse;
 import com.shakepoint.web.data.v1.entity.*;
-import com.shakepoint.web.util.ShakeUtils;
 import com.shakepoint.web.util.TransformationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.shakepoint.web.core.qr.QrCodeCreator;
@@ -76,7 +72,7 @@ public class ShopFacadeImpl implements ShopFacade {
     @Override
     public PurchaseResponse requestPurchase(PurchaseRequest request, Principal principal) {
         PurchaseResponse response = new PurchaseResponse();
-        final String userId = userRepository.getUserId(principal.getName());
+        final ShakepointUser user = userRepository.getUserByEmail(principal.getName());
         ShakepointPurchase purchase = null;
         ShakepointProduct product = null;
         ShakepointPurchaseQRCode code = null;
@@ -90,10 +86,16 @@ public class ShopFacadeImpl implements ShopFacade {
             response.setTotal(0.0);
         } else {
             //create a new purchase
-            purchase = TransformationUtils.getPurchase(request, userId);
+            purchase = TransformationUtils.getPurchase(request);
+            purchase.setUser(user);
+            //set user id
+
             //check if the product is a combo
-            product = productRepository.getProduct(purchase.getProductId());
-            //add it
+            product = productRepository.getProduct(request.getProductId());
+            ShakepointMachine machine = machineRepository.getMachine(request.getMachineId());
+
+            purchase.setMachine(machine);
+            purchase.setProduct(product);
             purchaseRepository.createPurchase(purchase);
             if (product.getType() == ProductType.COMBO) {
                 //get combo products
@@ -102,8 +104,9 @@ public class ShopFacadeImpl implements ShopFacade {
                 for (ShakepointProduct p : comboProducts) {
                     //get a different qr code
                     code = TransformationUtils.getQrCode(purchase);
+                    code.setPurchase(purchase);
                     //create the code image
-                    qrCode = qrCodeCreator.createQRCode(purchase.getId(), purchase.getMachineId(),
+                    qrCode = qrCodeCreator.createQRCode(purchase.getId(), purchase.getMachine().getId(),
                             p.getId(), code.getId());
                     //add qr code to resources folder
                     //TODO: add qr url from code entity
@@ -118,8 +121,8 @@ public class ShopFacadeImpl implements ShopFacade {
             } else {
                 //create the qr code
                 code = TransformationUtils.getQrCode(purchase);
-                qrCode = qrCodeCreator.createQRCode(purchase.getId(), purchase.getMachineId(),
-                        purchase.getProductId(), code.getId());
+                qrCode = qrCodeCreator.createQRCode(purchase.getId(), purchase.getMachine().getId(),
+                        purchase.getProduct().getId(), code.getId());
                 //add qr code to resources folder (MAPPED TO A URL BY THIS HOST)
                 //TODO: add url from code entity
                 //update qr code
@@ -233,7 +236,7 @@ public class ShopFacadeImpl implements ShopFacade {
     public List<PurchaseCodeResponse> getActiveQrCodes(Principal p, String machineId, int pageNumber) {
         //get user id
         String userId = userRepository.getUserId(p.getName());
-        List<PurchaseCodeResponse> page = purchaseRepository.getActiveCodes(userId, machineId, pageNumber);
+        List<PurchaseCodeResponse> page = TransformationUtils.createPurchaseCodes(purchaseRepository.getActiveCodes(userId, machineId, pageNumber));
         return page;
     }
 

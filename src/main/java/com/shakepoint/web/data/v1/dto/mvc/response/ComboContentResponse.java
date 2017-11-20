@@ -1,7 +1,5 @@
 package com.shakepoint.web.data.v1.dto.mvc.response;
 
-import com.shakepoint.web.data.entity.ProductEntityOld;
-import com.shakepoint.web.data.v1.entity.ShakepointMachine;
 import com.shakepoint.web.data.v1.entity.ShakepointProduct;
 
 import java.util.ArrayList;

@@ -5,12 +5,11 @@
  */
 package com.shakepoint.web.controller;
 
-import com.shakepoint.web.data.dto.res.MachineProduct;
-import com.shakepoint.web.data.entity.ProductEntityOld;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewMachineRequest;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewProductRequest;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewTechnicianRequest;
 import com.shakepoint.web.data.v1.dto.mvc.response.*;
+import com.shakepoint.web.data.v1.dto.rest.response.SimpleMachineProduct;
 import com.shakepoint.web.data.v1.entity.ShakepointProduct;
 import com.shakepoint.web.facade.AdminFacade;
 import java.security.Principal;
@@ -153,10 +152,10 @@ public class AdminController {
     @RequestMapping(value="/add_machine_product", method=RequestMethod.POST, 
     		produces = "application/json")
     public @ResponseBody
-    MachineProduct addMachineProduct(@RequestParam(value="machine_id", required=true)String machineId,
-                                     @RequestParam(value="product_id", required=true)String productId,
-                                     @RequestParam(value="slot_number", required=true)int slotNumber,
-                                     @AuthenticationPrincipal Principal auth){
+    SimpleMachineProduct addMachineProduct(@RequestParam(value="machine_id", required=true)String machineId,
+                                           @RequestParam(value="product_id", required=true)String productId,
+                                           @RequestParam(value="slot_number", required=true)int slotNumber,
+                                           @AuthenticationPrincipal Principal auth){
         return adminFacade.addMachineProduct(machineId, productId, slotNumber, auth);  
     }
 
@@ -164,7 +163,7 @@ public class AdminController {
     @RequestMapping(value="/delete_machine_product", method=RequestMethod.POST, 
     		produces = "application/json")
     public @ResponseBody
-    ShakepointProduct deleteMachineProduct(@RequestParam(value="mp_id", required=true)String machineProductId){
+    SimpleProduct deleteMachineProduct(@RequestParam(value="mp_id", required=true)String machineProductId){
         return adminFacade.deleteMachineProduct(machineProductId);  
     }
     

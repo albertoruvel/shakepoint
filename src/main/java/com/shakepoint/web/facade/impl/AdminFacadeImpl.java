@@ -6,15 +6,10 @@ import com.shakepoint.web.core.repository.MachineRepository;
 import com.shakepoint.web.core.repository.ProductRepository;
 import com.shakepoint.web.core.repository.PurchaseRepository;
 import com.shakepoint.web.core.repository.UserRepository;
-import com.shakepoint.web.data.dto.res.*;
-import com.shakepoint.web.data.entity.MachineProductModel;
-import com.shakepoint.web.data.entity.ProductEntityOld;
-import com.shakepoint.web.data.security.SecurityRole;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewProductRequest;
 import com.shakepoint.web.data.v1.dto.mvc.response.*;
-import com.shakepoint.web.data.v1.entity.ShakepointMachine;
-import com.shakepoint.web.data.v1.entity.ShakepointProduct;
-import com.shakepoint.web.data.v1.entity.ShakepointUser;
+import com.shakepoint.web.data.v1.dto.rest.response.SimpleMachineProduct;
+import com.shakepoint.web.data.v1.entity.*;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewMachineRequest;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewTechnicianRequest;
 import com.shakepoint.web.facade.AdminFacade;
@@ -31,7 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -50,6 +44,7 @@ public class AdminFacadeImpl implements AdminFacade {
 
     @Autowired
     private PurchaseRepository purchaseRepository;
+
 
     private final Logger log = Logger.getLogger(getClass());
 
@@ -161,10 +156,12 @@ public class AdminFacadeImpl implements AdminFacade {
         try {
             page = userRepository.getUsers(pageNumber);
             List<UserDescription> descs = new ArrayList();
-            UserDescription desc;
             for (ShakepointUser user : page) {
-                //TODO: calulate total purchases here
-                descs.add(new UserDescription(user.getId(), user.getName(), user.getEmail(), 50));
+                double total = 0;
+                for (ShakepointPurchase purchase : user.getPurchases()) {
+                    total += purchase.getTotal();
+                }
+                descs.add(new UserDescription(user.getId(), user.getName(), user.getEmail(), total));
             }
             mav.addObject("users", descs);
         } catch (Exception ex) {
@@ -180,9 +177,9 @@ public class AdminFacadeImpl implements AdminFacade {
         ShakepointUser dto = userRepository.getTechnician(techId);
         content.setTechnician(TransformationUtils.createTechnician(dto));
         List<ShakepointMachine> allMachines = machineRepository.getMachines(1);
-        content.setAllMachines(allMachines);
-        List<ShakepointMachine> asignedMachines = machineRepository.getTechnicianAssignedMachines(techId, 1);
-        content.setAsignedMachines(asignedMachines);
+        content.setAllMachines(TransformationUtils.createSimpleMachines(allMachines));
+        List<ShakepointMachine> assignedMachines = machineRepository.getTechnicianMachines(techId, 1);
+        content.setAsignedMachines(TransformationUtils.createSimpleMachines(assignedMachines));
         return content;
     }
 
@@ -195,15 +192,17 @@ public class AdminFacadeImpl implements AdminFacade {
 
 
     @Override
-    public MachineProduct addMachineProduct(String machineId, String productId, int slotNumber, Principal principal) {
-        final String userId = userRepository.getUserId(principal.getName());
-        MachineProduct response = null;
-        MachineProductModel entity = new MachineProductModel();
-        entity.setAvailablePercentage(100);
-        entity.setMachineId(machineId);
-        entity.setProductId(productId);
-        entity.setSlotNumber(slotNumber);
-        String message = "No se puede agregar el paquete a la m�quina. \nLa m�quina debe de contener los productos del paquete para ofrecerlos: \n";
+    public SimpleMachineProduct addMachineProduct(String machineId, String productId, int slotNumber, Principal principal) {
+        final ShakepointUser addedBy = userRepository.getUserByEmail(principal.getName());
+        SimpleMachineProduct response = null;
+        ShakepointMachineProductStatus newMachineProduct = new ShakepointMachineProductStatus();
+        newMachineProduct.setPercentage(100);
+        ShakepointMachine machine = machineRepository.getMachine(machineId);
+        newMachineProduct.setMachine(machine);
+        ShakepointProduct product = productRepository.getProduct(productId);
+        newMachineProduct.setProduct(product);
+        newMachineProduct.setSlotNumber(slotNumber);
+        String message = "No se puede agregar el paquete a la maquina.\nLa maquina debe de contener los productos del paquete para ofrecerlos: \n";
         String productsMessage = "";
         //check the product
         ShakepointProduct p = productRepository.getProduct(productId);
@@ -220,40 +219,32 @@ public class AdminFacadeImpl implements AdminFacade {
             }
             if (success) {
                 //add the relationship
-                entity.setUpdatedBy(userId);
+                newMachineProduct.setUpdatedBy(addedBy);
                 // add the new entity
-                machineRepository.addMachineProduct(entity);
-                response = machineRepository.getMachineProduct(entity.getId());
-                response.setSuccess(success);
-                response.setCombo(true);
+                machineRepository.addMachineProduct(newMachineProduct);
+                response = TransformationUtils.createSimpleMachineProduct(machineRepository.getMachineProduct(newMachineProduct.getId()));
 
             } else {
-                response = new MachineProduct();
-                response.setSuccess(false);
-                response.setMessage(message + productsMessage);
+                response = new SimpleMachineProduct(null, null, null, 0, 0);
             }
         } else {
             //product is not a combo
             //add the relationship
-            entity.setUpdatedBy(userId);
+            newMachineProduct.setUpdatedBy(addedBy);
             // add the new entity
-            machineRepository.addMachineProduct(entity);
-            response = machineRepository.getMachineProduct(entity.getId());
-            response.setCombo(false);
-            response.setSuccess(true);
+            machineRepository.addMachineProduct(newMachineProduct);
+            response = TransformationUtils.createSimpleMachineProduct(machineRepository.getMachineProduct(newMachineProduct.getId()));
         }
 
         return response;
     }
 
-    // todo: convert to dto
     @Override
-    public ShakepointProduct deleteMachineProduct(String id) {
-        ShakepointProduct p = null;
-
+    public SimpleProduct deleteMachineProduct(String id) {
+        ShakepointMachineProductStatus status = machineRepository.getMachineProduct(id);
         //delete the machine product
         machineRepository.deleteMachineProduct(id);
-        return productRepository.getProduct(id);
+        return TransformationUtils.createSimpleProduct(productRepository.getProduct(status.getProduct().getId()));
     }
 
     @Override
@@ -265,8 +256,8 @@ public class AdminFacadeImpl implements AdminFacade {
         List<ShakepointProduct> page = null;
         try {
             page = productRepository.getProducts(pageNumber);
-            //create dto list
-            mav.addObject("products", page);
+            List<SimpleProduct> simpleProducts = TransformationUtils.createSimpleProducts(page);
+            mav.addObject("products", simpleProducts);
         } catch (Exception ex) {
             log.error("Could not get products: " + ex.getMessage());
             mav.addObject("error", "Could not get products list");
@@ -370,7 +361,7 @@ public class AdminFacadeImpl implements AdminFacade {
         //get principal id 
         String username = principal.getName();
         final String id = userRepository.getUserId(username);
-        ShakepointUser user = getUserFromTechnician(dto, id);
+        ShakepointUser user = TransformationUtils.getUserFromTechnician(dto, id);
         //add the new technician
         try {
             userRepository.addShakepointUser(user);
@@ -384,7 +375,6 @@ public class AdminFacadeImpl implements AdminFacade {
         return mav;
     }
 
-    //todo: convert to dto
     @Override
     public ModelAndView getMachinesView(int pageNumber) {
         ModelAndView mav = new ModelAndView();
@@ -392,8 +382,9 @@ public class AdminFacadeImpl implements AdminFacade {
 
         try {
             page = machineRepository.getMachines(pageNumber);
+            List<SimpleMachine> simpleMachines = TransformationUtils.createSimpleMachines(page);
             mav.setViewName("/admin/machines");
-            mav.addObject("machines", page);
+            mav.addObject("machines", simpleMachines);
         } catch (Exception ex) {
             log.error("Error: " + ex.getMessage());
         }
@@ -420,6 +411,7 @@ public class AdminFacadeImpl implements AdminFacade {
         String currentUser = userRepository.getUserId(principal.getName());
         //create a new machine 
         ShakepointMachine machine = TransformationUtils.getMachineFromDTO(dto, currentUser);
+        machine.setTechnician(userRepository.getTechnician(dto.getTechnicianId()));
         try {
             machineRepository.addMachine(machine);
             mav.setViewName("redirect:/admin/success");
@@ -438,23 +430,21 @@ public class AdminFacadeImpl implements AdminFacade {
 
     @Override
     public String updateTechnicianMachine(String techId, String machineId, int option) {
-        String result = "";
-
+        ShakepointUser technician = userRepository.getTechnician(techId);
+        ShakepointMachine machine = machineRepository.getMachine(machineId);
         switch (option) {
             case 0:
                 //delete
-                machineRepository.deleteTechnicianMachine(machineId);
-                result = "OK";
-                break;
+                machine.setTechnician(null);
+                machineRepository.updateMachine(machine);
+                return "OK";
             case 1:
-                machineRepository.addTechnicianMachine(techId, machineId);
-                result = "OK";
-                break;
+                machine.setTechnician(technician);
+                machineRepository.updateMachine(machine);
+                return "OK";
             default:
-                result = "FAIL";
-                break;
+                return "FAIL";
         }
-        return result;
     }
 
     //todo: convert to dtos CORRECTLY
@@ -462,13 +452,13 @@ public class AdminFacadeImpl implements AdminFacade {
     public MachineProductsContent getMachineProductsContent(String machineId) {
         MachineProductsContent content = new MachineProductsContent();
         int alertedProducts = machineRepository.getAlertedproducts(machineId);
-        List<ShakepointMachine> productsPage = machineRepository.getMachineProducts(machineId, 1);
-        List<ShakepointProduct> all = productRepository.getProducts(1);
+        List<SimpleMachineProduct> productsPage = TransformationUtils.createSimpleMachineProducts(machineRepository.getMachineProducts(machineId));
+        List<SimpleProduct> all = TransformationUtils.createSimpleProducts(productRepository.getProducts(1));
         ShakepointMachine machine = machineRepository.getMachine(machineId);
         //if the machine has a technician
         Technician technician = null;
-        if (machine != null && machine.getTechnicianId() != null && !machine.getTechnicianId().isEmpty()) {
-            technician = TransformationUtils.createTechnician(userRepository.getTechnician(machine.getTechnicianId()));
+        if (machine != null && machine.getTechnician() != null) {
+            technician = TransformationUtils.createTechnician(userRepository.getTechnician(machine.getTechnician().getId()));
         }
 
 
@@ -491,21 +481,6 @@ public class AdminFacadeImpl implements AdminFacade {
         return mav;
     }
 
-    private ShakepointUser getUserFromTechnician(NewTechnicianRequest dto, String addedBy) {
-        ShakepointUser user = new ShakepointUser();
-        user.setName(dto.getName());
-        user.setEmail(dto.getEmail());
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(11);
-        final String encryptedPass = encoder.encode(dto.getPassword());
-        user.setPassword(encryptedPass);
-        user.setConfirmed(false);
-        user.setActive(true);
-        user.setCreationDate(ShakeUtils.DATE_FORMAT.format(new Date()));
-        user.setAddedBy(addedBy);
-        user.setRole(SecurityRole.TECHNICIAN.toString());
-        return user;
-    }
-
     private boolean validateProduct(NewProductRequest product, MultipartFile file) {
         if (product.getName() == null || product.getName().isEmpty())
             return false;
@@ -520,41 +495,39 @@ public class AdminFacadeImpl implements AdminFacade {
 
 
     /**
-    @Override
-    public ComboContentResponse getComboContent(String productId) {
-        ComboContentResponse response = new ComboContentResponse();
-        //get current combo product
-        ShakepointProduct combo = productRepository.getProduct(productId);
-        if(combo.getType() == ProductType.COMBO){
-            //get all products
-            List<ShakepointProduct> comboProducts = productRepository.getComboProducts(productId, 1);
-            List<ShakepointProduct> allProducts = productRepository.getProducts(1, ProductType.SIMPLE);
+     @Override public ComboContentResponse getComboContent(String productId) {
+     ComboContentResponse response = new ComboContentResponse();
+     //get current combo product
+     ShakepointProduct combo = productRepository.getProduct(productId);
+     if(combo.getType() == ProductType.COMBO){
+     //get all products
+     List<ShakepointProduct> comboProducts = productRepository.getComboProducts(productId, 1);
+     List<ShakepointProduct> allProducts = productRepository.getProducts(1, ProductType.SIMPLE);
 
-            response.setCombo(combo);
-            response.setComboProducts(comboProducts);
-            response.setProducts(allProducts);
-        }
-        return response;
-    }**/
+     response.setCombo(combo);
+     response.setComboProducts(comboProducts);
+     response.setProducts(allProducts);
+     }
+     return response;
+     }**/
 
-    /**@Override
-    public ProductEntityOld updateComboProduct(String comboId, String productId, int value){
-        ProductEntityOld p = null;
+    /**@Override public ProductEntityOld updateComboProduct(String comboId, String productId, int value){
+    ProductEntityOld p = null;
 
-        //switch among values
-        switch(value){
-            case 0:
-                //delete
-                log.info("Deleting combo product");
-                p = productRepository.deleteComboProduct(comboId, productId);
-                break;
-            case 1:
-                //add
-                log.info("Adding new combo product");
-                p = productRepository.addComboProduct(comboId, productId);
-                break;
-        }
-        return p;
+    //switch among values
+    switch(value){
+    case 0:
+    //delete
+    log.info("Deleting combo product");
+    p = productRepository.deleteComboProduct(comboId, productId);
+    break;
+    case 1:
+    //add
+    log.info("Adding new combo product");
+    p = productRepository.addComboProduct(comboId, productId);
+    break;
+    }
+    return p;
     }**/
 
 }
