@@ -40,7 +40,6 @@ public class TransformationUtils {
     public static ShakepointUser getUser(SignupRequest request, BCryptPasswordEncoder encoder) {
         ShakepointUser user = new ShakepointUser();
         user.setActive(true);
-        user.setAddedBy("");
         user.setConfirmed(false);
         user.setCreationDate(ShakeUtils.DATE_FORMAT.format(new Date()));
         user.setEmail(request.getEmail());

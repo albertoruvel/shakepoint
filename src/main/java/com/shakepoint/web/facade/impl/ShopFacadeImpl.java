@@ -1,8 +1,13 @@
 package com.shakepoint.web.facade.impl;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.shakepoint.web.core.email.EmailAsyncSender;
+import com.shakepoint.web.core.email.Template;
 import com.shakepoint.web.core.machine.ProductType;
 import com.shakepoint.web.core.repository.MachineRepository;
 import com.shakepoint.web.core.repository.ProductRepository;
@@ -39,6 +44,9 @@ public class ShopFacadeImpl implements ShopFacade {
     @Autowired
     private QrCodeCreator qrCodeCreator;
 
+    @Autowired
+    private EmailAsyncSender emailSender;
+
 
     @Override
     public UserProfileResponse saveProfile(Principal p, UserProfileRequest request) {
@@ -68,6 +76,7 @@ public class ShopFacadeImpl implements ShopFacade {
         purchaseRepository.confirmPurchase(request.getReference(), request.getId());
 
         //code = purchaseRepository.getCode(request.getReference());
+
         return code;
     }
 
@@ -81,12 +90,16 @@ public class ShopFacadeImpl implements ShopFacade {
         String qrCode = "";
         String resourcesQrCode = "";
         List<ShakepointProduct> comboProducts = null;
+
+
         if (request == null) {
             response.setMessage("There is no purchase content");
             response.setPurchaseId(null);
             response.setSuccess(false);
             response.setTotal(0.0);
         } else {
+            final List<String> productNames = new ArrayList<String>();
+
             //create a new purchase
             purchase = TransformationUtils.getPurchase(request);
             purchase.setUser(user);
@@ -116,6 +129,7 @@ public class ShopFacadeImpl implements ShopFacade {
                     code.setImageUrl(resourcesQrCode);
                     //add qr code
                     purchaseRepository.createQrCode(code);
+                    productNames.add(p.getDescription());
                 }
                 //create response
                 response = getPurchaseResponse("Purchase created as pre-authorized purchase", purchase.getId(),
@@ -129,11 +143,19 @@ public class ShopFacadeImpl implements ShopFacade {
                 //TODO: add url from code entity
                 //update qr code
                 code.setImageUrl(resourcesQrCode);
+                code.setPurchase(purchase);
                 //addd qr cocde
                 purchaseRepository.createQrCode(code);
                 //create a purchase response
                 response = getPurchaseResponse("Purchase created as pre-authorized purchase", purchase.getId(),
                         true, purchase.getTotal(), resourcesQrCode);
+                productNames.add(product.getDescription());
+            }
+            //Send successfully purchase email
+            if(!productNames.isEmpty()){
+                final Map<String, Object> params = new HashMap<String, Object>(1);
+                params.put("productNames", productNames);
+                emailSender.sendEmail(principal.getName(), Template.SUCCESSFULL_PURCHASE , params);
             }
         }
         return response;

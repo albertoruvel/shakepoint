@@ -77,10 +77,10 @@ public class ProductRepositoryImpl implements ProductRepository {
         }
     }
 
-    private static final String GET_MACHINE_PRODUCTS_SIMPLE = "select p.id, p.name, p.description, p.logo_url as logoUrl, p.creation_date as creationDate, p.price, p.type as productType"
+    private static final String GET_MACHINE_PRODUCTS_SIMPLE = "select p.id, p.name, p.description, p.logo_url as logoUrl, p.creation_date as creationDate, p.price, p.type as productType "
             + "from product p "
             + "inner join machine_product m on p.id = m.product_id "
-            + "where m.machine_id = ? and p.type = ?";
+            + "where m.machine_id = ? and p.type = ? ";
 
     @Override
     public List<ShakepointProduct> getProducts(String machineId, int pageNumber, ProductType type) {

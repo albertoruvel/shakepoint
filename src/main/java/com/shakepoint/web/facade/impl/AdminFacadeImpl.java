@@ -455,6 +455,8 @@ public class AdminFacadeImpl implements AdminFacade {
         List<SimpleMachineProduct> productsPage = TransformationUtils.createSimpleMachineProducts(machineRepository.getMachineProducts(machineId));
         List<SimpleProduct> all = TransformationUtils.createSimpleProducts(productRepository.getProducts(1));
         ShakepointMachine machine = machineRepository.getMachine(machineId);
+        machine.setProducts(null);//Avoid lazy loading errors when sending this to the UI
+
         //if the machine has a technician
         Technician technician = null;
         if (machine != null && machine.getTechnician() != null) {

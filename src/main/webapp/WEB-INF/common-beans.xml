@@ -20,4 +20,21 @@
     <bean id="securityFacade" class="com.shakepoint.web.facade.impl.SecurityFacadeImpl"/>
     <bean id="cpuFacade" class="com.shakepoint.web.facade.impl.CpuFacadeImpl"/>
 
+    <bean id="emailSender" class="com.shakepoint.web.core.email.impl.EmailSenderImpl" scope="prototype" />
+    <bean id="emailAsyncSender" class="com.shakepoint.web.core.email.impl.EmailAsyncSenderImpl"/>
+
+    <bean id="jmsJndi" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:jboss/exported/ConnectionFactory"/>
+    </bean>
+
+    <bean id="jmsHandler" class="com.shakepoint.integration.jms.client.handler.JmsHandler" >
+        <property name="connectionFactory" ref="jmsJndi"/>
+    </bean>
+
+    <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="5" />
+        <property name="maxPoolSize" value="20" />
+        <property name="WaitForTasksToCompleteOnShutdown" value="true" />
+    </bean>
+
 </beans>

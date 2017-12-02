@@ -2,7 +2,7 @@ package com.shakepoint.web.data.v1.dto.rest.request;
 
 public class PurchaseRequest {
 	private String machineId; 
-	private String productId; 
+	private String productId;
 	private double price;
 	public PurchaseRequest() {
 		super();

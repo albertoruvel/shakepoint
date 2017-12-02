@@ -50,8 +50,8 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public boolean userExists(String email) {
         try {
-            Long count = (Long) em.createNativeQuery(USER_EXISTS).setParameter(1, email).getSingleResult();
-            return count > 0;
+            final BigInteger count = (BigInteger) em.createNativeQuery(USER_EXISTS).setParameter(1, email).getSingleResult();
+            return count.longValue() > 0;
         } catch (Exception ex) {
             log.error("Could not get user existence", ex);
             return false;

@@ -53,7 +53,7 @@ public class ShopRestController {
     public
     @ResponseBody
     PurchaseResponse requestPurchase(@RequestBody PurchaseRequest request, @AuthenticationPrincipal Principal p) {
-        return shopFacade.requestPurchase(request, p);//shopFacade.requestPurchase(request);
+        return shopFacade.requestPurchase(request, p);
     }
 
     @RequestMapping(value = "/get_active_codes", method = RequestMethod.GET,
