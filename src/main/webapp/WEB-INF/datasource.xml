@@ -8,14 +8,14 @@
        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 
     <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="false" />
-    <bean purchaseId="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+    <bean name="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiName" value="java:jboss/datasources/shakepoint"/>
     </bean>
-    <bean purchaseId="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <bean name="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean purchaseId="entityManager" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+    <bean name="entityManager" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="com.shakepoint.web.data.v1.entity"/>
         <property name="jpaVendorAdapter">
@@ -27,11 +27,11 @@
             </props>
         </property>
     </bean>
-    <bean purchaseId="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+    <bean name="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManager"/>
     </bean>
 
-    <bean purchaseId="persistenceExceptionTranslationPostProcessor"
+    <bean name="persistenceExceptionTranslationPostProcessor"
           class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 
 </beans>

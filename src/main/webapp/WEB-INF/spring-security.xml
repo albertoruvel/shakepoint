@@ -8,12 +8,12 @@
 	http://www.springframework.org/schema/security
 	http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
-	<beans:bean purchaseId="failedAuthenticationHandler" class="com.shakepoint.web.auth.FailedAuthenticationHandler"/>
-    <beans:bean purchaseId="successAuthenticationHandler" class="com.shakepoint.web.auth.SuccessAuthenticationHandler"/>
-    <beans:bean purchaseId="restAuthSuccessHandler" class="com.shakepoint.web.auth.rest.RestAuthenticationSuccessHandler"/>
-    <beans:bean purchaseId="restAuthFailureHandler" class="com.shakepoint.web.auth.rest.RestAuthenticationFailureHandler"/>
-    <beans:bean purchaseId="restAuthenticationEntryPoint" class="com.shakepoint.web.auth.rest.RestAuthenticationEntryPoint"/>
-    <beans:bean purchaseId="basicAuthFilter" class="com.shakepoint.web.auth.rest.BasicAuthenticationFilter">
+		<beans:bean name="failedAuthenticationHandler" class="com.shakepoint.web.auth.FailedAuthenticationHandler"/>
+    <beans:bean name="successAuthenticationHandler" class="com.shakepoint.web.auth.SuccessAuthenticationHandler"/>
+    <beans:bean name="restAuthSuccessHandler" class="com.shakepoint.web.auth.rest.RestAuthenticationSuccessHandler"/>
+    <beans:bean name="restAuthFailureHandler" class="com.shakepoint.web.auth.rest.RestAuthenticationFailureHandler"/>
+    <beans:bean name="restAuthenticationEntryPoint" class="com.shakepoint.web.auth.rest.RestAuthenticationEntryPoint"/>
+    <beans:bean name="basicAuthFilter" class="com.shakepoint.web.auth.rest.BasicAuthenticationFilter">
     	<beans:property name="authManager" ref="authenticationManager" />
     </beans:bean>
     
