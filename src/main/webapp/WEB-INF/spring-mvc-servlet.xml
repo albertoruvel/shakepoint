@@ -14,7 +14,7 @@
         http://www.springframework.org/schema/security
 	http://www.springframework.org/schema/security/spring-security-4.0.xsd">
         
-    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+    <bean purchaseId="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
         <property name="favorPathExtension" value="false" />
         <property name="favorParameter" value="false" />
         <property name="ignoreAcceptHeader" value="false" />
@@ -44,14 +44,14 @@
         	</bean>
     	</mvc:message-converters>
         <mvc:argument-resolvers>
-            <bean id="argumentResolver" class="org.springframework.security.web.bind.support.AuthenticationPrincipalArgumentResolver"></bean>
+            <bean purchaseId="argumentResolver" class="org.springframework.security.web.bind.support.AuthenticationPrincipalArgumentResolver"></bean>
         </mvc:argument-resolvers>
     </mvc:annotation-driven>
     
     <mvc:default-servlet-handler/>
     <context:annotation-config/>
     <mvc:interceptors>
-        <bean id="webContentInterceptor" 
+        <bean purchaseId="webContentInterceptor"
               class="org.springframework.web.servlet.mvc.WebContentInterceptor">
             <property name="cacheSeconds" value="0"/>
             <property name="useExpiresHeader" value="true"/>
@@ -64,36 +64,36 @@
     <mvc:resources mapping="/static/qr-codes/**" location="file:///C:/shakepoint-tmp/qr/"/>
     <mvc:resources mapping="/static/logos/**" location="file:///C:/shakepoint-tmp/logos/"/>
  
-    <bean id="mainViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <bean purchaseId="mainViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
         <property name="prefix" value="/WEB-INF/views/"/>
         <property name="suffix" value=".jsp"/> 
         <property name="order" value="0" />
     </bean>
     
-    <bean id="technicianViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <bean purchaseId="technicianViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
         <property name="prefix" value="/WEB-INF/views/tech/"/>
         <property name="suffix" value=".jsp"/> 
         <property name="order" value="1" />
     </bean>
     
-    <bean id="adminViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <bean purchaseId="adminViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
         <property name="prefix" value="/WEB-INF/views/admin/"/>
         <property name="suffix" value=".jsp"/> 
         <property name="order" value="2" />
     </bean>
     
-    <bean id="userDetailsService" class="com.shakepoint.web.auth.AuthenticationService">
+    <bean purchaseId="userDetailsService" class="com.shakepoint.web.auth.AuthenticationService">
         <constructor-arg index="0" ref="userRepository"/> 
     </bean>
     
-    <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">  
+    <bean purchaseId="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
     	<constructor-arg name="strength" value="11" />  
 	</bean>
 	
-    <bean id="authProvicer" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+    <bean purchaseId="authProvicer" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
         <property name="userDetailsService" ref="userDetailsService" />
         <property name="passwordEncoder" ref="passwordEncoder" />
             
@@ -106,7 +106,7 @@
         </security:authentication-provider>
     </security:authentication-manager>
     
-    <bean id="qrCodeCreator" class="com.shakepoint.web.core.qr.impl.QrCodeCreatorImpl"/>
+    <bean purchaseId="qrCodeCreator" class="com.shakepoint.web.core.qr.impl.QrCodeCreatorImpl"/>
         
     <context:component-scan base-package="com.shakepoint.web.controller"/>
 

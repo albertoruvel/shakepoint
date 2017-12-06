@@ -31,6 +31,9 @@ public class ShakepointProduct {
     @Column(name = "type")
     private ProductType type;
 
+    @Column(name = "engine_use_time")
+    private int engineUseTime;
+
     public ShakepointProduct() {
         id = UUID.randomUUID().toString();
     }
@@ -85,6 +88,15 @@ public class ShakepointProduct {
 
     public ProductType getType() {
         return type;
+    }
+
+
+    public int getEngineUseTime() {
+        return engineUseTime;
+    }
+
+    public void setEngineUseTime(int engineUseTime) {
+        this.engineUseTime = engineUseTime;
     }
 
     public void setType(ProductType type) {

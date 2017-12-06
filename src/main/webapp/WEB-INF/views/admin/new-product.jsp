@@ -91,6 +91,14 @@
 										class="mdl-textfield__label" path="logoUrl" for="logoUrl">Pega la URL del logo para el producto</label>
 								</div>
 							</div>
+
+							<div id="engineUseTimeGroup" class="form-group">
+                            								<div class="mdl-textfield mdl-js-textfield">
+                            									<input name="engineUseTime" class="mdl-textfield__input center"
+                            										path="engineUseTime" type="text" id="engineUseTime" /> <label
+                            										class="mdl-textfield__label" path="engineUseTime" for="engineUseTime">Tiempo que se usará el motor para preparar la bebida</label>
+                            								</div>
+                            							</div>
 							
 							<%--<div id="url-selection-options" class="form-group">
 							 	<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect"

@@ -34,6 +34,7 @@ public class TransformationUtils {
         p.setLogoUrl(product.getLogoUrl());
         p.setPrice(product.getPrice());
         p.setType(product.isCombo() ? ProductType.COMBO : ProductType.SIMPLE);
+        p.setEngineUseTime(product.getEngineUseTime());
         return p;
     }
 

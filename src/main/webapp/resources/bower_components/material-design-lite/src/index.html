@@ -36,7 +36,7 @@
 
       <div class="mdl-layout__drawer">
         <span class="mdl-layout-title">Material Design Lite</span>
-        <nav id="main-navigation" class="mdl-navigation">
+        <nav purchaseId="main-navigation" class="mdl-navigation">
         </nav>
       </div>
 
@@ -180,7 +180,7 @@
           navList.appendChild(navAnchor);
 
           var anchor = document.createElement('a');
-          anchor.id = anchorLink;
+          anchor.purchaseId = anchorLink;
           demos[i].insertBefore(anchor , demos[i].querySelector('h1'));
 
           // Size iframe

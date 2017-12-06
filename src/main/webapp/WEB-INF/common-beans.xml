@@ -3,35 +3,35 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
 ">
 
-    <bean id="failRepository" class="com.shakepoint.web.core.repository.impl.FailRepositoryImpl"/>
-    <bean id="userRepository" class="com.shakepoint.web.core.repository.impl.UserRepositoryImpl"/>
+    <bean purchaseId="failRepository" class="com.shakepoint.web.core.repository.impl.FailRepositoryImpl"/>
+    <bean purchaseId="userRepository" class="com.shakepoint.web.core.repository.impl.UserRepositoryImpl"/>
 
-    <bean id="productRepository" class="com.shakepoint.web.core.repository.impl.ProductRepositoryImpl"/>
+    <bean purchaseId="productRepository" class="com.shakepoint.web.core.repository.impl.ProductRepositoryImpl"/>
 
-    <bean id="machineRepository" class="com.shakepoint.web.core.repository.impl.MachineRepositoryImpl"/>
+    <bean purchaseId="machineRepository" class="com.shakepoint.web.core.repository.impl.MachineRepositoryImpl"/>
 
-    <bean id="purchaseRepository" class="com.shakepoint.web.core.repository.impl.PurchaseRepositoryImpl"/>
+    <bean purchaseId="purchaseRepository" class="com.shakepoint.web.core.repository.impl.PurchaseRepositoryImpl"/>
 
-    <bean id="adminFacade" class="com.shakepoint.web.facade.impl.AdminFacadeImpl"/>
+    <bean purchaseId="adminFacade" class="com.shakepoint.web.facade.impl.AdminFacadeImpl"/>
 
-    <bean id="techFacade" class="com.shakepoint.web.facade.impl.TechnicianFacadeImpl"/>
+    <bean purchaseId="techFacade" class="com.shakepoint.web.facade.impl.TechnicianFacadeImpl"/>
 
-    <bean id="shopFacade" class="com.shakepoint.web.facade.impl.ShopFacadeImpl"/>
-    <bean id="securityFacade" class="com.shakepoint.web.facade.impl.SecurityFacadeImpl"/>
-    <bean id="cpuFacade" class="com.shakepoint.web.facade.impl.CpuFacadeImpl"/>
+    <bean purchaseId="shopFacade" class="com.shakepoint.web.facade.impl.ShopFacadeImpl"/>
+    <bean purchaseId="securityFacade" class="com.shakepoint.web.facade.impl.SecurityFacadeImpl"/>
+    <bean purchaseId="cpuFacade" class="com.shakepoint.web.facade.impl.CpuFacadeImpl"/>
 
-    <bean id="emailSender" class="com.shakepoint.web.core.email.impl.EmailSenderImpl" scope="prototype" />
-    <bean id="emailAsyncSender" class="com.shakepoint.web.core.email.impl.EmailAsyncSenderImpl"/>
+    <bean purchaseId="emailSender" class="com.shakepoint.web.core.email.impl.EmailSenderImpl" scope="prototype" />
+    <bean purchaseId="emailAsyncSender" class="com.shakepoint.web.core.email.impl.EmailAsyncSenderImpl"/>
 
-    <bean id="jmsJndi" class="org.springframework.jndi.JndiObjectFactoryBean">
+    <bean purchaseId="jmsJndi" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiName" value="java:jboss/exported/ConnectionFactory"/>
     </bean>
 
-    <bean id="jmsHandler" class="com.shakepoint.integration.jms.client.handler.JmsHandler" >
+    <bean purchaseId="jmsHandler" class="com.shakepoint.integration.jms.client.handler.JmsHandler" >
         <property name="connectionFactory" ref="jmsJndi"/>
     </bean>
 
-    <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+    <bean purchaseId="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
         <property name="corePoolSize" value="5" />
         <property name="maxPoolSize" value="20" />
         <property name="WaitForTasksToCompleteOnShutdown" value="true" />
