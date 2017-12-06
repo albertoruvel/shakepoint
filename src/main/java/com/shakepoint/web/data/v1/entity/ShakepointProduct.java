@@ -32,7 +32,7 @@ public class ShakepointProduct {
     private ProductType type;
 
     @Column(name = "engine_use_time")
-    private Integer engineUseTime;
+    private String engineUseTime;
 
     public ShakepointProduct() {
         id = UUID.randomUUID().toString();
@@ -91,11 +91,11 @@ public class ShakepointProduct {
     }
 
 
-    public Integer getEngineUseTime() {
+    public String getEngineUseTime() {
         return engineUseTime;
     }
 
-    public void setEngineUseTime(Integer engineUseTime) {
+    public void setEngineUseTime(String engineUseTime) {
         this.engineUseTime = engineUseTime;
     }
 

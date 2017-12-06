@@ -6,7 +6,7 @@ public class NewProductRequest {
     private String description;
     private String logoUrl;
     private boolean combo;
-    private int engineUseTime;
+    private String engineUseTime;
 
     public NewProductRequest() {
     }
@@ -51,11 +51,11 @@ public class NewProductRequest {
         this.combo = combo;
     }
 
-    public int getEngineUseTime() {
+    public String getEngineUseTime() {
         return engineUseTime;
     }
 
-    public void setEngineUseTime(int engineUseTime) {
+    public void setEngineUseTime(String engineUseTime) {
         this.engineUseTime = engineUseTime;
     }
 }
