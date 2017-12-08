@@ -1,5 +1,6 @@
 package com.shakepoint.web.facade.impl;
 
+import com.shakepoint.integration.jms.client.handler.JmsHandler;
 import com.shakepoint.web.core.machine.MachineMessageCode;
 import com.shakepoint.web.core.machine.ProductType;
 import com.shakepoint.web.core.repository.MachineRepository;
@@ -45,7 +46,10 @@ public class AdminFacadeImpl implements AdminFacade {
     @Autowired
     private PurchaseRepository purchaseRepository;
 
+    @Autowired
+    private JmsHandler jmsHandler;
 
+    private static final String MACHINE_CONNECTION_QUEUE_NAME = "machine_connection";
     private final Logger log = Logger.getLogger(getClass());
 
     @Override
@@ -418,6 +422,8 @@ public class AdminFacadeImpl implements AdminFacade {
             attrs.addFlashAttribute("message", "The machine with ID " + machine.getId() + " has been created");
             attrs.addFlashAttribute("message_code", MachineMessageCode.MACHINE_CREATED.toString());
             attrs.addFlashAttribute("machine_id", machine.getId());
+            //start machine
+            jmsHandler.send(MACHINE_CONNECTION_QUEUE_NAME, machine.getId());
             //TODO: send an email to all super admins
         } catch (Exception ex) {
             log.error("Could not add machine: " + ex.getMessage());
