@@ -185,7 +185,7 @@ public class UserRepositoryImpl implements UserRepository {
     public ShakepointUserProfile getUserProfile(String userId) {
 
         try {
-            return (ShakepointUserProfile) em.createNativeQuery("SELECT p FROM Profile p WHERE p.user.id = :id")
+            return (ShakepointUserProfile) em.createQuery("SELECT p FROM Profile p WHERE p.user.id = :id")
                     .setParameter("id", userId)
                     .getSingleResult();
 
@@ -205,5 +205,6 @@ public class UserRepositoryImpl implements UserRepository {
             log.error("Could not persist Entity", ex);
         }
     }
+
 
 }

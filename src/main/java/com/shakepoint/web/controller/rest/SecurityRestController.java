@@ -1,5 +1,6 @@
 package com.shakepoint.web.controller.rest;
 
+import com.shakepoint.web.data.v1.dto.rest.request.SigninRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.SignupRequest;
 import com.shakepoint.web.data.v1.dto.rest.response.AuthenticationResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,12 @@ public class SecurityRestController {
 			produces="application/json", consumes="application/json")
 	public @ResponseBody AuthenticationResult signup(@RequestBody SignupRequest request){
 		return securityFacade.signup(request); 
+	}
+
+	@RequestMapping(value="/signin", method=RequestMethod.POST,
+			produces="application/json", consumes="application/json")
+	public @ResponseBody AuthenticationResult signup(@RequestBody SigninRequest request){
+		return securityFacade.signin(request);
 	}
 	
 }
