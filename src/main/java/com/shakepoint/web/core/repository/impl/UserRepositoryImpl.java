@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
 import java.util.Date;
@@ -42,7 +43,6 @@ public class UserRepositoryImpl implements UserRepository {
             log.error("Could not add profile", ex);
         }
     }
-
 
 
     private static final String USER_EXISTS = "select count(*) from user where email = ?";
@@ -78,7 +78,7 @@ public class UserRepositoryImpl implements UserRepository {
     public void updateLastSignin(String email) {
         //get id
         String id = getUserId(email);
-        if (id == null){
+        if (id == null) {
             //super admin user
             return;
         }
@@ -116,11 +116,11 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public ShakepointUser getUserByEmail(String email) {
-        try{
-            return (ShakepointUser)em.createQuery("SELECT u FROM User u WHERE u.email = :email")
+        try {
+            return (ShakepointUser) em.createQuery("SELECT u FROM User u WHERE u.email = :email")
                     .setParameter("email", email)
                     .getSingleResult();
-        }catch(Exception ex){
+        } catch (Exception ex) {
             log.error("Could not get user by email", ex);
             return null;
         }
@@ -130,7 +130,7 @@ public class UserRepositoryImpl implements UserRepository {
     public UserInfo getUserInfo(String email) {
         UserInfo info = null;
         try {
-            ShakepointUser user =  (ShakepointUser) em.createQuery("SELECT u FROM User u WHERE u.email = :email")
+            ShakepointUser user = (ShakepointUser) em.createQuery("SELECT u FROM User u WHERE u.email = :email")
                     .setParameter("email", email).getSingleResult();
             return new UserInfo(user.getEmail(), user.getPassword(), user.getRole());
         } catch (Exception ex) {
@@ -189,6 +189,8 @@ public class UserRepositoryImpl implements UserRepository {
                     .setParameter("id", userId)
                     .getSingleResult();
 
+        } catch (NoResultException ex) {
+            return null;
         } catch (Exception ex) {
             log.error("Could not get user profile", ex);
             return null;
@@ -199,9 +201,9 @@ public class UserRepositoryImpl implements UserRepository {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public void addShakepointUser(ShakepointUser shakepointUser) {
-        try{
+        try {
             em.persist(shakepointUser);
-        }catch(Exception ex){
+        } catch (Exception ex) {
             log.error("Could not persist Entity", ex);
         }
     }

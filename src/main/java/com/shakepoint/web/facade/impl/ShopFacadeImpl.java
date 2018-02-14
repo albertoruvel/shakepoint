@@ -269,9 +269,14 @@ public class ShopFacadeImpl implements ShopFacade {
         final String userId = userRepository.getUserId(principal.getName());
         UserProfileResponse profile = null;
         try {
-            profile = TransformationUtils.createUserProfile(userRepository.getUserProfile(userId));
-            if (profile.isAvailableProfile()) {
-                profile.setPurchases(purchaseRepository.getUserPurchases(userId, 1));
+            ShakepointUserProfile userProfile = userRepository.getUserProfile(userId);
+            if (userProfile == null){
+                profile = new UserProfileResponse(null,null,null,false, 0, null, 0.0, 0.0, 0.0, null);
+            }else{
+                profile = TransformationUtils.createUserProfile(userProfile);
+                if (profile.isAvailableProfile()) {
+                    profile.setPurchases(purchaseRepository.getUserPurchases(userId, 1));
+                }
             }
         } catch (Exception ex) {
 
