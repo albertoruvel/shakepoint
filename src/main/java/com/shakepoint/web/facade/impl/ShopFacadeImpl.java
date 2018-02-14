@@ -58,12 +58,12 @@ public class ShopFacadeImpl implements ShopFacade {
         final String userId = userRepository.getUserId(p.getName());
         //get profile
         ShakepointUserProfile existingProfile = userRepository.getUserProfile(userId);
-        if (existingProfile == null){
+        if (existingProfile == null) {
             ShakepointUserProfile profile = TransformationUtils.getProfile(userId, request);
             profile.setUser(user);
             log.info("Creating user profile");
             userRepository.saveProfile(profile);
-        }else {
+        } else {
             existingProfile.setAge(request.getAge());
             existingProfile.setBirthday(request.getBirthday());
             existingProfile.setHeight(request.getHeight());
@@ -168,10 +168,10 @@ public class ShopFacadeImpl implements ShopFacade {
                 productNames.add(product.getDescription());
             }
             //Send successfully purchase email
-            if(!productNames.isEmpty()){
+            if (!productNames.isEmpty()) {
                 final Map<String, Object> params = new HashMap<String, Object>(1);
                 params.put("productNames", productNames);
-                emailSender.sendEmail(principal.getName(), Template.SUCCESSFULL_PURCHASE , params);
+                emailSender.sendEmail(principal.getName(), Template.SUCCESSFULL_PURCHASE, params);
             }
         }
         return response;
@@ -187,18 +187,20 @@ public class ShopFacadeImpl implements ShopFacade {
         return response;
     }
 
-    /**private String moveQrCode(String tmpPath) {
-        File file = new File(tmpPath);
-        File resFile = new File(ShakeUtils.QR_CODES_RESOURCES_FOLDER + "/" + file.getName());
-
-        //create an input stream
-        try {
-            file.renameTo(resFile);
-        } catch (Exception ex) {
-
-        }
-        return String.format(ShakeUtils.LOCALHOST_QR_CODE_FORMAT, resFile.getName());
-    }**/
+    /**
+     * private String moveQrCode(String tmpPath) {
+     * File file = new File(tmpPath);
+     * File resFile = new File(ShakeUtils.QR_CODES_RESOURCES_FOLDER + "/" + file.getName());
+     * <p>
+     * //create an input stream
+     * try {
+     * file.renameTo(resFile);
+     * } catch (Exception ex) {
+     * <p>
+     * }
+     * return String.format(ShakeUtils.LOCALHOST_QR_CODE_FORMAT, resFile.getName());
+     * }
+     **/
 
 
     //todo: convert to dto
@@ -259,7 +261,7 @@ public class ShopFacadeImpl implements ShopFacade {
     }
 
     /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-	/*::	This function converts radians to decimal degrees						 :*/
+    /*::	This function converts radians to decimal degrees						 :*/
 	/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
     private static double rad2deg(double rad) {
         return (rad * 180 / Math.PI);
@@ -286,13 +288,10 @@ public class ShopFacadeImpl implements ShopFacade {
         UserProfileResponse profile = null;
         try {
             ShakepointUserProfile userProfile = userRepository.getUserProfile(userId);
-            if (userProfile == null){
-                profile = new UserProfileResponse(null,null,null,false, 0, null, 0.0, 0.0, 0.0, null);
-            }else{
+            if (userProfile == null) {
+                profile = new UserProfileResponse(null, null, null, false, 0, null, 0.0, 0.0, 0.0, null);
+            } else {
                 profile = TransformationUtils.createUserProfile(userProfile);
-                if (profile.isAvailableProfile()) {
-                    profile.setPurchases(purchaseRepository.getUserPurchases(userId, 1));
-                }
             }
         } catch (Exception ex) {
 
