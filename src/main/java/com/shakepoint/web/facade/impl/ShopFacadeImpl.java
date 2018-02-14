@@ -23,6 +23,7 @@ import com.shakepoint.web.data.v1.dto.rest.response.PurchaseQRCode;
 import com.shakepoint.web.data.v1.dto.rest.response.PurchaseResponse;
 import com.shakepoint.web.data.v1.entity.*;
 import com.shakepoint.web.util.TransformationUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.shakepoint.web.core.qr.QrCodeCreator;
 import com.shakepoint.web.facade.ShopFacade;
@@ -47,16 +48,31 @@ public class ShopFacadeImpl implements ShopFacade {
     @Autowired
     private EmailAsyncSender emailSender;
 
+    private final Logger log = Logger.getLogger(getClass());
+
 
     @Override
     public UserProfileResponse saveProfile(Principal p, UserProfileRequest request) {
         //get user id
         final ShakepointUser user = userRepository.getUserByEmail(p.getName());
         final String userId = userRepository.getUserId(p.getName());
-        ShakepointUserProfile profile = TransformationUtils.getProfile(userId, request);
-        profile.setUser(user);
-        userRepository.saveProfile(profile);
-        return null; //TODO: implement here
+        //get profile
+        ShakepointUserProfile existingProfile = userRepository.getUserProfile(userId);
+        if (existingProfile == null){
+            ShakepointUserProfile profile = TransformationUtils.getProfile(userId, request);
+            profile.setUser(user);
+            log.info("Creating user profile");
+            userRepository.saveProfile(profile);
+        }else {
+            existingProfile.setAge(request.getAge());
+            existingProfile.setBirthday(request.getBirthday());
+            existingProfile.setHeight(request.getHeight());
+            existingProfile.setWeight(request.getWeight());
+            log.info("Updating user profile");
+            userRepository.updateProfile(existingProfile);
+        }
+
+        return getUserProfile(p);
     }
 
     @Override

@@ -208,5 +208,15 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Override
+    public void updateProfile(ShakepointUserProfile existingProfile) {
+        try{
+            em.merge(existingProfile);
+        }catch(Exception ex){
+            log.error("Could not update profile", ex);
+        }
+    }
+
 
 }

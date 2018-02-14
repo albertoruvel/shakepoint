@@ -90,15 +90,4 @@ public class ShopRestController {
     UserProfileResponse saveUserProfile(@AuthenticationPrincipal Principal p, @RequestBody UserProfileRequest request) {
         return shopFacade.saveProfile(p, request);
     }
-
-
-    //TODO: NEED TO WORK THIS METHOD QUERY (INNER JOINS)
-    /**@RequestMapping(value = "/combos", method = RequestMethod.GET,
-            produces = "application/json")
-    public
-    @ResponseBody
-    List<Combo> getCombos(@RequestParam(value = "machine_id", required = true) String machineId,
-                          @RequestParam(value = "page_number", required = false, defaultValue = "1") int pageNumber) {
-        return shopFacade.getMachineCombos(machineId, pageNumber);
-    }**/
 }

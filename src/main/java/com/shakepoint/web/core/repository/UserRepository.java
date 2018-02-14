@@ -33,4 +33,6 @@ public interface UserRepository {
 
     //JTA
     public void addShakepointUser(ShakepointUser shakepointUser);
+
+    public void updateProfile(ShakepointUserProfile existingProfile);
 }
