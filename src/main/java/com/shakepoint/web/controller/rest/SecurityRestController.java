@@ -58,11 +58,5 @@ public class SecurityRestController {
 	public @ResponseBody AuthenticationResult signup(@RequestBody SignupRequest request){
 		return securityFacade.signup(request); 
 	}
-
-	@RequestMapping(value="/signin", method=RequestMethod.POST,
-			produces="application/json", consumes="application/json")
-	public @ResponseBody AuthenticationResult signup(@RequestBody SigninRequest request){
-		return securityFacade.signin(request);
-	}
 	
 }
