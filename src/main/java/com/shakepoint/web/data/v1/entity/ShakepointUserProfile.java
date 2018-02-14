@@ -10,7 +10,9 @@ public class ShakepointUserProfile {
     private String id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_id")
+    @JoinTable(name = "user", joinColumns = {
+            @JoinColumn(name = "id")
+    })
     private ShakepointUser user;
 
     @Column(name = "age")
