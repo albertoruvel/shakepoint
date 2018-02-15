@@ -53,6 +53,10 @@
                         		Ventas el día de hoy: $<b data-bind="text: todayTotal"></b><br/>
                         		Número de técnicos registrados: <b data-bind="registeredTechnicians"></b>
                         	</p>
+                        <p>
+                            Esta opcion eliminara todo el contenido en Amazon S3 (use con cautela)
+                        </p>
+                        <button class="mdl-button mdl-js-button mdl-button--colored" data-bind="click: deleteMediaContent">Eliminar contenido en Amazon S3</button>
                         </div>
                         
                         <div id="main-card" class="mdl-card mdl-shadow--2dp center-block" style="padding: 16px; ">

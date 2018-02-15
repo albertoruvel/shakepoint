@@ -67,7 +67,21 @@ function AdminIndexViewModel(){
 	self.perMachineToValue = ko.observable('');
 	self.totalIncomeFromValue = ko.observable('');
 	self.totalIncomeToValue = ko.observable('');
-	
+	self.deleteMediaContent = function(){
+	if(confirm('Seguro que desea eliminar todo el contenido?') == true){
+	    $.ajax({
+                		url: '/admin/delete_media_content',
+                		type: 'POST',
+                		headers: headers,
+                		success: function(response){
+                		    alert('Los datos se eliminaran en un momento\n' + response)
+                		},
+                		error: function(error){
+
+                		}
+                	});
+	}
+	};
 	//total income
 	self.updateTotalIncomeChart = function(){
 		if(self.totalIncomeFromValue() === '' || self.totalIncomeToValue() === ''){

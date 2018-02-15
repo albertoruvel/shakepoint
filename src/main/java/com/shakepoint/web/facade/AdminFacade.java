@@ -67,6 +67,8 @@ public interface AdminFacade {
 
     public ModelAndView getComboView(String productId);
 
+    public void deleteMediaContent();
+
     //public ComboContentResponse getComboContent(String productId);
 
     //public ProductEntityOld updateComboProduct(String comboId, String productId, int value);

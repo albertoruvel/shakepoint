@@ -50,6 +50,7 @@ public class AdminFacadeImpl implements AdminFacade {
     private JmsHandler jmsHandler;
 
     private static final String MACHINE_CONNECTION_QUEUE_NAME = "machine_connection";
+    private static final String DELETE_MEDIA_CONTENT_QUEUE_NAME = "delete_media_content";
     private final Logger log = Logger.getLogger(getClass());
 
     @Override
@@ -291,6 +292,12 @@ public class AdminFacadeImpl implements AdminFacade {
             mav.addObject("error", "Este producto no es un paquete, asegurate de seleccionar un producto que se haya definido como paquete");
         }
         return mav;
+    }
+
+    @Override
+    public void deleteMediaContent() {
+        //send a jms message to delete everything on s3
+        jmsHandler.send(DELETE_MEDIA_CONTENT_QUEUE_NAME, "Do it!");
     }
 
 

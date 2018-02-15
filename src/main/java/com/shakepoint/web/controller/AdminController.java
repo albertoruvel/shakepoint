@@ -44,7 +44,12 @@ public class AdminController {
     @RequestMapping(value="/", method=RequestMethod.GET)
     public ModelAndView indexView(){
         return new ModelAndView("admin/index");
-    } 
+    }
+
+    @RequestMapping(value = "/delete_media_content", method = RequestMethod.POST)
+    public void deleteMediaContent(){
+        adminFacade.deleteMediaContent();
+    }
     
     @RequestMapping(value="/get_index_content", method=RequestMethod.GET)
     public @ResponseBody
