@@ -204,7 +204,7 @@ public class ShopFacadeImpl implements ShopFacade {
     @Override
     public List<MachineSearch> searchMachinesByName(String machineName) {
         List<ShakepointMachine> machines = machineRepository.searchByName(machineName);
-        List<MachineSearch> machineSearches = new ArrayList<>();
+        List<MachineSearch> machineSearches = new ArrayList();
         for (ShakepointMachine m : machines){
             machineSearches.add(new MachineSearch(m.getId(), m.getName(), 0));
         }
