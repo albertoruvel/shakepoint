@@ -16,9 +16,8 @@
         <script type="text/javascript" src="<c:url value="/resources/bower_components/material-design-lite/material.min.js" />"></script>
         <script type="text/javascript" src="<c:url value="/resources/bower_components/bootstrap/js/bootstrap.min.js" />"></script>
         <script type="text/javascript" src="<c:url value="/resources/js/new-machine.js" />"></script>
-        <script async defer
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANxIdXZhBxl8lMldomKdXAmhheGeV_wNc&callback=initMap">
-        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8ovin2mZ_K03KLdQAANPUKT3F-GbPLCg&callback=initMap"
+            async defer></script>
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="<c:url value="/resources/bower_components/bootstrap/css/bootstrap.min.css" />">
         <link rel="stylesheet" href="<c:url value="/resources/bower_components/material-design-lite/material.min.css" />">
