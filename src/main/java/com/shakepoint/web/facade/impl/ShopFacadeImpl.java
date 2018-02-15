@@ -270,6 +270,7 @@ public class ShopFacadeImpl implements ShopFacade {
     public GetMachineProductsDTO getMachineProducts(String machineId, int pageNumber) {
         //get products from machine
         ShakepointMachine machine = machineRepository.getMachine(machineId);
+        log.info("Found machine...");
         //get statuses
         List<ShakepointMachineProductStatus> productsStatus = machine.getProducts();
         log.info(String.format("Number of products for machine %d", productsStatus.size()));
@@ -277,7 +278,10 @@ public class ShopFacadeImpl implements ShopFacade {
         for (ShakepointMachineProductStatus p : productsStatus) {
             products.add(p.getProduct());
         }
-        return new GetMachineProductsDTO(TransformationUtils.createProducts(products));
+        List<ProductDTO> productsDTO = TransformationUtils.createProducts(products);
+        log.info("Creating response...");
+
+        return new GetMachineProductsDTO(productsDTO);
 
 
         //List<ShakepointProduct> products = productRepository.getProducts(machineId, 1, ProductType.SIMPLE);
