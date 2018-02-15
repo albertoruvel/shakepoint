@@ -272,6 +272,7 @@ public class ShopFacadeImpl implements ShopFacade {
         ShakepointMachine machine = machineRepository.getMachine(machineId);
         //get statuses
         List<ShakepointMachineProductStatus> productsStatus = machine.getProducts();
+        log.info(String.format("Number of products for machine %d", productsStatus.size()));
         List<ShakepointProduct> products = new ArrayList();
         for (ShakepointMachineProductStatus p : productsStatus) {
             products.add(p.getProduct());
