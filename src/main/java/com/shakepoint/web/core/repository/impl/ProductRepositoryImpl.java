@@ -77,17 +77,16 @@ public class ProductRepositoryImpl implements ProductRepository {
         }
     }
 
-    private static final String GET_MACHINE_PRODUCTS_SIMPLE = "select p.id, p.name, p.description, p.logo_url as logoUrl, p.creation_date as creationDate, p.price, p.type as productType "
+    private static final String GET_MACHINE_PRODUCTS_SIMPLE = "select p.id, p.name, p.description, p.logo_url, p.price, p.type as productType "
             + "from product p "
             + "inner join machine_product m on p.id = m.product_id "
-            + "where m.machine_id = ? and p.type = ? ";
+            + "where m.machine_id = ?";
 
     @Override
     public List<ShakepointProduct> getProducts(String machineId, int pageNumber, ProductType type) {
         try {
             return em.createNativeQuery(GET_MACHINE_PRODUCTS_SIMPLE)
                     .setParameter(1, machineId)
-                    .setParameter(2, type.getValue())
                     .getResultList();
         } catch (Exception ex) {
             log.error("Could not get products", ex);

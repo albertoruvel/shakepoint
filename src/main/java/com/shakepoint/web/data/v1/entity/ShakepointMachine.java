@@ -42,6 +42,8 @@ public class ShakepointMachine {
     @OneToMany(mappedBy = "machine")
     private List<ShakepointMachineProductStatus> products;
 
+
+
     public ShakepointMachine() {
         id = UUID.randomUUID().toString();
     }

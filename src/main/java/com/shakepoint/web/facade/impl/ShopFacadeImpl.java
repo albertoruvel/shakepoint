@@ -259,7 +259,7 @@ public class ShopFacadeImpl implements ShopFacade {
 
     /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
     /*::	This function converts radians to decimal degrees						 :*/
-	/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
     private static double rad2deg(double rad) {
         return (rad * 180 / Math.PI);
     }
@@ -268,8 +268,19 @@ public class ShopFacadeImpl implements ShopFacade {
     //todo: convert to dto
     @Override
     public GetMachineProductsDTO getMachineProducts(String machineId, int pageNumber) {
-        List<ShakepointProduct> products = productRepository.getProducts(machineId, 1, ProductType.SIMPLE);
+        //get products from machine
+        ShakepointMachine machine = machineRepository.getMachine(machineId);
+        //get statuses
+        List<ShakepointMachineProductStatus> productsStatus = machine.getProducts();
+        List<ShakepointProduct> products = new ArrayList();
+        for (ShakepointMachineProductStatus p : productsStatus) {
+            products.add(p.getProduct());
+        }
         return new GetMachineProductsDTO(TransformationUtils.createProducts(products));
+
+
+        //List<ShakepointProduct> products = productRepository.getProducts(machineId, 1, ProductType.SIMPLE);
+        //return new GetMachineProductsDTO(TransformationUtils.createProducts(products));
     }
 
     @Override

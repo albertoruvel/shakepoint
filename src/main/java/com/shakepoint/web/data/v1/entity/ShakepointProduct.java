@@ -3,6 +3,7 @@ package com.shakepoint.web.data.v1.entity;
 import com.shakepoint.web.core.machine.ProductType;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "Product")
