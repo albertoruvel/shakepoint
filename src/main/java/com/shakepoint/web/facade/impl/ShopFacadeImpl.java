@@ -268,11 +268,7 @@ public class ShopFacadeImpl implements ShopFacade {
     //todo: convert to dto
     @Override
     public GetMachineProductsDTO getMachineProducts(String machineId, int pageNumber) {
-        //get products from machine
-        ShakepointMachine machine = machineRepository.getMachine(machineId);
-        log.info("Found machine...");
-        //get statuses
-        List<ShakepointMachineProductStatus> productsStatus = machine.getProducts();
+        List<ShakepointMachineProductStatus> productsStatus = machineRepository.getMachineProducts(machineId);
         log.info(String.format("Number of products for machine %d", productsStatus.size()));
         List<ShakepointProduct> products = new ArrayList();
         for (ShakepointMachineProductStatus p : productsStatus) {
