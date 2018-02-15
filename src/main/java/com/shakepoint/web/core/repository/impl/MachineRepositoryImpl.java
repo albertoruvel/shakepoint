@@ -104,7 +104,7 @@ public class MachineRepositoryImpl implements MachineRepository {
     @Override
     public List<ShakepointMachine> searchByName(String machineName) {
         try{
-            return entityManager.createQuery("SELECT m FROM Machine m WHERE m.name LIKES :machineName")
+            return entityManager.createQuery("SELECT m FROM Machine m WHERE m.name LIKE :machineName")
                     .setParameter("machineName", "%" + machineName + "%")
                     .getResultList();
         }catch(Exception ex){
