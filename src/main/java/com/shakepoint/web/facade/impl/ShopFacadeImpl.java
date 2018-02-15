@@ -227,7 +227,7 @@ public class ShopFacadeImpl implements ShopFacade {
         ShakepointMachine machine = machines.get(currentIndex);
         search.setMachineId(machine.getId());
         search.setMachineName(machine.getName());
-
+        search.setDistance(distance);
         return search;
     }
 
