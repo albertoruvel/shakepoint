@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.math.BigInteger;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -98,6 +99,17 @@ public class MachineRepositoryImpl implements MachineRepository {
             return false;
         }
 
+    }
+
+    @Override
+    public List<ShakepointMachine> searchByName(String machineName) {
+        try{
+            return entityManager.createQuery("SELECT m FROM Machine m WHERE m.name LIKES :machineName")
+                    .setParameter("machineName", "%" + machineName + "%")
+                    .getResultList();
+        }catch(Exception ex){
+            return Collections.emptyList();
+        }
     }
 
     private static final String GET_ALERTED_MACHINES_COUNT = "select count(*) from machine m "

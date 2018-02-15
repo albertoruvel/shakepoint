@@ -20,5 +20,7 @@ public interface ShopFacade {
 	 public List<UserPurchaseResponse> getUserPurchases(Principal p, int pageNumber);
 	 public UserProfileResponse getUserProfile(Principal principal);
 	 public UserProfileResponse saveProfile(Principal p, UserProfileRequest request);
-	 //public List<Combo> getMachineCombos(String machineId, int pageNumber);
+
+	public List<MachineSearch> searchMachinesByName(String machineName);
+	//public List<Combo> getMachineCombos(String machineId, int pageNumber);
 }

@@ -7,8 +7,14 @@ public class MachineSearch {
 
 	public MachineSearch() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
+
+	public MachineSearch(String machineId, String machineName, double distance) {
+		this.machineId = machineId;
+		this.machineName = machineName;
+		this.distance = distance;
+	}
+
 	public String getMachineId() {
 		return machineId;
 	}

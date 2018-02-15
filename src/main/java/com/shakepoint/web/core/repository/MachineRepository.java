@@ -30,4 +30,6 @@ public interface MachineRepository {
     public List<ShakepointMachine> getTechnicianMachines(String id, int pageNumber);
 
     public boolean isMachineAlerted(String id);
+
+    public List<ShakepointMachine> searchByName(String machineName);
 }

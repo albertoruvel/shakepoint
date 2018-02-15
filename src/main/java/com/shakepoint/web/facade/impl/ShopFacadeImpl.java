@@ -72,6 +72,8 @@ public class ShopFacadeImpl implements ShopFacade {
         return getUserProfile(p);
     }
 
+
+
     @Override
     public List<UserPurchaseResponse> getUserPurchases(Principal p, int pageNumber) {
         List<UserPurchaseResponse> response = null;
@@ -199,6 +201,15 @@ public class ShopFacadeImpl implements ShopFacade {
      * }
      **/
 
+    @Override
+    public List<MachineSearch> searchMachinesByName(String machineName) {
+        List<ShakepointMachine> machines = machineRepository.searchByName(machineName);
+        List<MachineSearch> machineSearches = new ArrayList<>();
+        for (ShakepointMachine m : machines){
+            machineSearches.add(new MachineSearch(m.getId(), m.getName(), 0));
+        }
+        return machineSearches;
+    }
 
     //todo: convert to dto
     @Override

@@ -35,6 +35,11 @@ public class ShopRestController {
         return shopFacade.searchMachine(longitude, latitude);
     }
 
+    @RequestMapping(value = "/search_machine_by_name", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
+    public @ResponseBody List<MachineSearch> searchByName(@RequestParam(value ="name")String machineName){
+        return shopFacade.searchMachinesByName(machineName);
+    }
+
     //todo: convert to dto
     @RequestMapping(value = "/get_products", method = RequestMethod.GET,
             produces = "application/json")
