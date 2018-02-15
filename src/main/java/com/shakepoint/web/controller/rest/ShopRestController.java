@@ -7,10 +7,7 @@ import com.shakepoint.web.data.v1.dto.rest.request.PurchaseEventRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.PurchaseRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.UserProfileRequest;
 import com.shakepoint.web.data.dto.res.rest.*;
-import com.shakepoint.web.data.v1.dto.rest.response.PurchaseCodeResponse;
-import com.shakepoint.web.data.v1.dto.rest.response.PurchaseQRCode;
-import com.shakepoint.web.data.v1.dto.rest.response.MachineSearch;
-import com.shakepoint.web.data.v1.dto.rest.response.PurchaseResponse;
+import com.shakepoint.web.data.v1.dto.rest.response.*;
 import com.shakepoint.web.data.v1.entity.ShakepointProduct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
@@ -43,8 +40,8 @@ public class ShopRestController {
             produces = "application/json")
     public
     @ResponseBody
-    List<ShakepointProduct> getMachineProducts(@RequestParam(value = "page_number", required = false, defaultValue = "1") int pageNumber,
-                                               @RequestParam(value = "machine_id", required = true) String machineId) {
+    List<ProductDTO> getMachineProducts(@RequestParam(value = "page_number", required = false, defaultValue = "1") int pageNumber,
+                                        @RequestParam(value = "machine_id", required = true) String machineId) {
         return shopFacade.getMachineProducts(machineId, pageNumber);
     }
 

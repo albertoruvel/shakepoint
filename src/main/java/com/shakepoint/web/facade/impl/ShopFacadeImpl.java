@@ -17,10 +17,7 @@ import com.shakepoint.web.data.v1.dto.rest.request.PurchaseEventRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.PurchaseRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.UserProfileRequest;
 import com.shakepoint.web.data.dto.res.rest.*;
-import com.shakepoint.web.data.v1.dto.rest.response.MachineSearch;
-import com.shakepoint.web.data.v1.dto.rest.response.PurchaseCodeResponse;
-import com.shakepoint.web.data.v1.dto.rest.response.PurchaseQRCode;
-import com.shakepoint.web.data.v1.dto.rest.response.PurchaseResponse;
+import com.shakepoint.web.data.v1.dto.rest.response.*;
 import com.shakepoint.web.data.v1.entity.*;
 import com.shakepoint.web.util.TransformationUtils;
 import org.apache.log4j.Logger;
@@ -270,8 +267,9 @@ public class ShopFacadeImpl implements ShopFacade {
 
     //todo: convert to dto
     @Override
-    public List<ShakepointProduct> getMachineProducts(String machineId, int pageNumber) {
-        return productRepository.getProducts(machineId, pageNumber, ProductType.SIMPLE);
+    public List<ProductDTO> getMachineProducts(String machineId, int pageNumber) {
+        List<ShakepointProduct> products = productRepository.getProducts(machineId, pageNumber, ProductType.SIMPLE);
+        return TransformationUtils.createProducts(products);
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.shakepoint.web.data.v1.dto.rest.request.SignupRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.UserProfileRequest;
 import com.shakepoint.web.data.v1.dto.mvc.response.Technician;
 import com.shakepoint.web.data.security.SecurityRole;
+import com.shakepoint.web.data.v1.dto.rest.response.ProductDTO;
 import com.shakepoint.web.data.v1.dto.rest.response.PurchaseCodeResponse;
 import com.shakepoint.web.data.v1.dto.rest.response.SimpleMachineProduct;
 import com.shakepoint.web.data.v1.entity.*;
@@ -182,9 +183,9 @@ public class TransformationUtils {
                 userProfile.getHeight(), getTotalPurchases(userProfile.getUser().getPurchases()), userProfile.getUser().getEmail());
     }
 
-    public static double getTotalPurchases(List<ShakepointPurchase> purchases){
+    public static double getTotalPurchases(List<ShakepointPurchase> purchases) {
         double total = 0;
-        for (ShakepointPurchase p : purchases){
+        for (ShakepointPurchase p : purchases) {
             total += p.getTotal();
         }
         return total;
@@ -192,10 +193,18 @@ public class TransformationUtils {
 
     public static List<TechnicianMachine> createTechnicianMachinesList(List<ShakepointMachine> machines, MachineRepository instance) {
         List<TechnicianMachine> dtos = new ArrayList();
-        for (ShakepointMachine machine : machines){
+        for (ShakepointMachine machine : machines) {
             dtos.add(new TechnicianMachine(machine.getId(), machine.getName(), machine.getDescription(), instance.isMachineAlerted(machine.getId()),
                     instance.getMachineProducts(machine.getId()).size(), 6));
         }
         return dtos;
+    }
+
+    public static List<ProductDTO> createProducts(List<ShakepointProduct> products) {
+        List<ProductDTO> productsList = new ArrayList();
+        for (ShakepointProduct p : products) {
+            productsList.add(new ProductDTO(p.getId(), p.getName(), p.getPrice(), p.getDescription(), p.getLogoUrl()));
+        }
+        return productsList;
     }
 }
