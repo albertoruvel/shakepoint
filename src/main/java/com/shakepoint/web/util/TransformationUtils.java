@@ -200,9 +200,9 @@ public class TransformationUtils {
         return dtos;
     }
 
-    public static List<ProductDTO> createProducts(List<ShakepointProduct> products) {
+    public static List<ProductDTO> createProducts(List<ShakepointProduct> entities) {
         List<ProductDTO> productsList = new ArrayList();
-        for (ShakepointProduct p : products) {
+        for (ShakepointProduct p : entities) {
             productsList.add(new ProductDTO(p.getId(), p.getName(), p.getPrice(), p.getDescription(), p.getLogoUrl()));
         }
         return productsList;

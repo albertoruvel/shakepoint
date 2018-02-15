@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface ShopFacade {
 	 public MachineSearch searchMachine(double longitude, double latitude);
-	 public List<ProductDTO> getMachineProducts(String machineId, int pageNumber);
+	 public GetMachineProductsDTO getMachineProducts(String machineId, int pageNumber);
 	 public PurchaseResponse requestPurchase(PurchaseRequest request, Principal principal);
 	 public List<PurchaseCodeResponse> getActiveQrCodes(Principal p, String machineId, int pageNumber);
 	 public PurchaseQRCode confirmPurchase(PurchaseEventRequest request, Principal p);

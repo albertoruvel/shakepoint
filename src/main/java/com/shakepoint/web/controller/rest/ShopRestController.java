@@ -40,7 +40,7 @@ public class ShopRestController {
             produces = "application/json")
     public
     @ResponseBody
-    List<ProductDTO> getMachineProducts(@RequestParam(value = "page_number", required = false, defaultValue = "1") int pageNumber,
+    GetMachineProductsDTO getMachineProducts(@RequestParam(value = "page_number", required = false, defaultValue = "1") int pageNumber,
                                         @RequestParam(value = "machine_id", required = true) String machineId) {
         return shopFacade.getMachineProducts(machineId, pageNumber);
     }

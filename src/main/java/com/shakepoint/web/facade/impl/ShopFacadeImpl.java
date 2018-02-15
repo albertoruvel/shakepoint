@@ -267,9 +267,9 @@ public class ShopFacadeImpl implements ShopFacade {
 
     //todo: convert to dto
     @Override
-    public List<ProductDTO> getMachineProducts(String machineId, int pageNumber) {
+    public GetMachineProductsDTO getMachineProducts(String machineId, int pageNumber) {
         List<ShakepointProduct> products = productRepository.getProducts(machineId, pageNumber, ProductType.SIMPLE);
-        return TransformationUtils.createProducts(products);
+        return new GetMachineProductsDTO(TransformationUtils.createProducts(products));
     }
 
     @Override
