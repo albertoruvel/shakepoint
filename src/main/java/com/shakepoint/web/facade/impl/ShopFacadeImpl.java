@@ -211,6 +211,13 @@ public class ShopFacadeImpl implements ShopFacade {
         return machineSearches;
     }
 
+    @Override
+    public ProductDTO getProductDetails(String productId) {
+        ShakepointProduct product = productRepository.getProduct(productId);
+        ProductDTO dto = new ProductDTO(product.getId(), product.getName(), product.getPrice(), product.getDescription(), product.getLogoUrl());
+        return dto;
+    }
+
     //todo: convert to dto
     @Override
     public MachineSearch searchMachine(double longitude, double latitude) {

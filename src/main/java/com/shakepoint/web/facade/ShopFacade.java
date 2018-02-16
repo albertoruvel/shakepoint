@@ -23,4 +23,5 @@ public interface ShopFacade {
 
 	public List<MachineSearch> searchMachinesByName(String machineName);
 	//public List<Combo> getMachineCombos(String machineId, int pageNumber);
+	public ProductDTO getProductDetails(String productId);
 }
