@@ -53,10 +53,10 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
             + "where p.user_id = ?";
 
     @Override
-    public List<UserPurchaseResponse> getUserPurchases(String userId, int pageNumber) {
+    public List<ShakepointPurchase> getUserPurchases(String userId, int pageNumber) {
         try {
-            return em.createNativeQuery(GET_USER_PURCHASES)
-                    .setParameter(1, userId).getResultList();
+            return em.createQuery("SELECT p FROM Purchase p WHERE p.user.id = :id")
+                    .setParameter("id", userId).getResultList();
         } catch (Exception ex) {
             log.error("Could not get user purchases", ex);
             return null;

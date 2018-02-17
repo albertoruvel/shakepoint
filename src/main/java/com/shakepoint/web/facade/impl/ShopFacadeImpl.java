@@ -78,7 +78,8 @@ public class ShopFacadeImpl implements ShopFacade {
     public List<UserPurchaseResponse> getUserPurchases(Principal p, int pageNumber) {
         List<UserPurchaseResponse> response = null;
         final String userId = userRepository.getUserId(p.getName());
-        response = purchaseRepository.getUserPurchases(userId, pageNumber);
+        List<ShakepointPurchase> purchases = purchaseRepository.getUserPurchases(userId, pageNumber);
+        response = TransformationUtils.createPurchases(purchases);
         return response;
     }
 

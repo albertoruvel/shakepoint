@@ -4,6 +4,7 @@ import com.shakepoint.web.core.machine.ProductType;
 import com.shakepoint.web.core.machine.PurchaseStatus;
 import com.shakepoint.web.core.repository.MachineRepository;
 import com.shakepoint.web.data.dto.res.rest.UserProfileResponse;
+import com.shakepoint.web.data.dto.res.rest.UserPurchaseResponse;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewProductRequest;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewTechnicianRequest;
 import com.shakepoint.web.data.v1.dto.mvc.response.SimpleMachine;
@@ -206,5 +207,14 @@ public class TransformationUtils {
             productsList.add(new ProductDTO(p.getId(), p.getName(), p.getPrice(), p.getDescription(), p.getLogoUrl()));
         }
         return productsList;
+    }
+
+    public static List<UserPurchaseResponse> createPurchases(List<ShakepointPurchase> purchases) {
+        List<UserPurchaseResponse> ps = new ArrayList();
+
+        for (ShakepointPurchase p : purchases){
+            ps.add(new UserPurchaseResponse(p.getId(), p.getTotal(), p.getProduct().getName(), p.getMachine().getName(), p.getPurchaseDate()));
+        }
+        return ps;
     }
 }
