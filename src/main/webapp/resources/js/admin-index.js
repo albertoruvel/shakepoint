@@ -70,14 +70,14 @@ function AdminIndexViewModel(){
 	self.deleteMediaContent = function(){
 	if(confirm('Seguro que desea eliminar todo el contenido?') == true){
 	    $.ajax({
-                		url: '/admin/delete_media_content',
+                		url: 'delete_s3_content',
                 		type: 'POST',
                 		headers: headers,
                 		success: function(response){
                 		    alert('Los datos se eliminaran en un momento\n' + response)
                 		},
                 		error: function(error){
-
+                            alert("No se ha podido completar la peticion, intente de nuevo");
                 		}
                 	});
 	}

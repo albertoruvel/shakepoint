@@ -297,6 +297,7 @@ public class AdminFacadeImpl implements AdminFacade {
     @Override
     public void deleteMediaContent() {
         //send a jms message to delete everything on s3
+        log.info("Will delete S3 content, sending JMS message to connector....");
         jmsHandler.send(DELETE_MEDIA_CONTENT_QUEUE_NAME, "Do it!");
     }
 

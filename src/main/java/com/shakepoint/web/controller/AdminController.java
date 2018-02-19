@@ -46,7 +46,7 @@ public class AdminController {
         return new ModelAndView("admin/index");
     }
 
-    @RequestMapping(value = "/delete_media_content", method = RequestMethod.POST)
+    @RequestMapping(value = "/delete_s3_content", method = RequestMethod.POST)
     public void deleteMediaContent(){
         adminFacade.deleteMediaContent();
     }
