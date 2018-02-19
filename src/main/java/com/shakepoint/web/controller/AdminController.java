@@ -47,8 +47,8 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/delete_s3_content", method = RequestMethod.POST)
-    public void deleteMediaContent(){
-        adminFacade.deleteMediaContent();
+    public String deleteMediaContent(){
+        return adminFacade.deleteMediaContent();
     }
     
     @RequestMapping(value="/get_index_content", method=RequestMethod.GET)
