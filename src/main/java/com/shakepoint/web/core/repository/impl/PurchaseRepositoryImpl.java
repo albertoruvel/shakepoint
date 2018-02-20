@@ -70,11 +70,15 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
     }
 
     public List<ShakepointPurchase> getAvailablePurchasesForMachine(String productId, String machineId) {
-        return em.createQuery("SELECT p FROM Purchase p WHERE p.machine.id = :machineId AND p.product.id = :productId AND p.status = :status")
-                .setParameter("machineId", machineId)
-                .setParameter("productId", productId)
-                .setParameter("status", PurchaseStatus.PRE_AUTH.getValue())
-                .getResultList();
+        try{
+            return em.createQuery("SELECT p FROM Purchase p WHERE p.machine.id = :machineId AND p.product.id = :productId AND p.status = :status")
+                    .setParameter("machineId", machineId)
+                    .setParameter("productId", productId)
+                    .setParameter("status", PurchaseStatus.PRE_AUTH.getValue())
+                    .getResultList();
+        }catch(Exception ex){
+            return Collections.emptyList(); 
+        }
     }
 
     private static final String CREATE_QR_CODE = "insert into purchase_qrcode(id, creation_date, purchase_id, image_url, cashed) values(?, ?, ?, ?, ?)";
