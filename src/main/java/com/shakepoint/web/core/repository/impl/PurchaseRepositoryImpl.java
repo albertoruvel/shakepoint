@@ -77,7 +77,7 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
                     .setParameter("status", PurchaseStatus.PRE_AUTH.getValue())
                     .getResultList();
         }catch(Exception ex){
-            return Collections.emptyList(); 
+            return Collections.emptyList();
         }
     }
 
