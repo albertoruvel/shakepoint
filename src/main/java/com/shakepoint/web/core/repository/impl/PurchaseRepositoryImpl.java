@@ -71,12 +71,14 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
 
     public List<ShakepointPurchase> getAvailablePurchasesForMachine(String productId, String machineId) {
         try{
-            return em.createQuery("SELECT p FROM Purchase p WHERE p.machine.id = :machineId AND p.product.id = :productId AND p.status = :status")
+            List<ShakepointPurchase>list = em.createQuery("SELECT p FROM Purchase p WHERE p.machine.id = :machineId AND p.product.id = :productId AND p.status = :status")
                     .setParameter("machineId", machineId)
                     .setParameter("productId", productId)
                     .setParameter("status", PurchaseStatus.PRE_AUTH)
                     .getResultList();
+            return list;
         }catch(Exception ex){
+            log.error("Could not get available purchase for machine", ex);
             return Collections.emptyList();
         }
     }

@@ -155,6 +155,7 @@ public class ShopFacadeImpl implements ShopFacade {
     public AvailablePurchaseResponse getAvailablePurchaseForMachine(String productId, String machineId) {
         //get available products
         List<ShakepointPurchase> purchases = purchaseRepository.getAvailablePurchasesForMachine(productId, machineId);
+        log.info(String.format("Got a total of %d available purchases", purchases.size()));
         if (purchases.isEmpty()) {
             return new AvailablePurchaseResponse(null);
         } else {
