@@ -70,7 +70,7 @@ public class ShopRestController {
     }
 
     @RequestMapping(value = "/getAvailablePurchaseForMachine", method = RequestMethod.GET, produces = "applicaiton/json")
-    public AvailablePurchaseResponse getAvailablePurchaseForMachine(@RequestParam(value = "productId") String productId, @RequestParam(value = "machineId") String machineId){
+    public @ResponseBody AvailablePurchaseResponse getAvailablePurchaseForMachine(@RequestParam(value = "productId") String productId, @RequestParam(value = "machineId") String machineId){
         return shopFacade.getAvailablePurchaseForMachine(productId, machineId);
     }
 
