@@ -36,6 +36,9 @@ public class ShakepointPurchase {
     @JoinColumn(name = "user_id")
     private ShakepointUser user;
 
+    @Column(name = "qr_image_url")
+    private String qrCodeUrl;
+
     public ShakepointPurchase() {
         id = UUID.randomUUID().toString();
     }
@@ -102,5 +105,13 @@ public class ShakepointPurchase {
 
     public void setProduct(ShakepointProduct product) {
         this.product = product;
+    }
+
+    public String getQrCodeUrl() {
+        return qrCodeUrl;
+    }
+
+    public void setQrCodeUrl(String qrCodeUrl) {
+        this.qrCodeUrl = qrCodeUrl;
     }
 }

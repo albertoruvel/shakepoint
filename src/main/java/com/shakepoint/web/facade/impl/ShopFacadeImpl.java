@@ -6,14 +6,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.shakepoint.email.model.Email;
 import com.shakepoint.web.core.email.EmailAsyncSender;
 import com.shakepoint.web.core.email.Template;
 import com.shakepoint.web.core.machine.ProductType;
+import com.shakepoint.web.core.machine.PurchaseStatus;
 import com.shakepoint.web.core.repository.MachineRepository;
 import com.shakepoint.web.core.repository.ProductRepository;
 import com.shakepoint.web.core.repository.PurchaseRepository;
 import com.shakepoint.web.core.repository.UserRepository;
-import com.shakepoint.web.data.v1.dto.rest.request.PurchaseEventRequest;
+import com.shakepoint.web.data.v1.dto.rest.request.ConfirmPurchaseRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.PurchaseRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.UserProfileRequest;
 import com.shakepoint.web.data.dto.res.rest.*;
@@ -46,6 +48,7 @@ public class ShopFacadeImpl implements ShopFacade {
     private EmailAsyncSender emailSender;
 
     private final Logger log = Logger.getLogger(getClass());
+    private static final String EMAIL_SENDER_QUEUE_NAME = "shakepoint.integration.email.send";
 
 
     @Override
@@ -73,7 +76,6 @@ public class ShopFacadeImpl implements ShopFacade {
     }
 
 
-
     @Override
     public List<UserPurchaseResponse> getUserPurchases(Principal p, int pageNumber) {
         List<UserPurchaseResponse> response = null;
@@ -84,97 +86,28 @@ public class ShopFacadeImpl implements ShopFacade {
     }
 
     @Override
-    public PurchaseQRCode confirmPurchase(PurchaseEventRequest request, Principal p) {
+    public PurchaseQRCode confirmPurchase(ConfirmPurchaseRequest request, Principal p) {
         PurchaseQRCode code = null;
-        //update the purchase
-
-        //validates request
-        purchaseRepository.confirmPurchase(request.getReference(), request.getId());
-
-        //code = purchaseRepository.getCode(request.getReference());
-
-        return code;
-    }
-
-    @Override
-    public PurchaseResponse requestPurchase(PurchaseRequest request, Principal principal) {
-        PurchaseResponse response = new PurchaseResponse();
-        final ShakepointUser user = userRepository.getUserByEmail(principal.getName());
-        ShakepointPurchase purchase = null;
-        ShakepointProduct product = null;
-        ShakepointPurchaseQRCode code = null;
-        String qrCode = "";
-        String resourcesQrCode = "";
-        List<ShakepointProduct> comboProducts = null;
-
-
-        if (request == null) {
-            response.setMessage("There is no purchase content");
-            response.setPurchaseId(null);
-            response.setSuccess(false);
-            response.setTotal(0.0);
+        ShakepointPurchase purchase = purchaseRepository.getPurchase(request.getPurchaseId());
+        ShakepointUser user;
+        if (purchase == null) {
+            return new PurchaseQRCode(null);
         } else {
-            final List<String> productNames = new ArrayList<String>();
+            user = userRepository.getUserByEmail(p.getName());
 
-            //create a new purchase
-            purchase = TransformationUtils.getPurchase(request);
             purchase.setUser(user);
-            //set user id
+            purchase.setStatus(PurchaseStatus.AUTHORIZED);
+            purchase.setReference("${paymentMethodReference}");
+            purchaseRepository.update(purchase);
+            //send an email
+            List<String> productNames = new ArrayList();
+            productNames.add(purchase.getProduct().getName());
+            Map<String, Object> args = new HashMap();
+            args.put("productNames", productNames);
+            emailSender.sendEmail(user.getEmail(), Template.SUCCESSFULL_PURCHASE, args);
 
-            //check if the product is a combo
-            product = productRepository.getProduct(request.getProductId());
-            ShakepointMachine machine = machineRepository.getMachine(request.getMachineId());
-
-            purchase.setMachine(machine);
-            purchase.setProduct(product);
-            purchaseRepository.createPurchase(purchase);
-            if (product.getType() == ProductType.COMBO) {
-                //get combo products
-                comboProducts = productRepository.getComboProducts(product.getId(), 1);
-                //iterate to create a qr code with each product
-                for (ShakepointProduct p : comboProducts) {
-                    //get a different qr code
-                    code = TransformationUtils.getQrCode(purchase);
-                    code.setPurchase(purchase);
-                    //create the code image
-                    qrCode = qrCodeCreator.createQRCode(purchase.getId(), purchase.getMachine().getId(),
-                            p.getId(), code.getId());
-                    //add qr code to resources folder
-                    //TODO: add qr url from code entity
-                    //update qr code
-                    code.setImageUrl(resourcesQrCode);
-                    //add qr code
-                    purchaseRepository.createQrCode(code);
-                    productNames.add(p.getDescription());
-                }
-                //create response
-                response = getPurchaseResponse("Purchase created as pre-authorized purchase", purchase.getId(),
-                        true, purchase.getTotal(), "N/A");
-            } else {
-                //create the qr code
-                code = TransformationUtils.getQrCode(purchase);
-                qrCode = qrCodeCreator.createQRCode(purchase.getId(), purchase.getMachine().getId(),
-                        purchase.getProduct().getId(), code.getId());
-                //add qr code to resources folder (MAPPED TO A URL BY THIS HOST)
-                //TODO: add url from code entity
-                //update qr code
-                code.setImageUrl(resourcesQrCode);
-                code.setPurchase(purchase);
-                //addd qr cocde
-                purchaseRepository.createQrCode(code);
-                //create a purchase response
-                response = getPurchaseResponse("Purchase created as pre-authorized purchase", purchase.getId(),
-                        true, purchase.getTotal(), resourcesQrCode);
-                productNames.add(product.getDescription());
-            }
-            //Send successfully purchase email
-            if (!productNames.isEmpty()) {
-                final Map<String, Object> params = new HashMap<String, Object>(1);
-                params.put("productNames", productNames);
-                emailSender.sendEmail(principal.getName(), Template.SUCCESSFULL_PURCHASE, params);
-            }
+            return new PurchaseQRCode(purchase.getQrCodeUrl());
         }
-        return response;
     }
 
     private PurchaseResponse getPurchaseResponse(String message, String purchaseId, boolean success, double total, String qrCodeUrl) {
@@ -206,7 +139,7 @@ public class ShopFacadeImpl implements ShopFacade {
     public List<MachineSearch> searchMachinesByName(String machineName) {
         List<ShakepointMachine> machines = machineRepository.searchByName(machineName);
         List<MachineSearch> machineSearches = new ArrayList();
-        for (ShakepointMachine m : machines){
+        for (ShakepointMachine m : machines) {
             machineSearches.add(new MachineSearch(m.getId(), m.getName(), 0));
         }
         return machineSearches;

@@ -19,4 +19,6 @@ public interface PurchaseRepository {
 	public void confirmPurchase(String purchaseId, String reference);
 	public void createQrCode(ShakepointPurchaseQRCode code);
 	public List<ShakepointPurchase> getUserPurchases(String userId, int pageNumber);
+
+	public void update(ShakepointPurchase purchase);
 }

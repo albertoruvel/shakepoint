@@ -63,6 +63,12 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Override
+    public void update(ShakepointPurchase purchase) {
+        em.merge(purchase);
+    }
+
     private static final String CREATE_QR_CODE = "insert into purchase_qrcode(id, creation_date, purchase_id, image_url, cashed) values(?, ?, ?, ?, ?)";
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -80,7 +86,7 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
     public void confirmPurchase(String purchaseId, String reference) {
         try {
             em.createQuery("UPDATE Purchase p SET p.status = :status, p.reference = :ref WHERE p.id = :id")
-                    .setParameter("status", PurchaseStatus.PAID.getValue())
+                    .setParameter("status", PurchaseStatus.AUTHORIZED.getValue())
                     .setParameter("ref", reference)
                     .setParameter("id", purchaseId)
                     .executeUpdate();

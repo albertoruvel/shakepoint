@@ -81,15 +81,6 @@ public class TransformationUtils {
         return machine;
     }
 
-    public static ShakepointPurchase getPurchase(PurchaseRequest request) {
-        ShakepointPurchase purchase = new ShakepointPurchase();
-        purchase.setPurchaseDate(ShakeUtils.DATE_FORMAT.format(new Date()));
-        purchase.setStatus(PurchaseStatus.PRE_AUTHORIZED);
-        purchase.setTotal(request.getPrice());
-        purchase.setReference(""); //TODO: CHECK REFERENCE HERE
-        return purchase;
-    }
-
     public static ShakepointUserProfile getProfile(String userId, UserProfileRequest request) {
         ShakepointUserProfile profile = new ShakepointUserProfile();
         profile.setAge(request.getAge());

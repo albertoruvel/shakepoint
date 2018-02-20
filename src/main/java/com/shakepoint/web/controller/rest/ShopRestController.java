@@ -3,12 +3,11 @@ package com.shakepoint.web.controller.rest;
 import java.security.Principal;
 import java.util.List;
 
-import com.shakepoint.web.data.v1.dto.rest.request.PurchaseEventRequest;
+import com.shakepoint.web.data.v1.dto.rest.request.ConfirmPurchaseRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.PurchaseRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.UserProfileRequest;
 import com.shakepoint.web.data.dto.res.rest.*;
 import com.shakepoint.web.data.v1.dto.rest.response.*;
-import com.shakepoint.web.data.v1.entity.ShakepointProduct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,13 +54,6 @@ public class ShopRestController {
         return shopFacade.getMachineProducts(machineId, pageNumber);
     }
 
-    @RequestMapping(value = "/requestBuy", method = RequestMethod.POST,
-            produces = "application/json", consumes = "application/json")
-    public
-    @ResponseBody
-    PurchaseResponse requestPurchase(@RequestBody PurchaseRequest request, @AuthenticationPrincipal Principal p) {
-        return shopFacade.requestPurchase(request, p);
-    }
 
     @RequestMapping(value = "/getActiveCodes", method = RequestMethod.GET,
             produces = "application/json")
@@ -73,7 +65,7 @@ public class ShopRestController {
 
     @RequestMapping(value = "/confirmPurchase", method = RequestMethod.POST,
             produces = "application/json", consumes = "application/json")
-    public PurchaseQRCode confirmPurchase(@RequestBody PurchaseEventRequest request, @AuthenticationPrincipal Principal p) {
+    public PurchaseQRCode confirmPurchase(@RequestBody ConfirmPurchaseRequest request, @AuthenticationPrincipal Principal p) {
         return shopFacade.confirmPurchase(request, p);
     }
 
