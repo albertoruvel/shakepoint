@@ -152,6 +152,17 @@ public class ShopFacadeImpl implements ShopFacade {
         return dto;
     }
 
+    public AvailablePurchaseResponse getAvailablePurchaseForMachine(String productId, String machineId) {
+        //get available products
+        List<ShakepointPurchase> purchases = purchaseRepository.getAvailablePurchasesForMachine(productId, machineId);
+        if (purchases.isEmpty()) {
+            return new AvailablePurchaseResponse(null);
+        } else {
+            //get the first one
+            return new AvailablePurchaseResponse(purchases.get(0).getId());
+        }
+    }
+
     //todo: convert to dto
     @Override
     public MachineSearch searchMachine(double longitude, double latitude) {

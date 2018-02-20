@@ -29,4 +29,6 @@ public interface ShopFacade {
 
     //public List<Combo> getMachineCombos(String machineId, int pageNumber);
     public ProductDTO getProductDetails(String productId);
+
+    public AvailablePurchaseResponse getAvailablePurchaseForMachine(String productId, String machineId);
 }

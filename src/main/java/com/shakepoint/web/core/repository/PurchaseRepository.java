@@ -21,4 +21,6 @@ public interface PurchaseRepository {
 	public List<ShakepointPurchase> getUserPurchases(String userId, int pageNumber);
 
 	public void update(ShakepointPurchase purchase);
+
+	List<ShakepointPurchase> getAvailablePurchasesForMachine(String productId, String machineId);
 }

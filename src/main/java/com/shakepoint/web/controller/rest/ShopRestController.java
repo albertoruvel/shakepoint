@@ -69,6 +69,13 @@ public class ShopRestController {
         return shopFacade.confirmPurchase(request, p);
     }
 
+    @RequestMapping(value = "/getAvailablePurchaseForMachine", method = RequestMethod.GET,
+            produces = "application/json", consumes = "applicaiton/json")
+    public AvailablePurchaseResponse getAvailablePurchaseForMachine(@RequestParam(value = "productId") String productId, @RequestParam(value = "machineiD") String machineId){
+        return shopFacade.getAvailablePurchaseForMachine(productId, machineId);
+    }
+
+
     @RequestMapping(value = "/getPurchases", method = RequestMethod.GET,
             produces = "application/json")
     public List<UserPurchaseResponse> getUserPurchases(@AuthenticationPrincipal Principal p,
