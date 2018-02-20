@@ -74,7 +74,7 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
             return em.createQuery("SELECT p FROM Purchase p WHERE p.machine.id = :machineId AND p.product.id = :productId AND p.status = :status")
                     .setParameter("machineId", machineId)
                     .setParameter("productId", productId)
-                    .setParameter("status", PurchaseStatus.PRE_AUTH.getValue())
+                    .setParameter("status", PurchaseStatus.PRE_AUTH)
                     .getResultList();
         }catch(Exception ex){
             return Collections.emptyList();
