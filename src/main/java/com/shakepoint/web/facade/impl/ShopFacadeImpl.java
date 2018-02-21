@@ -6,17 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.shakepoint.email.model.Email;
 import com.shakepoint.web.core.email.EmailAsyncSender;
 import com.shakepoint.web.core.email.Template;
-import com.shakepoint.web.core.machine.ProductType;
 import com.shakepoint.web.core.machine.PurchaseStatus;
 import com.shakepoint.web.core.repository.MachineRepository;
 import com.shakepoint.web.core.repository.ProductRepository;
 import com.shakepoint.web.core.repository.PurchaseRepository;
 import com.shakepoint.web.core.repository.UserRepository;
 import com.shakepoint.web.data.v1.dto.rest.request.ConfirmPurchaseRequest;
-import com.shakepoint.web.data.v1.dto.rest.request.PurchaseRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.UserProfileRequest;
 import com.shakepoint.web.data.dto.res.rest.*;
 import com.shakepoint.web.data.v1.dto.rest.response.*;
@@ -78,10 +75,9 @@ public class ShopFacadeImpl implements ShopFacade {
 
     @Override
     public List<UserPurchaseResponse> getUserPurchases(Principal p, int pageNumber) {
-        List<UserPurchaseResponse> response = null;
         final String userId = userRepository.getUserId(p.getName());
         List<ShakepointPurchase> purchases = purchaseRepository.getUserPurchases(userId, pageNumber);
-        response = TransformationUtils.createPurchases(purchases);
+        List<UserPurchaseResponse> response = TransformationUtils.createPurchases(purchases);
         return response;
     }
 
@@ -252,7 +248,7 @@ public class ShopFacadeImpl implements ShopFacade {
     public List<PurchaseCodeResponse> getActiveQrCodes(Principal p, String machineId, int pageNumber) {
         //get user id
         String userId = userRepository.getUserId(p.getName());
-        List<PurchaseCodeResponse> page = TransformationUtils.createPurchaseCodes(purchaseRepository.getActiveCodes(userId, machineId, pageNumber));
+        List<PurchaseCodeResponse> page = TransformationUtils.createPurchaseCodes(purchaseRepository.getAuthorizedPurchases(userId, machineId, pageNumber));
         return page;
     }
 

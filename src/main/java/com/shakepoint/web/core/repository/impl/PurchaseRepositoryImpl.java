@@ -192,11 +192,12 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
     }
 
     @Override
-    public List<ShakepointPurchaseQRCode> getActiveCodes(String userId, String machineId, int pageNumber) {
+    public List<ShakepointPurchase> getAuthorizedPurchases(String userId, String machineId, int pageNumber) {
         try {
-            return em.createQuery("SELECT q FROM Code WHERE q.purchase.user.id = :userId AND q.purchase.machine.id = :machineId AND q.purchase.status = 1 AND q.cashed = 1")
-                    .setParameter("userId", userId)
+            return em.createQuery("SELECT p FROM Purchase p WHERE p.user.id = :id AND p.machine.id = :machineId AND p.status = :status")
+                    .setParameter("id", userId)
                     .setParameter("machineId", machineId)
+                    .setParameter("status", PurchaseStatus.AUTHORIZED)
                     .getResultList() ;
         } catch (Exception ex) {
             log.error("Could not get active codes", ex);

@@ -55,7 +55,7 @@ public class ShopRestController {
     }
 
 
-    @RequestMapping(value = "/getActiveCodes", method = RequestMethod.GET,
+    @RequestMapping(value = "/getAuthorizedPurchases", method = RequestMethod.GET,
             produces = "application/json")
     public List<PurchaseCodeResponse> getUserActiveQrCodes(@AuthenticationPrincipal Principal p,
                                                            @RequestParam(value = "page_number", required = false, defaultValue = "1") int pageNumber,

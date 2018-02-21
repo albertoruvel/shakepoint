@@ -98,13 +98,6 @@ public class TransformationUtils {
         return profile;
     }
 
-    public static ShakepointPurchaseQRCode getQrCode(ShakepointPurchase purchase) {
-        ShakepointPurchaseQRCode code = new ShakepointPurchaseQRCode();
-        code.setCashed(false);
-        code.setCreationDate(ShakeUtils.DATE_FORMAT.format(new Date()));
-        return code;
-    }
-
     public static Technician createTechnician(ShakepointUser dto) {
         return new Technician(dto.getId(), dto.getName(), dto.getEmail(), dto.getCreationDate(), dto.isActive());
     }
@@ -160,11 +153,10 @@ public class TransformationUtils {
         return new SimpleProduct(p.getId(), p.getName(), p.getCreationDate(), p.getPrice(), p.getLogoUrl());
     }
 
-    public static List<PurchaseCodeResponse> createPurchaseCodes(List<ShakepointPurchaseQRCode> activeCodes) {
+    public static List<PurchaseCodeResponse> createPurchaseCodes(List<ShakepointPurchase> activeCodes) {
         List<PurchaseCodeResponse> codes = new ArrayList();
-        for (ShakepointPurchaseQRCode code : activeCodes) {
-            codes.add(new PurchaseCodeResponse(code.getId(), code.getPurchase().getId(), code.getPurchase().getTotal(),
-                    code.getCreationDate(), code.getPurchase().getProduct().getName(), code.getPurchase().getProduct().getLogoUrl()));
+        for (ShakepointPurchase code : activeCodes) {
+            codes.add(new PurchaseCodeResponse(code.getQrCodeUrl()));
         }
         return codes;
     }

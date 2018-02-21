@@ -15,7 +15,7 @@ public interface PurchaseRepository {
 	public Map<String, List<Double>> getPerMachineValues(String[] range);
 	public List<Double> getTotalIncomeValues(String[] range);
 	public void createPurchase(ShakepointPurchase purchase);
-	public List<ShakepointPurchaseQRCode> getActiveCodes(String userId, String machineId, int pageNumber);
+	public List<ShakepointPurchase> getAuthorizedPurchases(String userId, String machineId, int pageNumber);
 	public void confirmPurchase(String purchaseId, String reference);
 	public void createQrCode(ShakepointPurchaseQRCode code);
 	public List<ShakepointPurchase> getUserPurchases(String userId, int pageNumber);
