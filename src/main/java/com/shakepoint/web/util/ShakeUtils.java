@@ -81,7 +81,7 @@ public class ShakeUtils {
 		}
 		plcResponse.setLevels(levels);
 		plcResponse.setMachineId(machineId);
-		plcResponse.setProductId((String)map.get("productId"));
+		plcResponse.setProductName((String)map.get("productId"));
 		return plcResponse; 
 	}**/
 }

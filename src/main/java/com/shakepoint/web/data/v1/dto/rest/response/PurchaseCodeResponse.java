@@ -2,7 +2,7 @@ package com.shakepoint.web.data.v1.dto.rest.response;
 
 public class PurchaseCodeResponse {
     private String imageUrl;
-    private String productId;
+    private String productName;
     private String machineName;
     private String purchaseDate;
 
@@ -11,17 +11,17 @@ public class PurchaseCodeResponse {
 
     public PurchaseCodeResponse(String imageUrl, String productid, String machineName, String purchaseDate) {
         this.imageUrl = imageUrl;
-        this.productId = productid;
+        this.productName = productid;
         this.machineName = machineName;
         this.purchaseDate = purchaseDate;
     }
 
-    public String getProductId() {
-        return productId;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setProductId(String productid) {
-        this.productId = productid;
+    public void setProductName(String productid) {
+        this.productName = productid;
     }
 
     public String getMachineName() {
