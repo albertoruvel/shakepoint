@@ -156,7 +156,7 @@ public class TransformationUtils {
     public static List<PurchaseCodeResponse> createPurchaseCodes(List<ShakepointPurchase> activeCodes) {
         List<PurchaseCodeResponse> codes = new ArrayList();
         for (ShakepointPurchase code : activeCodes) {
-            codes.add(new PurchaseCodeResponse(code.getQrCodeUrl()));
+            codes.add(new PurchaseCodeResponse(code.getQrCodeUrl(), code.getProduct().getName(), code.getMachine().getName(), code.getPurchaseDate()));
         }
         return codes;
     }
