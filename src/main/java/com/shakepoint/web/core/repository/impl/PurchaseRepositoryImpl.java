@@ -100,7 +100,7 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
     public void confirmPurchase(String purchaseId, String reference) {
         try {
             em.createQuery("UPDATE Purchase p SET p.status = :status, p.reference = :ref WHERE p.id = :id")
-                    .setParameter("status", PurchaseStatus.AUTHORIZED.getValue())
+                    .setParameter("status", PurchaseStatus.AUTHORIZED)
                     .setParameter("ref", reference)
                     .setParameter("id", purchaseId)
                     .executeUpdate();

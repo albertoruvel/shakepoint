@@ -37,12 +37,6 @@ public class MachineRepositoryImpl implements MachineRepository {
 
     }
 
-    //TODO: create dto with this...
-    private static final String GET_TECHNICIAN_ALERTED_MACHINES = "select m.id, m.name, m.description, m.location, m.slots, m.technician_id as technicianId, "
-            + "(select count(*) from machine_product mp where mp.machine_id = m.id) productsCount "
-            + "from machine m inner join machine_product mp on mp.machine_id = m.id "
-            + "where m.technician_id = ? and mp.available_percentage < 30 limit and m.has_error = 1";
-
     @Override
     public List<ShakepointMachine> getAlertedMachines(String technicianId, int pageNumber) {
         List<ShakepointMachine> page = null;
@@ -55,12 +49,6 @@ public class MachineRepositoryImpl implements MachineRepository {
             return null;
         }
     }
-
-
-    //TODO: create dto for this...
-    private static final String GET_TECHNICIAN_FAILED_MACHINES = "select m.id, m.name, m.description, m.location, m.slots, m.technician_id as technicianId, "
-            + "(select count(*) from machine_product mp where mp.machine_id = m.id) productsCount "
-            + "from machine m where m.technician_id = ? and m.has_error = 1";
 
     @Override
     public List<ShakepointMachine> getFailedMachines(String technicianId, int pageNumber) {

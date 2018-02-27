@@ -116,20 +116,6 @@ public class ShopFacadeImpl implements ShopFacade {
         return response;
     }
 
-    /**
-     * private String moveQrCode(String tmpPath) {
-     * File file = new File(tmpPath);
-     * File resFile = new File(ShakeUtils.QR_CODES_RESOURCES_FOLDER + "/" + file.getName());
-     * <p>
-     * //create an input stream
-     * try {
-     * file.renameTo(resFile);
-     * } catch (Exception ex) {
-     * <p>
-     * }
-     * return String.format(ShakeUtils.LOCALHOST_QR_CODE_FORMAT, resFile.getName());
-     * }
-     **/
 
     @Override
     public List<MachineSearch> searchMachinesByName(String machineName) {
@@ -160,7 +146,6 @@ public class ShopFacadeImpl implements ShopFacade {
         }
     }
 
-    //todo: convert to dto
     @Override
     public MachineSearch searchMachine(double longitude, double latitude) {
         //get all machines
@@ -238,10 +223,6 @@ public class ShopFacadeImpl implements ShopFacade {
         log.info("Creating response...");
 
         return new GetMachineProductsDTO(productsDTO);
-
-
-        //List<ShakepointProduct> products = productRepository.getProducts(machineId, 1, ProductType.SIMPLE);
-        //return new GetMachineProductsDTO(TransformationUtils.createProducts(products));
     }
 
     @Override
