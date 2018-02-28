@@ -96,7 +96,7 @@ public class ShopFacadeImpl implements ShopFacade {
         } else if (purchase.getStatus() == PurchaseStatus.AUTHORIZED || purchase.getStatus() == PurchaseStatus.CASHED) {
             //trying to buy  a purchase with another status
             log.info("Trying to buy an already authorized or cashed purchase");
-            return new PurchaseQRCode(null, false, "La compra especificada ya ha sido comprada por alguien mas, refresca los productos y vuelve a intentar"),
+            return new PurchaseQRCode(null, false, "La compra especificada ya ha sido comprada por alguien mas, refresca los productos y vuelve a intentar");
         } else {
             user = userRepository.getUserByEmail(p.getName());
             PaymentDetails paymentDetails = payWorksClientService.authorizePayment(request.getCardNumber(), request.getCardExpirationDate(), request.getCvv(), purchase.getTotal());
