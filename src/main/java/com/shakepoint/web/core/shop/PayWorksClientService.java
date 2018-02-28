@@ -99,13 +99,6 @@ public class PayWorksClientService {
         final String reference = headers.get("REFERENCIA");
         final String payworksResult = headers.get("RESULTADO_PAYW");
         final String message = headers.get("TEXTO");
-        log.info(authCode);
-        log.info(requestDate);
-        log.info(responseDate);
-        log.info(merchantId);
-        log.info(reference);
-        log.info(payworksResult);
-        log.info(message);
 
         return new PaymentDetails(authCode, requestDate, responseDate, merchantId, reference, payworksResult, message);
     }
