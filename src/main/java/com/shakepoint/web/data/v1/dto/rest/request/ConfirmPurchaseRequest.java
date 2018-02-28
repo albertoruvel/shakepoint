@@ -2,7 +2,10 @@ package com.shakepoint.web.data.v1.dto.rest.request;
 
 public class ConfirmPurchaseRequest {
     private String purchaseId;
-    private String reference;
+    private String cardNumber;
+    private String cardExpirationDate;
+    private String cvv;
+
 
     public ConfirmPurchaseRequest() {
         super();
@@ -16,11 +19,27 @@ public class ConfirmPurchaseRequest {
         this.purchaseId = purchaseId;
     }
 
-    public String getReference() {
-        return reference;
+    public String getCardNumber() {
+        return cardNumber;
     }
 
-    public void setReference(String reference) {
-        this.reference = reference;
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
+    public String getCardExpirationDate() {
+        return cardExpirationDate;
+    }
+
+    public void setCardExpirationDate(String cardExpirationDate) {
+        this.cardExpirationDate = cardExpirationDate;
+    }
+
+    public String getCvv() {
+        return cvv;
+    }
+
+    public void setCvv(String cvv) {
+        this.cvv = cvv;
     }
 }
