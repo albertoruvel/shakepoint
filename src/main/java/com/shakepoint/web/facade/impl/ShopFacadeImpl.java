@@ -101,7 +101,7 @@ public class ShopFacadeImpl implements ShopFacade {
                 //payment went well
                 purchase.setUser(user);
                 purchase.setStatus(PurchaseStatus.AUTHORIZED);
-                purchase.setReference("${paymentMethodReference}");
+                purchase.setReference(paymentDetails.getReference());
                 purchaseRepository.update(purchase);
                 //send an email
                 List<String> productNames = new ArrayList();
