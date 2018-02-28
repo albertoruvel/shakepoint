@@ -92,7 +92,11 @@ public class ShopFacadeImpl implements ShopFacade {
         ShakepointUser user;
         if (purchase == null) {
             log.error(String.format("No purchase found for %s", request.getPurchaseId()));
-            return new PurchaseQRCode(null, false, "Imposible encontrar la compra para la máquina que se especificó");
+            return new PurchaseQRCode(null, false, "No se ha podido encontrar la compra para la máquina que se especificó");
+        } else if (purchase.getStatus() == PurchaseStatus.AUTHORIZED || purchase.getStatus() == PurchaseStatus.CASHED) {
+            //trying to buy  a purchase with another status
+            log.info("Trying to buy an already authorized or cashed purchase");
+            return new PurchaseQRCode(null, false, "La compra especificada ya ha sido comprada por alguien mas, refresca los productos y vuelve a intentar"),
         } else {
             user = userRepository.getUserByEmail(p.getName());
             PaymentDetails paymentDetails = payWorksClientService.authorizePayment(request.getCardNumber(), request.getCardExpirationDate(), request.getCvv(), purchase.getTotal());
