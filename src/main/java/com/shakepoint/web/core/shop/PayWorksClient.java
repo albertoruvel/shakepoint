@@ -9,7 +9,7 @@ import retrofit2.http.POST;
 public interface PayWorksClient {
 
     @FormUrlEncoded
-    @POST()
+    @POST("payw2")
     public Call<ResponseBody> authorizePayment(
             @Field(value = "MODE") String mode,
             @Field(value = "AMOUNT") double amount,
