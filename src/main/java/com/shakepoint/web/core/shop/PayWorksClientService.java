@@ -51,12 +51,18 @@ public class PayWorksClientService {
         log.info("Payment authorization in progress");
 
         try{
-            Response<ResponseBody> response = client.authorizePayment(currentMode, amount, commandTransaction, user, merchantId, password, cardNumber, cardExpDate, cvv, "manual", "EN")
+            Response<ResponseBody> response = client.authorizePayment(currentMode, amount, commandTransaction, user, merchantId, password, cardNumber, cardExpDate, cvv, "manual", "ES")
                     .execute();
             Headers headers = response.headers();
-            log.info("Got headers");
-            PaymentDetails details = getDetailsFromResponse(headers);
-            return details;
+            if (response.errorBody() != null){
+                log.error(response.errorBody().string());
+                return null;
+            }else{
+                log.info("Got headers");
+                PaymentDetails details = getDetailsFromResponse(headers);
+                return details;
+            }
+
         }catch(IOException ex){
             log.error("Could not complete payment :(", ex);
             return null;
