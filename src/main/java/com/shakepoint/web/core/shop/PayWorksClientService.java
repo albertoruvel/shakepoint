@@ -41,19 +41,20 @@ public class PayWorksClientService {
 
     @PostConstruct
     public void init() {
-        log.info("Creating PayWorks service client");
+        log.info(String.format("Creating PayWorks service client for %s", configuration.getServerUrl()));
         client = new Retrofit.Builder()
                 .baseUrl(configuration.getServerUrl())
                 .build().create(PayWorksClient.class);
     }
 
     public PaymentDetails authorizePayment(String cardNumber, String cardExpDate, String cvv, double amount){
-        log.info("Authorizing payment");
+        log.info("Payment authorization in progress");
 
         try{
             Response<ResponseBody> response = client.authorizePayment(currentMode, amount, commandTransaction, user, merchantId, password, cardNumber, cardExpDate, cvv, "manual", "EN")
                     .execute();
             Headers headers = response.headers();
+            log.info("Got headers");
             PaymentDetails details = getDetailsFromResponse(headers);
             return details;
         }catch(IOException ex){
@@ -70,6 +71,13 @@ public class PayWorksClientService {
         final String reference = headers.get("REFERENCIA");
         final String payworksResult = headers.get("RESULTADO_PAYW");
         final String message = headers.get("TEXTO");
+        log.info(authCode);
+        log.info(requestDate);
+        log.info(responseDate);
+        log.info(merchantId);
+        log.info(reference);
+        log.info(payworksResult);
+        log.info(message);
 
         return new PaymentDetails(authCode, requestDate, responseDate, merchantId, reference, payworksResult, message);
     }

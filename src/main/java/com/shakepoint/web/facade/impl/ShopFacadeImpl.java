@@ -91,11 +91,13 @@ public class ShopFacadeImpl implements ShopFacade {
         ShakepointPurchase purchase = purchaseRepository.getPurchase(request.getPurchaseId());
         ShakepointUser user;
         if (purchase == null) {
+            log.error(String.format("No purchase found for %s", request.getPurchaseId()));
             return new PurchaseQRCode(null, false, "Imposible encontrar la compra para la máquina que se especificó");
         } else {
             user = userRepository.getUserByEmail(p.getName());
             PaymentDetails paymentDetails = payWorksClientService.authorizePayment(request.getCardNumber(), request.getCardExpirationDate(), request.getCvv(), purchase.getTotal());
             if (paymentDetails == null){
+                log.info("No payment details from payworks");
                 return new PurchaseQRCode(null, false, "Ha ocurrido un problema al realizar el pago, intenta nuevamente");
             } else if (paymentDetails.getAuthCode() != null && paymentDetails.getPayworksResult().equals("A")) {
                 //payment went well
@@ -109,11 +111,14 @@ public class ShopFacadeImpl implements ShopFacade {
                 Map<String, Object> args = new HashMap();
                 args.put("productNames", productNames);
                 emailSender.sendEmail(user.getEmail(), Template.SUCCESSFULL_PURCHASE, args);
+                log.info("Payment went successfully");
                 return new PurchaseQRCode(purchase.getQrCodeUrl(), true, "Compra realizada con éxito");
             } else if (paymentDetails.getPayworksResult().equals("D")) {
                 //declined
+                log.info("Declined");
                 return new PurchaseQRCode(null, false, "La tarjeta proporcionada ha sido declinada");
             } else {
+                log.info("Timeout on provider");
                 return new PurchaseQRCode(null, false, "No se obtenido respuesta del autorizador, revisa los datos e intenta nuevamente");
             }
         }
