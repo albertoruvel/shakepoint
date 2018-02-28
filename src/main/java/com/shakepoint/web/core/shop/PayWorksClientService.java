@@ -11,6 +11,9 @@ import retrofit2.Retrofit;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class PayWorksClientService {
 
@@ -31,6 +34,9 @@ public class PayWorksClientService {
 
     @Value("${com.shakepoint.web.admin.banorte.commandTransaction}")
     private String commandTransaction;
+
+    @Value("${com.shakepoint.web.admin.banorte.debugMode}")
+    private Boolean debug;
 
     @Autowired
     private RetrofitConfiguration configuration;
@@ -58,24 +64,30 @@ public class PayWorksClientService {
     }
 
     public PaymentDetails authorizePayment(String cardNumber, String cardExpDate, String cvv, double amount){
-        log.info("Payment authorization in progress");
+        PaymentDetails details;
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        if (debug){
+            log.info("DEBUG purchase have been created");
+            details = new PaymentDetails("testAuthCode", dateFormat.format(new Date()), dateFormat.format(new Date()),
+                    "123123", "123123123", "A", "Test purchase have been accepted");
+            return details;
+        }else{
+            try{
+                Response<ResponseBody> response = client.authorizePayment(currentMode, amount, commandTransaction, user, merchantId, password, cardNumber, cardExpDate, cvv, "manual", "ES", terminalId)
+                        .execute();
+                Headers headers = response.headers();
+                if (response.errorBody() != null){
+                    log.error(response.errorBody().string());
+                    return null;
+                }else{
+                    details = getDetailsFromResponse(headers);
+                    return details;
+                }
 
-        try{
-            Response<ResponseBody> response = client.authorizePayment(currentMode, amount, commandTransaction, user, merchantId, password, cardNumber, cardExpDate, cvv, "manual", "ES", terminalId)
-                    .execute();
-            Headers headers = response.headers();
-            if (response.errorBody() != null){
-                log.error(response.errorBody().string());
+            }catch(IOException ex){
+                log.error("Could not complete payment :(", ex);
                 return null;
-            }else{
-                log.info("Got headers");
-                PaymentDetails details = getDetailsFromResponse(headers);
-                return details;
             }
-
-        }catch(IOException ex){
-            log.error("Could not complete payment :(", ex);
-            return null;
         }
     }
 
