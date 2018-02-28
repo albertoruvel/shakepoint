@@ -61,7 +61,7 @@ public class PayWorksClientService {
         log.info("Payment authorization in progress");
 
         try{
-            Response<ResponseBody> response = client.authorizePayment(currentMode, amount, commandTransaction, user, merchantId, password, cardNumber, cardExpDate, cvv, "manual", "ES")
+            Response<ResponseBody> response = client.authorizePayment(currentMode, amount, commandTransaction, user, merchantId, password, cardNumber, cardExpDate, cvv, "manual", "ES", terminalId)
                     .execute();
             Headers headers = response.headers();
             if (response.errorBody() != null){

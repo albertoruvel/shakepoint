@@ -21,5 +21,6 @@ public interface PayWorksClient {
             @Field(value = "CARD_EXP")String cardExpiration,
             @Field(value = "SECURITY_CODE")String cvv,
             @Field(value = "ENTRY_MODE")String entryMode,
-            @Field(value = "RESPONSE_LANGUAGE")String responseLanguage);
+            @Field(value = "RESPONSE_LANGUAGE")String responseLanguage,
+            @Field(value = "TERMINAL_ID")String terminalId);
 }
