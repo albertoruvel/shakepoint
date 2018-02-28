@@ -117,9 +117,12 @@ public class ShopFacadeImpl implements ShopFacade {
                 //declined
                 log.info("Declined");
                 return new PurchaseQRCode(null, false, "La tarjeta proporcionada ha sido declinada");
-            } else {
+            } else if (paymentDetails.getPayworksResult().equals("T")){
                 log.info("Timeout on provider");
-                return new PurchaseQRCode(null, false, "No se obtenido respuesta del autorizador, revisa los datos e intenta nuevamente");
+                return new PurchaseQRCode(null, false, "No se ha obtenido respuesta del autorizador, revisa los datos e intenta nuevamente");
+            } else {
+                log.info("Rejected");
+                return new PurchaseQRCode(null, false, "La tarjeta proporcionada ha sido rechazada");
             }
         }
     }
