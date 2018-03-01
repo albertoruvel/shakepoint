@@ -260,12 +260,12 @@ public class ShopFacadeImpl implements ShopFacade {
 
     @Override
     public UserProfileResponse getUserProfile(Principal principal) {
-        final String userId = userRepository.getUserId(principal.getName());
+        final ShakepointUser user = userRepository.getUserByEmail(principal.getName());
         UserProfileResponse profile = null;
         try {
-            ShakepointUserProfile userProfile = userRepository.getUserProfile(userId);
+            ShakepointUserProfile userProfile = userRepository.getUserProfile(user.getId());
             if (userProfile == null) {
-                profile = new UserProfileResponse(null, null, null, false, 0, null, 0.0, 0.0, 0.0, null);
+                profile = new UserProfileResponse(user.getName(), user.getId(), user.getCreationDate(), false, 0, null, 0.0, 0.0, 0.0, user.getEmail());
             } else {
                 profile = TransformationUtils.createUserProfile(userProfile);
             }
