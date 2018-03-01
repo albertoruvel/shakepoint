@@ -162,9 +162,10 @@ public class TransformationUtils {
     }
 
     public static UserProfileResponse createUserProfile(ShakepointUserProfile userProfile) {
-        return new UserProfileResponse(userProfile.getUser().getName(), userProfile.getUser().getId(),
+        UserProfileResponse response = new UserProfileResponse(userProfile.getUser().getName(), userProfile.getUser().getId(),
                 userProfile.getUser().getCreationDate(), true, userProfile.getAge(), userProfile.getBirthday(), userProfile.getWeight(),
                 userProfile.getHeight(), getTotalPurchases(userProfile.getUser().getPurchases()), userProfile.getUser().getEmail());
+        return response;
     }
 
     public static double getTotalPurchases(List<ShakepointPurchase> purchases) {

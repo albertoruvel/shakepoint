@@ -177,9 +177,6 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    private static final String GET_USER_PROFILE = "select p.id, p.age, p.birthday, p.weight, p.height, u.name, u.id user_id as userId, u.creation_date as userSince, u.email,  "
-            + "(select sum(pu.total) from purchase pu where pu.user_id = p.user_id) purchasesTotal "
-            + "from user_profile p inner join user u on p.user_id = u.id where p.user_id = ?";
 
     @Override
     public ShakepointUserProfile getUserProfile(String userId) {
