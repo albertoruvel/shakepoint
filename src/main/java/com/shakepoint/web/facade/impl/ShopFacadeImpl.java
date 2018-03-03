@@ -175,6 +175,7 @@ public class ShopFacadeImpl implements ShopFacade {
     public MachineSearch searchMachine(double longitude, double latitude) {
         //get all machines
         List<ShakepointMachine> machines = machineRepository.getMachines(1);
+        log.info(String.format("Found %d registered machines", machines.size()));
         MachineSearch search = new MachineSearch();
         double distance = 1000000; // high distance to get accurate results
         String[] array = null;
@@ -192,6 +193,7 @@ public class ShopFacadeImpl implements ShopFacade {
 
         }
         ShakepointMachine machine = machines.get(currentIndex);
+        log.info(String.format("Got machine %s from distance search", machine.getName()));
         search.setMachineId(machine.getId());
         search.setMachineName(machine.getName());
         search.setDistance(distance);
