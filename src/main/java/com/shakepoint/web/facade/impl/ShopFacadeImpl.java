@@ -65,7 +65,6 @@ public class ShopFacadeImpl implements ShopFacade {
             log.info("Creating user profile");
             userRepository.saveProfile(profile);
         } else {
-            existingProfile.setAge(request.getAge());
             existingProfile.setBirthday(request.getBirthday());
             existingProfile.setHeight(request.getHeight());
             existingProfile.setWeight(request.getWeight());
@@ -181,6 +180,8 @@ public class ShopFacadeImpl implements ShopFacade {
         String[] array = null;
         int currentIndex = 0;
         for (int i = 0; i < machines.size(); i++) {
+            if (machines.get(i).getLocation() == null || machines.get(i).getLocation().isEmpty())
+                continue;
             array = machines.get(i).getLocation().split(",");
             double long1 = Double.parseDouble(array[0]);
             double lat1 = Double.parseDouble(array[1]);
@@ -267,7 +268,7 @@ public class ShopFacadeImpl implements ShopFacade {
         try {
             ShakepointUserProfile userProfile = userRepository.getUserProfile(user.getId());
             if (userProfile == null) {
-                profile = new UserProfileResponse(user.getName(), user.getId(), user.getCreationDate(), false, 0, null, 0.0, 0.0, 0.0, user.getEmail());
+                profile = new UserProfileResponse(user.getName(), user.getId(), user.getCreationDate(), false, null, 0.0, 0.0, 0.0, user.getEmail());
             } else {
                 profile = TransformationUtils.createUserProfile(userProfile);
             }

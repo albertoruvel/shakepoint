@@ -1,7 +1,6 @@
 package com.shakepoint.web.data.v1.dto.rest.request;
 
 public class UserProfileRequest {
-	private int age; 
 	private double height; 
 	private double weight; 
 	private String birthday;
@@ -9,12 +8,7 @@ public class UserProfileRequest {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public int getAge() {
-		return age;
-	}
-	public void setAge(int age) {
-		this.age = age;
-	}
+
 	public double getHeight() {
 		return height;
 	}

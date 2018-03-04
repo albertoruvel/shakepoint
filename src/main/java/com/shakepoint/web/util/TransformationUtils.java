@@ -83,7 +83,6 @@ public class TransformationUtils {
 
     public static ShakepointUserProfile getProfile(String userId, UserProfileRequest request) {
         ShakepointUserProfile profile = new ShakepointUserProfile();
-        profile.setAge(request.getAge());
         try {
             //creates a date
             Date date = ShakeUtils.SLASHES_SIMPLE_DATE_FORMAT.parse(request.getBirthday());
@@ -163,7 +162,7 @@ public class TransformationUtils {
 
     public static UserProfileResponse createUserProfile(ShakepointUserProfile userProfile) {
         UserProfileResponse response = new UserProfileResponse(userProfile.getUser().getName(), userProfile.getUser().getId(),
-                userProfile.getUser().getCreationDate(), true, userProfile.getAge(), userProfile.getBirthday(), userProfile.getWeight(),
+                userProfile.getUser().getCreationDate(), true, userProfile.getBirthday(), userProfile.getWeight(),
                 userProfile.getHeight(), getTotalPurchases(userProfile.getUser().getPurchases()), userProfile.getUser().getEmail());
         return response;
     }

@@ -8,7 +8,6 @@ public class UserProfileResponse {
     private String userId;
     private String userSince;
     private boolean availableProfile;
-    private int age;
     private String birthday;
     private double weight;
     private double height;
@@ -21,12 +20,11 @@ public class UserProfileResponse {
     public UserProfileResponse() {
     }
 
-    public UserProfileResponse(String userName, String userId, String userSince, boolean availableProfile, int age, String birthday, double weight, double height, double purchasesTotal, String email) {
+    public UserProfileResponse(String userName, String userId, String userSince, boolean availableProfile, String birthday, double weight, double height, double purchasesTotal, String email) {
         this.userName = userName;
         this.userId = userId;
         this.userSince = userSince;
         this.availableProfile = availableProfile;
-        this.age = age;
         this.birthday = birthday;
         this.weight = weight;
         this.height = height;
@@ -40,14 +38,6 @@ public class UserProfileResponse {
 
     public void setAvailableProfile(boolean availableProfile) {
         this.availableProfile = availableProfile;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
     }
 
     public String getBirthday() {

@@ -13,9 +13,6 @@ public class ShakepointUserProfile {
     @JoinColumn(name = "user_id")
     private ShakepointUser user;
 
-    @Column(name = "age")
-    private int age;
-
     @Column(name = "birthday")
     private String birthday;
 
@@ -43,14 +40,6 @@ public class ShakepointUserProfile {
 
     public void setUser(ShakepointUser user) {
         this.user = user;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
     }
 
     public String getBirthday() {
