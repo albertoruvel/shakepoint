@@ -51,16 +51,6 @@ public class PayWorksClientService {
         client = new Retrofit.Builder()
                 .baseUrl(configuration.getServerUrl())
                 .build().create(PayWorksClient.class);
-
-        logProperties();
-    }
-
-    private void logProperties() {
-        log.info(String.format("usuario banorte: %s", user));
-        log.info(String.format("Password banorte: %s", password));
-        log.info(String.format("Numero de afiliacion: %s", merchantId));
-        log.info(String.format("Terminal: %s", terminalId));
-        log.info(String.format("Comando: %s", commandTransaction));
     }
 
     public PaymentDetails authorizePayment(String cardNumber, String cardExpDate, String cvv, double amount){
