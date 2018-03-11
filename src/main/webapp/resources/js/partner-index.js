@@ -32,7 +32,7 @@ function getContent(fromDate, toDate){
         };
         //get per machine values
         $.ajax({
-            url: '/partner/indexContent?from=' + fromDate + "&to=" toDate,
+            url: '/partner/indexContent?from=' + fromDate + "&to=" + toDate,
             type: 'GET',
              headers: headers,
              accept: 'application/json',
