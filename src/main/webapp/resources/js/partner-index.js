@@ -3,7 +3,7 @@ $(document).ready(function(){
     $('#update-button').on('click', function(){
         checkDates();
     });
-    getContent();
+    getContent(null, null);
 });
 
 function checkDates(){
