@@ -228,21 +228,25 @@ public class PartnerFacadeImpl implements PartnerFacade {
             String lastSignin = userRepository.getLastSignin(id);
             content.setLastSignin(lastSignin);
 
-            //TODO: get list of queries for charts
             List<MachineProductCountItem> items = new ArrayList();
             MachineProductCountItem item;
             //check machines
             for (VendingMachine machine : machines) {
                 item = new MachineProductCountItem();
                 item.setMachineName(machine.getName());
+                log.info("Will check machine " + machine.getName());
                 List<VendingMachineProductStatus> products = machineRepository.getMachineProducts(machine.getId());
+                log.info(String.format("Contains %d products", products.size()));
                 String[] array = new String[products.size()];
                 List<Integer> data = new ArrayList();
+                Integer dataValue;
                 //get productos array
                 for (int i = 0; i < products.size(); i++) {
                     VendingMachineProductStatus status = products.get(i);
                     array[i] = status.getProduct().getName();
-                    data.add(purchaseRepository.getProductCountForDateRange(status.getProduct().getId(), range, machine.getId()));
+                    dataValue = purchaseRepository.getProductCountForDateRange(status.getProduct().getId(), range, machine.getId());
+                    data.add(dataValue);
+                    log.info(String.format("Product %s contains %d buys", array[i], dataValue));
                 }
                 item.setProducts(array);
                 item.setData(data);

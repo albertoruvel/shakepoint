@@ -64,6 +64,7 @@
 
                             </div>
 
+                            <h3 style="margin-bottom: 24px;">Cantidad de productos vendidos por vending</h3>
                             <div id="machines-data-container"></div>
                         </div>
                     </div>

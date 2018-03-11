@@ -87,10 +87,11 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
         //TODO: add purchase status to CASHED
         try{
             for (String date : range){
-                value = (Long)em.createQuery("SELECT COUNT(p.id) FROM Purchase p WHERE p.machine.id = :machineId AND p.product.id = :productId AND p.purchaseDate LIKE :purchaseDate")
+                value = (Long)em.createQuery("SELECT COUNT(p.id) FROM Purchase p WHERE p.machine.id = :machineId AND p.product.id = :productId AND p.purchaseDate LIKE :purchaseDate AND p.status <> :status")
                         .setParameter("machineId", machineId)
                         .setParameter("productId", id)
-                        .setParameter("purchaseDate", date)
+                        .setParameter("purchaseDate", "%" + date)
+                        .setParameter("status", PurchaseStatus.PRE_AUTH)
                         .getSingleResult();
                 counter += value;
             }
