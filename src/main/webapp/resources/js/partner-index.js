@@ -36,7 +36,7 @@ function createMachinesCharts(range, machines){
                 text: ''
             },
             xAxis: {
-                categories: machines.products,
+                categories: machines[i].products,
                 title: {
                     text: null
                 }
