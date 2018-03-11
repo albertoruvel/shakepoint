@@ -196,10 +196,14 @@ public class PartnerFacadeImpl implements PartnerFacade {
             } else {
                 //set default
                 now = new Date();
+                final String nowString = ShakeUtils.SLASHES_SIMPLE_DATE_FORMAT.format(now);
+                now = ShakeUtils.SLASHES_SIMPLE_DATE_FORMAT.parse(nowString);
                 Calendar beforeCalendar = Calendar.getInstance();
                 beforeCalendar.setTime(now);
                 beforeCalendar.set(Calendar.DAY_OF_MONTH, -5);
                 before = beforeCalendar.getTime();
+                final String beforeString = ShakeUtils.SLASHES_SIMPLE_DATE_FORMAT.format(before);
+                before = ShakeUtils.SLASHES_SIMPLE_DATE_FORMAT.parse(beforeString);
             }
             //get dates
             String[] range = ShakeUtils.getDateRange(before, now);

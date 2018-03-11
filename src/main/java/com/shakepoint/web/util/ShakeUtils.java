@@ -38,7 +38,7 @@ public class ShakeUtils {
         long time = from.getTime();
         String date = "";
         for (int i = 0; i < days; i++) {
-            date = ShakeUtils.SIMPLE_DATE_FORMAT.format(new Date(time));
+            date = ShakeUtils.SLASHES_SIMPLE_DATE_FORMAT.format(new Date(time));
             //add the date to the range array
             range[i] = date;
             time = time + 86400000;
@@ -50,7 +50,7 @@ public class ShakeUtils {
     public static final String QR_CODES_TMP_FOLDER = TMP_FOLDER + "qr-tmp/";
     public static final String QR_CODES_RESOURCES_FOLDER = TMP_FOLDER + "qr/";
 
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy HH:mm");
-    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy");
-    public static final SimpleDateFormat SLASHES_SIMPLE_DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+    public static final SimpleDateFormat SLASHES_SIMPLE_DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 }
