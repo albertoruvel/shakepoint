@@ -205,6 +205,14 @@ public class PartnerFacadeImpl implements PartnerFacade {
                 final String beforeString = ShakeUtils.SLASHES_SIMPLE_DATE_FORMAT.format(before);
                 before = ShakeUtils.SLASHES_SIMPLE_DATE_FORMAT.parse(beforeString);
             }
+        }catch(ParseException ex) {
+            log.error("Could not parse dates, creating default dates for search");
+            now = new Date();
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(now);
+            cal.set(Calendar.DAY_OF_MONTH, -5);
+            before = cal.getTime();
+        }
             //get dates
             String[] range = ShakeUtils.getDateRange(before, now);
             content.setRange(range);
@@ -259,10 +267,7 @@ public class PartnerFacadeImpl implements PartnerFacade {
             }
             content.setMachines(items);
             return content;
-        } catch (ParseException ex) {
-            log.error("Could not parse dates");
-            return new PartnerIndexContent();
-        }
+
 
     }
 }
