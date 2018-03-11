@@ -2,10 +2,10 @@ package com.shakepoint.web.core.repository.impl;
 
 
 import com.shakepoint.web.core.repository.UserRepository;
-import com.shakepoint.web.data.dto.res.rest.UserProfileResponse;
 import com.shakepoint.web.data.security.UserInfo;
-import com.shakepoint.web.data.v1.entity.ShakepointUser;
-import com.shakepoint.web.data.v1.entity.ShakepointUserProfile;
+import com.shakepoint.web.data.v1.entity.PartnerProductOrder;
+import com.shakepoint.web.data.v1.entity.User;
+import com.shakepoint.web.data.v1.entity.UserProfile;
 import com.shakepoint.web.util.ShakeUtils;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Propagation;
@@ -36,7 +36,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    public void saveProfile(ShakepointUserProfile profile) {
+    public void saveProfile(UserProfile profile) {
         try {
             em.persist(profile);
         } catch (Exception ex) {
@@ -102,7 +102,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<ShakepointUser> getUsers(int pageNumber) {
+    public List<User> getUsers(int pageNumber) {
         try {
             return em.createQuery("SELECT u FROM User u WHERE u.role = 'member'")
                     .getResultList();
@@ -115,9 +115,9 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String GET_USER_INFO = "select email, password, role from user where email = ?";
 
     @Override
-    public ShakepointUser getUserByEmail(String email) {
+    public User getUserByEmail(String email) {
         try {
-            return (ShakepointUser) em.createQuery("SELECT u FROM User u WHERE u.email = :email")
+            return (User) em.createQuery("SELECT u FROM User u WHERE u.email = :email")
                     .setParameter("email", email)
                     .getSingleResult();
         } catch (Exception ex) {
@@ -130,7 +130,7 @@ public class UserRepositoryImpl implements UserRepository {
     public UserInfo getUserInfo(String email) {
         UserInfo info = null;
         try {
-            ShakepointUser user = (ShakepointUser) em.createQuery("SELECT u FROM User u WHERE u.email = :email")
+            User user = (User) em.createQuery("SELECT u FROM User u WHERE u.email = :email")
                     .setParameter("email", email).getSingleResult();
             return new UserInfo(user.getEmail(), user.getPassword(), user.getRole());
         } catch (Exception ex) {
@@ -142,7 +142,7 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String GET_TECHNICIANS_COUNT = "select count(*) from user where role = 'technician'";
 
     @Override
-    public List<ShakepointUser> getTechnicians() {
+    public List<User> getTechnicians() {
         try {
             return em.createQuery("SELECT u FROM User u WHERE u.role = 'technician'").getResultList();
         } catch (Exception ex) {
@@ -167,9 +167,9 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String GET_TECHNICIAN = "select id, name, email, creation_date from user where id = ? and role = 'technician'";
 
     @Override
-    public ShakepointUser getTechnician(String id) {
+    public User getTechnician(String id) {
         try {
-            return (ShakepointUser) em.createQuery("SELECT u FROM User u WHERE u.id = :id AND u.role = 'technician'")
+            return (User) em.createQuery("SELECT u FROM User u WHERE u.id = :id AND u.role = 'technician'")
                     .setParameter("id", id).getSingleResult();
         } catch (Exception ex) {
             log.error("Could not get technician", ex);
@@ -179,10 +179,10 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public ShakepointUserProfile getUserProfile(String userId) {
+    public UserProfile getUserProfile(String userId) {
 
         try {
-            return (ShakepointUserProfile) em.createQuery("SELECT p FROM Profile p WHERE p.user.id = :id")
+            return (UserProfile) em.createQuery("SELECT p FROM Profile p WHERE p.user.id = :id")
                     .setParameter("id", userId)
                     .getSingleResult();
 
@@ -197,9 +197,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    public void addShakepointUser(ShakepointUser shakepointUser) {
+    public void addShakepointUser(User user) {
         try {
-            em.persist(shakepointUser);
+            em.persist(user);
         } catch (Exception ex) {
             log.error("Could not persist Entity", ex);
         }
@@ -207,11 +207,21 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    public void updateProfile(ShakepointUserProfile existingProfile) {
+    public void updateProfile(UserProfile existingProfile) {
         try{
             em.merge(existingProfile);
         }catch(Exception ex){
             log.error("Could not update profile", ex);
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Override
+    public void saveUserOrder(PartnerProductOrder order) {
+        try{
+            em.persist(order);
+        }catch(Exception ex){
+            log.error("Could not persist requested order", ex);
         }
     }
 

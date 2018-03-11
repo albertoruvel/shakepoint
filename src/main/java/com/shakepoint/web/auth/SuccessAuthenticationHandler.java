@@ -14,13 +14,12 @@ import javax.servlet.http.HttpSession;
 
 import com.shakepoint.web.core.repository.UserRepository;
 import com.shakepoint.web.data.security.SecurityRole;
-import com.shakepoint.web.data.v1.entity.ShakepointUser;
+import com.shakepoint.web.data.v1.entity.User;
 import com.shakepoint.web.util.ShakeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 /**
@@ -38,7 +37,7 @@ public class SuccessAuthenticationHandler implements AuthenticationSuccessHandle
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response, Authentication auth) throws IOException, ServletException {
         HttpSession session = request.getSession();
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String redirect = "";
         if (user != null) {
             session.setAttribute("username", user.getUsername());
@@ -52,7 +51,7 @@ public class SuccessAuthenticationHandler implements AuthenticationSuccessHandle
                     userRepository.addShakepointUser(createAdminUser(user));
                 }
             } else if (user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_TECHNICIAN"))) {
-                redirect = "tech/";
+                redirect = "partner/";
             }
             //update last signin column
             userRepository.updateLastSignin(user.getUsername());
@@ -63,8 +62,8 @@ public class SuccessAuthenticationHandler implements AuthenticationSuccessHandle
         response.sendRedirect(redirect);
     }
 
-    private ShakepointUser createAdminUser(User user) {
-        ShakepointUser newUser = new ShakepointUser();
+    private User createAdminUser(org.springframework.security.core.userdetails.User user) {
+        User newUser = new User();
         newUser.setActive(true);
         newUser.setAddedBy(null);
         newUser.setConfirmed(true);

@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Entity(name = "fail")
 @Table(name = "fail")
-public class ShakepointMachineFail {
+public class VendingMachineFail {
 
     @Id
     private String id;
@@ -22,7 +22,7 @@ public class ShakepointMachineFail {
     @Column(name = "machine_id")
     private String machineId;
 
-    public ShakepointMachineFail() {
+    public VendingMachineFail() {
         id = UUID.randomUUID().toString();
     }
 

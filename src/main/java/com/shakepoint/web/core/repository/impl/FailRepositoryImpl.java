@@ -1,6 +1,6 @@
 package com.shakepoint.web.core.repository.impl;
 import com.shakepoint.web.core.repository.FailRepository;
-import com.shakepoint.web.data.v1.entity.ShakepointMachineFail;
+import com.shakepoint.web.data.v1.entity.VendingMachineFail;
 import org.apache.log4j.Logger;
 
 import javax.persistence.EntityManager;
@@ -19,7 +19,7 @@ public class FailRepositoryImpl implements FailRepository {
 	}
 
 	@Override
-	public void addFail(ShakepointMachineFail fail) {
+	public void addFail(VendingMachineFail fail) {
 		try{
 			em.persist(fail);
 		}catch(Exception ex){

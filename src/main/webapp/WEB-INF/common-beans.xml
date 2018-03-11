@@ -14,11 +14,10 @@
 
     <bean name="adminFacade" class="com.shakepoint.web.facade.impl.AdminFacadeImpl"/>
 
-    <bean name="techFacade" class="com.shakepoint.web.facade.impl.TechnicianFacadeImpl"/>
+    <bean name="techFacade" class="com.shakepoint.web.facade.impl.PartnerFacadeImpl"/>
 
     <bean name="shopFacade" class="com.shakepoint.web.facade.impl.ShopFacadeImpl"/>
     <bean name="securityFacade" class="com.shakepoint.web.facade.impl.SecurityFacadeImpl"/>
-    <bean name="cpuFacade" class="com.shakepoint.web.facade.impl.CpuFacadeImpl"/>
 
     <bean name="emailSender" class="com.shakepoint.web.core.email.impl.EmailSenderImpl" scope="prototype" />
     <bean name="emailAsyncSender" class="com.shakepoint.web.core.email.impl.EmailAsyncSenderImpl"/>

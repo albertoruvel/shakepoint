@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Entity(name = "Purchase")
 @Table(name = "purchase")
-public class ShakepointPurchase {
+public class Purchase {
     @Id
     private String id;
 
@@ -23,23 +23,23 @@ public class ShakepointPurchase {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "machine_id")
-    private ShakepointMachine machine;
+    private VendingMachine machine;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
-    private ShakepointProduct product;
+    private Product product;
 
     @Column(name = "reference")
     private String reference;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
-    private ShakepointUser user;
+    private User user;
 
     @Column(name = "qr_image_url")
     private String qrCodeUrl;
 
-    public ShakepointPurchase() {
+    public Purchase() {
         id = UUID.randomUUID().toString();
     }
 
@@ -75,11 +75,11 @@ public class ShakepointPurchase {
         this.total = total;
     }
 
-    public ShakepointMachine getMachine() {
+    public VendingMachine getMachine() {
         return machine;
     }
 
-    public void setMachine(ShakepointMachine machine) {
+    public void setMachine(VendingMachine machine) {
         this.machine = machine;
     }
 
@@ -91,19 +91,19 @@ public class ShakepointPurchase {
         this.reference = reference;
     }
 
-    public ShakepointUser getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(ShakepointUser user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
-    public ShakepointProduct getProduct() {
+    public Product getProduct() {
         return product;
     }
 
-    public void setProduct(ShakepointProduct product) {
+    public void setProduct(Product product) {
         this.product = product;
     }
 

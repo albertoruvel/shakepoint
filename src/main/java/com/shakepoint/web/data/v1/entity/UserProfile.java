@@ -5,13 +5,13 @@ import java.util.UUID;
 
 @Entity(name = "Profile")
 @Table(name = "user_profile")
-public class ShakepointUserProfile {
+public class UserProfile {
     @Id
     private String id;
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
-    private ShakepointUser user;
+    private User user;
 
     @Column(name = "birthday")
     private String birthday;
@@ -22,7 +22,7 @@ public class ShakepointUserProfile {
     @Column(name = "height")
     private double height;
 
-    public ShakepointUserProfile() {
+    public UserProfile() {
         id = UUID.randomUUID().toString();
     }
 
@@ -34,11 +34,11 @@ public class ShakepointUserProfile {
         this.id = id;
     }
 
-    public ShakepointUser getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(ShakepointUser user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

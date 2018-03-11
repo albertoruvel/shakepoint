@@ -6,7 +6,7 @@ import java.util.UUID;
 
 @Entity(name = "Machine")
 @Table(name = "machine")
-public class ShakepointMachine {
+public class VendingMachine {
 
     @Id
     private String id;
@@ -37,14 +37,14 @@ public class ShakepointMachine {
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "technician_id")
-    private ShakepointUser technician;
+    private User technician;
 
     @OneToMany(mappedBy = "machine")
-    private List<ShakepointMachineProductStatus> products;
+    private List<VendingMachineProductStatus> products;
 
 
 
-    public ShakepointMachine() {
+    public VendingMachine() {
         id = UUID.randomUUID().toString();
     }
 
@@ -120,19 +120,19 @@ public class ShakepointMachine {
         this.error = error;
     }
 
-    public ShakepointUser getTechnician() {
+    public User getTechnician() {
         return technician;
     }
 
-    public void setTechnician(ShakepointUser technician) {
+    public void setTechnician(User technician) {
         this.technician = technician;
     }
 
-    public List<ShakepointMachineProductStatus> getProducts() {
+    public List<VendingMachineProductStatus> getProducts() {
         return products;
     }
 
-    public void setProducts(List<ShakepointMachineProductStatus> products) {
+    public void setProducts(List<VendingMachineProductStatus> products) {
         this.products = products;
     }
 }

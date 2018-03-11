@@ -5,11 +5,10 @@
  */
 package com.shakepoint.web.core.repository;
 
-import com.shakepoint.web.data.dto.res.rest.UserProfileResponse;
-
 import com.shakepoint.web.data.security.UserInfo;
-import com.shakepoint.web.data.v1.entity.ShakepointUser;
-import com.shakepoint.web.data.v1.entity.ShakepointUserProfile;
+import com.shakepoint.web.data.v1.entity.PartnerProductOrder;
+import com.shakepoint.web.data.v1.entity.User;
+import com.shakepoint.web.data.v1.entity.UserProfile;
 
 import java.util.List;
 
@@ -18,21 +17,23 @@ import java.util.List;
  * @author Alberto Rubalcaba
  */
 public interface UserRepository {
-    public ShakepointUser getUserByEmail(String email);
+    public User getUserByEmail(String email);
     public UserInfo getUserInfo(String email);
-    public List<ShakepointUser> getTechnicians();
+    public List<User> getTechnicians();
     public String getUserId(String email);
-    public ShakepointUser getTechnician(String id);
-    public List<ShakepointUser> getUsers(int pageNumber);
+    public User getTechnician(String id);
+    public List<User> getUsers(int pageNumber);
     public int getRegisteredTechnicians(); 
     public void updateLastSignin(String email); 
     public String getLastSignin(String id); 
     public boolean userExists(String email);
-    public ShakepointUserProfile getUserProfile(String userId);
-    public void saveProfile(ShakepointUserProfile profile);
+    public UserProfile getUserProfile(String userId);
+    public void saveProfile(UserProfile profile);
 
     //JTA
-    public void addShakepointUser(ShakepointUser shakepointUser);
+    public void addShakepointUser(User user);
 
-    public void updateProfile(ShakepointUserProfile existingProfile);
+    public void updateProfile(UserProfile existingProfile);
+
+    public void saveUserOrder(PartnerProductOrder order);
 }

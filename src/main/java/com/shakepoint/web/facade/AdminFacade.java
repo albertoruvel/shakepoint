@@ -13,7 +13,6 @@ import com.shakepoint.web.data.v1.dto.mvc.request.NewProductRequest;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewTechnicianRequest;
 import com.shakepoint.web.data.v1.dto.mvc.response.*;
 import com.shakepoint.web.data.v1.dto.rest.response.SimpleMachineProduct;
-import com.shakepoint.web.data.v1.entity.ShakepointProduct;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;

@@ -55,12 +55,12 @@ public class ShopFacadeImpl implements ShopFacade {
     @Override
     public UserProfileResponse saveProfile(Principal p, UserProfileRequest request) {
         //get user id
-        final ShakepointUser user = userRepository.getUserByEmail(p.getName());
+        final User user = userRepository.getUserByEmail(p.getName());
         final String userId = userRepository.getUserId(p.getName());
         //get profile
-        ShakepointUserProfile existingProfile = userRepository.getUserProfile(userId);
+        UserProfile existingProfile = userRepository.getUserProfile(userId);
         if (existingProfile == null) {
-            ShakepointUserProfile profile = TransformationUtils.getProfile(userId, request);
+            UserProfile profile = TransformationUtils.getProfile(userId, request);
             profile.setUser(user);
             log.info("Creating user profile");
             userRepository.saveProfile(profile);
@@ -79,7 +79,7 @@ public class ShopFacadeImpl implements ShopFacade {
     @Override
     public List<UserPurchaseResponse> getUserPurchases(Principal p, int pageNumber) {
         final String userId = userRepository.getUserId(p.getName());
-        List<ShakepointPurchase> purchases = purchaseRepository.getUserPurchases(userId, pageNumber);
+        List<Purchase> purchases = purchaseRepository.getUserPurchases(userId, pageNumber);
         List<UserPurchaseResponse> response = TransformationUtils.createPurchases(purchases);
         return response;
     }
@@ -87,8 +87,8 @@ public class ShopFacadeImpl implements ShopFacade {
     @Override
     public PurchaseQRCode confirmPurchase(ConfirmPurchaseRequest request, Principal p) {
         PurchaseQRCode code = null;
-        ShakepointPurchase purchase = purchaseRepository.getPurchase(request.getPurchaseId());
-        ShakepointUser user;
+        Purchase purchase = purchaseRepository.getPurchase(request.getPurchaseId());
+        User user;
         if (purchase == null) {
             log.error(String.format("No purchase found for %s", request.getPurchaseId()));
             return new PurchaseQRCode(null, false, "No se ha podido encontrar la compra para la máquina que se especificó");
@@ -113,7 +113,7 @@ public class ShopFacadeImpl implements ShopFacade {
                 productNames.add(purchase.getProduct().getName());
                 Map<String, Object> args = new HashMap();
                 args.put("productNames", productNames);
-                emailSender.sendEmail(user.getEmail(), Template.SUCCESSFULL_PURCHASE, args);
+                emailSender.sendEmail(user.getEmail(), Template.SUCCESSFUL_PURCHASE, args);
                 log.info("Payment went successfully");
                 return new PurchaseQRCode(purchase.getQrCodeUrl(), true, "Compra realizada con éxito");
             } else if (paymentDetails.getPayworksResult().equals("D")) {
@@ -143,9 +143,9 @@ public class ShopFacadeImpl implements ShopFacade {
 
     @Override
     public List<MachineSearch> searchMachinesByName(String machineName) {
-        List<ShakepointMachine> machines = machineRepository.searchByName(machineName);
+        List<VendingMachine> machines = machineRepository.searchByName(machineName);
         List<MachineSearch> machineSearches = new ArrayList();
-        for (ShakepointMachine m : machines) {
+        for (VendingMachine m : machines) {
             machineSearches.add(new MachineSearch(m.getId(), m.getName(), 0));
         }
         return machineSearches;
@@ -153,14 +153,14 @@ public class ShopFacadeImpl implements ShopFacade {
 
     @Override
     public ProductDTO getProductDetails(String productId) {
-        ShakepointProduct product = productRepository.getProduct(productId);
+        Product product = productRepository.getProduct(productId);
         ProductDTO dto = new ProductDTO(product.getId(), product.getName(), product.getPrice(), product.getDescription(), product.getLogoUrl());
         return dto;
     }
 
     public AvailablePurchaseResponse getAvailablePurchaseForMachine(String productId, String machineId) {
         //get available products
-        List<ShakepointPurchase> purchases = purchaseRepository.getAvailablePurchasesForMachine(productId, machineId);
+        List<Purchase> purchases = purchaseRepository.getAvailablePurchasesForMachine(productId, machineId);
         log.info(String.format("Got a total of %d available purchases", purchases.size()));
         if (purchases.isEmpty()) {
             return new AvailablePurchaseResponse(null);
@@ -173,7 +173,7 @@ public class ShopFacadeImpl implements ShopFacade {
     @Override
     public MachineSearch searchMachine(double longitude, double latitude) {
         //get all machines
-        List<ShakepointMachine> machines = machineRepository.getMachines(1);
+        List<VendingMachine> machines = machineRepository.getMachines(1);
         log.info(String.format("Found %d registered machines", machines.size()));
         MachineSearch search = new MachineSearch();
         double distance = 1000000; // high distance to get accurate results
@@ -193,7 +193,7 @@ public class ShopFacadeImpl implements ShopFacade {
             }
 
         }
-        ShakepointMachine machine = machines.get(currentIndex);
+        VendingMachine machine = machines.get(currentIndex);
         log.info(String.format("Got machine %s from distance search", machine.getName()));
         search.setMachineId(machine.getId());
         search.setMachineName(machine.getName());
@@ -241,10 +241,10 @@ public class ShopFacadeImpl implements ShopFacade {
     //todo: convert to dto
     @Override
     public GetMachineProductsDTO getMachineProducts(String machineId, int pageNumber) {
-        List<ShakepointMachineProductStatus> productsStatus = machineRepository.getMachineProducts(machineId);
+        List<VendingMachineProductStatus> productsStatus = machineRepository.getMachineProducts(machineId);
         log.info(String.format("Number of products for machine %d", productsStatus.size()));
-        List<ShakepointProduct> products = new ArrayList();
-        for (ShakepointMachineProductStatus p : productsStatus) {
+        List<Product> products = new ArrayList();
+        for (VendingMachineProductStatus p : productsStatus) {
             products.add(p.getProduct());
         }
         List<ProductDTO> productsDTO = TransformationUtils.createProducts(products);
@@ -263,10 +263,10 @@ public class ShopFacadeImpl implements ShopFacade {
 
     @Override
     public UserProfileResponse getUserProfile(Principal principal) {
-        final ShakepointUser user = userRepository.getUserByEmail(principal.getName());
+        final User user = userRepository.getUserByEmail(principal.getName());
         UserProfileResponse profile = null;
         try {
-            ShakepointUserProfile userProfile = userRepository.getUserProfile(user.getId());
+            UserProfile userProfile = userRepository.getUserProfile(user.getId());
             if (userProfile == null) {
                 profile = new UserProfileResponse(user.getName(), user.getId(), user.getCreationDate(), false, null, 0.0, 0.0, 0.0, user.getEmail());
             } else {

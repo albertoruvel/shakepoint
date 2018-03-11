@@ -3,10 +3,9 @@ package com.shakepoint.web.facade.impl;
 import com.shakepoint.web.core.email.EmailAsyncSender;
 import com.shakepoint.web.core.email.Template;
 import com.shakepoint.web.core.repository.UserRepository;
-import com.shakepoint.web.data.v1.dto.rest.request.SigninRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.SignupRequest;
 import com.shakepoint.web.data.v1.dto.rest.response.AuthenticationResult;
-import com.shakepoint.web.data.v1.entity.ShakepointUser;
+import com.shakepoint.web.data.v1.entity.User;
 import com.shakepoint.web.util.TransformationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -39,7 +38,7 @@ public class SecurityFacadeImpl implements SecurityFacade {
 
         } else {
             //get the user
-            ShakepointUser user = TransformationUtils.getUser(request, encoder);
+            User user = TransformationUtils.getUser(request, encoder);
             userRepository.addShakepointUser(user);
             ar.setAuthenticationToken(getAuthToken(request.getEmail(), request.getPassword()));
             ar.setMessage("User signed up successfully");
@@ -47,7 +46,7 @@ public class SecurityFacadeImpl implements SecurityFacade {
             //Send Email
             final Map<String, Object> parameters = new HashMap<String, Object>(1);
             parameters.put("name", user.getName());
-            emailSender.sendEmail(request.getEmail(), Template.SIGNUP, parameters);
+            emailSender.sendEmail(request.getEmail(), Template.SIGN_UP, parameters);
         }
         return ar;
     }

@@ -192,22 +192,4 @@ public class AdminController {
     public ModelAndView editCombo(@PathVariable("productId")String productId){
     	return adminFacade.getComboView(productId); 
     }
-
-    //TODO: check after fixing queries
-    /**@RequestMapping(value="/product/{productId}/get_content",
-    		produces="application/json")
-    public @ResponseBody
-    ComboContentResponse getComboContent(@PathVariable("productId")String productId){
-    	return adminFacade.getComboContent(productId); 
-    }**/
-
-    //TODO: check after fixing queries
-    /**@RequestMapping(value="/product/{comboId}/update_combo", method=RequestMethod.POST,
-    		produces="application/json")
-    public @ResponseBody
-    ProductEntityOld updateComboProduct(@PathVariable(value="comboId")String comboId,
-                                        @RequestParam(value="product_id", required=true)String productId,
-                                        @RequestParam(value="value", required=true)int value){
-    	return adminFacade.updateComboProduct(comboId, productId, value); 
-    }**/
 }

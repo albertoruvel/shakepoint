@@ -1,12 +1,15 @@
 package com.shakepoint.web.data.v1.entity;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "User")
 @Table(name = "user")
-public class ShakepointUser {
+public class User {
 
     @Id
     private String id;
@@ -38,12 +41,11 @@ public class ShakepointUser {
     @Column(name = "last_signin")
     private String lastSignin;
 
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Purchase> purchases;
 
-
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", orphanRemoval = true)
-    private List<ShakepointPurchase> purchases;
-
-    public ShakepointUser() {
+    public User() {
         id = UUID.randomUUID().toString();
     }
 
@@ -127,11 +129,11 @@ public class ShakepointUser {
         this.lastSignin = lastSignin;
     }
 
-    public List<ShakepointPurchase> getPurchases() {
+    public List<Purchase> getPurchases() {
         return purchases;
     }
 
-    public void setPurchases(List<ShakepointPurchase> purchases) {
+    public void setPurchases(List<Purchase> purchases) {
         this.purchases = purchases;
     }
 }

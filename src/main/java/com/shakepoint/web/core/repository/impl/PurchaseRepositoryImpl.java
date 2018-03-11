@@ -3,12 +3,8 @@ package com.shakepoint.web.core.repository.impl;
 import com.shakepoint.web.core.machine.PurchaseStatus;
 import com.shakepoint.web.core.repository.MachineRepository;
 import com.shakepoint.web.core.repository.PurchaseRepository;
-import com.shakepoint.web.data.v1.dto.rest.response.PurchaseCodeResponse;
-import com.shakepoint.web.data.dto.res.rest.UserPurchaseResponse;
-import com.shakepoint.web.data.v1.dto.rest.response.PurchaseQRCode;
-import com.shakepoint.web.data.v1.entity.ShakepointMachine;
-import com.shakepoint.web.data.v1.entity.ShakepointPurchase;
-import com.shakepoint.web.data.v1.entity.ShakepointPurchaseQRCode;
+import com.shakepoint.web.data.v1.entity.VendingMachine;
+import com.shakepoint.web.data.v1.entity.Purchase;
 import com.shakepoint.web.util.ShakeUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +30,9 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
     }
 
     @Override
-    public ShakepointPurchase getPurchase(String purchaseId) {
+    public Purchase getPurchase(String purchaseId) {
         try {
-            return (ShakepointPurchase)em.createQuery("SELECT p FROM Purchase p WHERE p.id = :purchaseId")
+            return (Purchase) em.createQuery("SELECT p FROM Purchase p WHERE p.id = :purchaseId")
                     .setParameter("purchaseId", purchaseId).getSingleResult();
         } catch (Exception ex) {
             log.error("Could not get purchase", ex);
@@ -53,7 +49,7 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
             + "where p.user_id = ?";
 
     @Override
-    public List<ShakepointPurchase> getUserPurchases(String userId, int pageNumber) {
+    public List<Purchase> getUserPurchases(String userId, int pageNumber) {
         try {
             return em.createQuery("SELECT p FROM Purchase p WHERE p.user.id = :id")
                     .setParameter("id", userId).getResultList();
@@ -65,57 +61,45 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    public void update(ShakepointPurchase purchase) {
+    public void update(Purchase purchase) {
         em.merge(purchase);
     }
 
-    public List<ShakepointPurchase> getAvailablePurchasesForMachine(String productId, String machineId) {
-        try{
-            List<ShakepointPurchase>list = em.createQuery("SELECT p FROM Purchase p WHERE p.machine.id = :machineId AND p.product.id = :productId AND p.status = :status")
+    public List<Purchase> getAvailablePurchasesForMachine(String productId, String machineId) {
+        try {
+            List<Purchase> list = em.createQuery("SELECT p FROM Purchase p WHERE p.machine.id = :machineId AND p.product.id = :productId AND p.status = :status")
                     .setParameter("machineId", machineId)
                     .setParameter("productId", productId)
                     .setParameter("status", PurchaseStatus.PRE_AUTH)
                     .getResultList();
             return list;
-        }catch(Exception ex){
+        } catch (Exception ex) {
             log.error("Could not get available purchase for machine", ex);
             return Collections.emptyList();
         }
     }
 
-    private static final String CREATE_QR_CODE = "insert into purchase_qrcode(id, creation_date, purchase_id, image_url, cashed) values(?, ?, ?, ?, ?)";
+    @Override
+    public Integer getProductCountForDateRange(String id, String[] range, String machineId) {
+        int counter = 0;
+        Long value;
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @Override
-    public void createQrCode(ShakepointPurchaseQRCode code) {
-        try {
-            em.persist(code);
-        } catch (Exception ex) {
-            log.error("Could not add qr code", ex);
+        //TODO: add purchase status to CASHED
+        try{
+            for (String date : range){
+                value = (Long)em.createQuery("SELECT COUNT(p.id) FROM Purchase p WHERE p.machine.id = :machineId AND p.product.id = :productId AND p.purchaseDate LIKE :purchaseDate")
+                        .setParameter("machineId", machineId)
+                        .setParameter("productId", id)
+                        .setParameter("purchaseDate", date)
+                        .getSingleResult();
+                counter += value;
+            }
+            return counter;
+        }catch(Exception ex){
+            log.error("Could get total products for machine and product", ex);
+            return 0;
         }
-    }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @Override
-    public void confirmPurchase(String purchaseId, String reference) {
-        try {
-            em.createQuery("UPDATE Purchase p SET p.status = :status, p.reference = :ref WHERE p.id = :id")
-                    .setParameter("status", PurchaseStatus.AUTHORIZED)
-                    .setParameter("ref", reference)
-                    .setParameter("id", purchaseId)
-                    .executeUpdate();
-        } catch (Exception ex) {
-            log.error("Could not confirm purchase", ex);
-        }
-    }
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @Override
-    public void createPurchase(ShakepointPurchase purchase) {
-        try {
-            em.persist(purchase);
-        } catch (Exception ex) {
-            log.error("Could not create purchase: " + ex.getMessage());
-        }
     }
 
     private static final String GET_TODAY_TOTAL_PURCHASES = "select sum(total) from purchase where purchase_date like '%s";
@@ -129,7 +113,7 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
         double total = 0;
         try {
             BigDecimal bigDecimal = (BigDecimal) em.createNativeQuery(sql).getSingleResult();
-            if(bigDecimal == null){
+            if (bigDecimal == null) {
                 return 0;
             }
             return bigDecimal.doubleValue();
@@ -143,21 +127,43 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
     private static final String GET_PER_MACHINE_VALUES = "select avg(p.total) from purchase p inner join machine m on m.id = p.machine_id where p.machine_id = ? and p.purchase_date like '%s'";
 
     @Override
-    public Map<String, List<Double>> getPerMachineValues(String[] range) {
+    public Map<String, List<Double>> getPerMachineValues(String[] range, List<VendingMachine> machines) {
         Map<String, List<Double>> map = new HashMap();
         List<Double> values = null;
-
-        //get all machines
-        List<ShakepointMachine> machines = machineRepository.getMachines(1);
         Double avg = 0.0;
         Object[] args = null;
         String format = "";
-        for (ShakepointMachine machine : machines) {
+        for (VendingMachine machine : machines) {
             values = new ArrayList();
             for (String rangeValue : range) {
-                //get the current range total purchases total average
-                args = new Object[]{machine.getId()};
                 format = String.format(GET_PER_MACHINE_VALUES, rangeValue + "%");
+                try {
+                    avg = (Double) em.createNativeQuery(format).setParameter(1, machine.getId()).getSingleResult();
+                } catch (Exception ex) {
+                    log.error("Could not get average value", ex);
+                    avg = 0.0;
+                }
+                if (avg == null)
+                    avg = 0.0;
+                values.add(avg);
+            }
+            map.put(machine.getName(), values);
+        }
+        return map;
+    }
+
+    private static final String GET_PER_MACHINE_PRODUCT_COUNT_VALUES = "select count(p.total) from purchase p where p.machine_id = ? and p.purchase_date like '%s'";
+    @Override
+    public Map<String, List<Double>> getPerMachineProductsCountValues(String[] range, List<VendingMachine> machines) {
+        Map<String, List<Double>> map = new HashMap();
+        List<Double> values = null;
+        Double avg = 0.0;
+        Object[] args = null;
+        String format = "";
+        for (VendingMachine machine : machines) {
+            values = new ArrayList();
+            for (String rangeValue : range) {
+                format = String.format(GET_PER_MACHINE_PRODUCT_COUNT_VALUES, rangeValue + "%");
                 try {
                     avg = (Double) em.createNativeQuery(format).setParameter(1, machine.getId()).getSingleResult();
                 } catch (Exception ex) {
@@ -191,14 +197,34 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
         return values;
     }
 
+    private static final String GET_TOTAL_INCOME_PER_MACHINE = "select sum(p.total) from purchase p where p.purchase_date like '%s' and p.machine_id = 1";
+
     @Override
-    public List<ShakepointPurchase> getAuthorizedPurchases(String userId, String machineId, int pageNumber) {
+    public List<Double> getTotalIncomeValues(String[] range, String machineId) {
+        List<Double> values = new ArrayList();
+        String format = "";
+        Double total = 0.0;
+        for (String s : range) {
+            format = String.format(GET_TOTAL_INCOME_PER_MACHINE, s + "%");
+            total = (Double) em.createNativeQuery(format)
+                    .setParameter(1, machineId)
+                    .getSingleResult();
+            if (total == null)
+                total = 0.0;
+            values.add(total);
+        }
+
+        return values;
+    }
+
+    @Override
+    public List<Purchase> getAuthorizedPurchases(String userId, String machineId, int pageNumber) {
         try {
             return em.createQuery("SELECT p FROM Purchase p WHERE p.user.id = :id AND p.machine.id = :machineId AND p.status = :status")
                     .setParameter("id", userId)
                     .setParameter("machineId", machineId)
                     .setParameter("status", PurchaseStatus.AUTHORIZED)
-                    .getResultList() ;
+                    .getResultList();
         } catch (Exception ex) {
             log.error("Could not get active codes", ex);
             return null;

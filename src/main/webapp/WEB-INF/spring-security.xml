@@ -52,7 +52,7 @@
     
     <!-- Catch all Admin and Technician requests -->
     <security:http auto-config="true" use-expressions="true" pattern="/**">
-    	<security:intercept-url pattern="/tech/**" access="hasRole('ROLE_TECHNICIAN')"/>
+    	<security:intercept-url pattern="/partner/**" access="hasRole('ROLE_TECHNICIAN')"/>
         <security:intercept-url pattern="/admin/**" access="hasAnyRole('ROLE_SUPER_ADMIN')"/>
         <security:form-login
             login-page="/signin"

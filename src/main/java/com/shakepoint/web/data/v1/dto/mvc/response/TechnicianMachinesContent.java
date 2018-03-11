@@ -1,7 +1,5 @@
 package com.shakepoint.web.data.v1.dto.mvc.response;
 
-import com.shakepoint.web.data.v1.entity.ShakepointMachine;
-
 import java.util.List;
 
 public class TechnicianMachinesContent {

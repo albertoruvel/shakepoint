@@ -31,7 +31,7 @@
                 <main class="mdl-layout__content">
                     <div class="page-content text-center center-block">
                         <sec:authorize access="hasRole('ROLE_TECHNICIAN')">
-                            <c:redirect url="/tech/"/>
+                            <c:redirect url="/partner/"/>
                         </sec:authorize>
                         <sec:authorize access="hasRole('ROLE_SUPER_ADMIN')">
                             <c:redirect url="/admin/"/>

@@ -7,8 +7,8 @@ package com.shakepoint.web.core.repository.impl;
 
 import com.shakepoint.web.core.repository.MachineRepository;
 import com.shakepoint.web.core.repository.ProductRepository;
-import com.shakepoint.web.data.v1.entity.ShakepointMachine;
-import com.shakepoint.web.data.v1.entity.ShakepointMachineProductStatus;
+import com.shakepoint.web.data.v1.entity.VendingMachine;
+import com.shakepoint.web.data.v1.entity.VendingMachineProductStatus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
@@ -38,8 +38,8 @@ public class MachineRepositoryImpl implements MachineRepository {
     }
 
     @Override
-    public List<ShakepointMachine> getAlertedMachines(String technicianId, int pageNumber) {
-        List<ShakepointMachine> page = null;
+    public List<VendingMachine> getAlertedMachines(String technicianId, int pageNumber) {
+        List<VendingMachine> page = null;
         try {
             page = entityManager.createNativeQuery("HECTO????")
                     .setParameter(1, technicianId).getResultList();
@@ -51,8 +51,8 @@ public class MachineRepositoryImpl implements MachineRepository {
     }
 
     @Override
-    public List<ShakepointMachine> getFailedMachines(String technicianId, int pageNumber) {
-        List<ShakepointMachine> page = null;
+    public List<VendingMachine> getFailedMachines(String technicianId, int pageNumber) {
+        List<VendingMachine> page = null;
         try {
             page = entityManager.createNativeQuery("...............")
                     .setParameter(1, technicianId).getResultList();
@@ -65,7 +65,7 @@ public class MachineRepositoryImpl implements MachineRepository {
 
 
     @Override
-    public List<ShakepointMachine> getTechnicianMachines(String id, int pageNumber) {
+    public List<VendingMachine> getTechnicianMachines(String id, int pageNumber) {
         try {
             return entityManager.createQuery("SELECT m FROM Machine m WHERE m.technician.id = :id")
                     .setParameter("id", id)
@@ -90,7 +90,7 @@ public class MachineRepositoryImpl implements MachineRepository {
     }
 
     @Override
-    public List<ShakepointMachine> searchByName(String machineName) {
+    public List<VendingMachine> searchByName(String machineName) {
         try{
             return entityManager.createQuery("SELECT m FROM Machine m WHERE m.name LIKE :machineName")
                     .setParameter("machineName", "%" + machineName + "%")
@@ -145,9 +145,9 @@ public class MachineRepositoryImpl implements MachineRepository {
     }
 
     @Override
-    public ShakepointMachineProductStatus getMachineProduct(String id) {
+    public VendingMachineProductStatus getMachineProduct(String id) {
         try {
-            ShakepointMachineProductStatus res = (ShakepointMachineProductStatus) entityManager.createQuery("SELECT s FROM MachineProductStatus s WHERE s.id = :id")
+            VendingMachineProductStatus res = (VendingMachineProductStatus) entityManager.createQuery("SELECT s FROM MachineProductStatus s WHERE s.id = :id")
                     .setParameter("id", id)
                     .getSingleResult();
             return res;
@@ -158,7 +158,7 @@ public class MachineRepositoryImpl implements MachineRepository {
     }
 
     @Override
-    public List<ShakepointMachineProductStatus> getMachineProducts(String machineId) {
+    public List<VendingMachineProductStatus> getMachineProducts(String machineId) {
         try{
             return entityManager.createQuery("SELECT s FROM MachineProductStatus s WHERE s.machine.id = :id")
                     .setParameter("id", machineId)
@@ -170,7 +170,7 @@ public class MachineRepositoryImpl implements MachineRepository {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    public void addMachineProduct(ShakepointMachineProductStatus mp) {
+    public void addMachineProduct(VendingMachineProductStatus mp) {
         try {
             entityManager.persist(mp);
         } catch (Exception ex) {
@@ -180,7 +180,7 @@ public class MachineRepositoryImpl implements MachineRepository {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    public void addMachine(ShakepointMachine machine) {
+    public void addMachine(VendingMachine machine) {
         try {
             entityManager.persist(machine);
         } catch (Exception ex) {
@@ -189,8 +189,8 @@ public class MachineRepositoryImpl implements MachineRepository {
     }
 
     @Override
-    public List<ShakepointMachine> getMachines(int pageNumber) {
-        List<ShakepointMachine> page = null;
+    public List<VendingMachine> getMachines(int pageNumber) {
+        List<VendingMachine> page = null;
 
         try {
             page = entityManager.createQuery("SELECT m FROM Machine m")
@@ -203,9 +203,9 @@ public class MachineRepositoryImpl implements MachineRepository {
     }
 
     @Override
-    public ShakepointMachine getMachine(String machineId) {
+    public VendingMachine getMachine(String machineId) {
         try {
-            return (ShakepointMachine)entityManager.createQuery("SELECT m FROM Machine m WHERE m.id = :id")
+            return (VendingMachine)entityManager.createQuery("SELECT m FROM Machine m WHERE m.id = :id")
                     .setParameter("id", machineId).getSingleResult();
         } catch (Exception ex) {
             //not found
@@ -233,7 +233,7 @@ public class MachineRepositoryImpl implements MachineRepository {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
-    public void updateMachine(ShakepointMachine machine) {
+    public void updateMachine(VendingMachine machine) {
         try{
             entityManager.merge(machine);
         }catch(Exception ex){

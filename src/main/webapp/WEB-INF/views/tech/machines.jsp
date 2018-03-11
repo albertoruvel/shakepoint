@@ -41,9 +41,7 @@
                         					<tr>
                         						<th class="mdl-data-table__cell--non-numeric">Nombre</th>
                         						<th class="mdl-data-table__cell--non-numeric">Descripción</th>
-                        						<th class="mdl-data-table__cell--non-numeric">Alertas</th>
                         						<th class="mdl-data-table__cell--non-numeric">Productos</th>
-                        						<th class="mdl-data-table__cell--non-numeric">Slots</th>
                         						<th class="mdl-data-table__cell--non-numeric">Registro</th>
                         					</tr>
                         				</thead>
@@ -52,13 +50,7 @@
                         						<tr>
                         							<td class="mdl-data-table__cell--non-numeric">${machine.name}</td>
                         							<td class="mdl-data-table__cell--non-numeric">${machine.description}</td>
-                        							<td class="mdl-data-table__cell--non-numeric">
-                        								<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="${machine.id}">
-  															<input type="checkbox" id="${machine.id}" class="mdl-checkbox__input" checked="${machine.alerted}" readonly>
-														</label>	
-                        							</td>
-                        							<td class="mdl-data-table__cell--non-numeric">${machine.products} (<a href="#">Ver productos</a>)</td>
-                        							<td class="mdl-data-table__cell--non-numeric">${machine.slots}</td>
+                        							<td class="mdl-data-table__cell--non-numeric">${machine.products} (<a href="/partner/machine/${machine.id}/">Ver productos</a>)</td>
                         							<td class="mdl-data-table__cell--non-numeric">
                         								<a href="<c:url value="machine/${machine.id}/log"/>">Ver registros</a>
                         							</td>

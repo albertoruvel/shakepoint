@@ -1,10 +1,11 @@
 package com.shakepoint.web.data.v1.dto.rest.response;
 
-import com.shakepoint.web.data.v1.entity.ShakepointProduct;
+import com.shakepoint.web.data.v1.entity.Product;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Combo extends ShakepointProduct {
+public class Combo extends Product {
 
 	private String id;
 	protected String name;
@@ -12,11 +13,11 @@ public class Combo extends ShakepointProduct {
 	protected double price;
 	protected String creationDate;
 	protected String description;
-	private List<ShakepointProduct> items;
+	private List<Product> items;
 	
 	public Combo() {
 		super();
-		items = new ArrayList<ShakepointProduct>();
+		items = new ArrayList<Product>();
 	}
 
 	@Override
@@ -79,11 +80,11 @@ public class Combo extends ShakepointProduct {
 		this.description = description;
 	}
 
-	public List<ShakepointProduct> getItems() {
+	public List<Product> getItems() {
 		return items;
 	}
 
-	public void setItems(List<ShakepointProduct> items) {
+	public void setItems(List<Product> items) {
 		this.items = items;
 	}
 }

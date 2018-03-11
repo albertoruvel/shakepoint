@@ -22,7 +22,7 @@
                     <sec:authorize access="hasRole('ROLE_ADMIN')">
                 <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/admin/products" />">Productos</a>
                 <%--<a class="mdl-navigation__link" style="color: white;" href="<c:url value="technicians" />">Technicians</a>--%>
-                <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/admin//machines" />">M�quinas</a>
+                <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/admin//machines" />">Máquinas</a>
                 <form id="logout" action="${logoutUrl}" method="post" >
   					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
   					<button onclick="logout();" class="mdl-navigation__link" style="color: white;background-color: transparent;border: 0px;">Salir</button>
@@ -30,8 +30,8 @@
             </sec:authorize>
             <sec:authorize access="hasRole('ROLE_SUPER_ADMIN')">
                 <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/admin/products" />">Productos</a>
-                <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/admin/technicians" />">T�cnicos</a>
-                <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/admin/machines" />">M�quinas</a>
+                <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/admin/technicians" />">Socios</a>
+                <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/admin/machines" />">Máquinas</a>
                 <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/admin/users" />">Usuarios</a>
                 <form id="logout" action="${logoutUrl}" method="post" >
   					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
@@ -39,9 +39,8 @@
 				</form>
             </sec:authorize>
             <sec:authorize access="hasRole('ROLE_TECHNICIAN')">
-            <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/tech/machines" />">Mis M�quinas</a>
-                <%--<a class="mdl-navigation__link" style="color: white;" href="<c:url value="/tech/fails" />">Fallas</a>
-                <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/tech/alerts" />">Alertas</a>--%>
+            <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/partner/machines" />">Vendings</a>
+                <%--<a class="mdl-navigation__link" style="coloz--%>
                 <form id="logout" action="${logoutUrl}" method="post" >
   						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
   						<button onclick="logout();" class="mdl-navigation__link" style="color: white;background-color: transparent;border: 0px;">Salir</button>

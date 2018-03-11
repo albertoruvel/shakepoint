@@ -63,7 +63,7 @@ public class AdminFacadeImpl implements AdminFacade {
         try {
             fromDate = sdf.parse(from);
             toDate = sdf.parse(to);
-            range = getDateRange(fromDate, toDate);
+            range = ShakeUtils.getDateRange(fromDate, toDate);
             //get values
             doubleValues = purchaseRepository.getTotalIncomeValues(range);
             values = new TotalIncomeValues();
@@ -88,8 +88,9 @@ public class AdminFacadeImpl implements AdminFacade {
         try {
             fromDate = sdf.parse(from);
             toDate = sdf.parse(to);
-            range = getDateRange(fromDate, toDate);
-            map = purchaseRepository.getPerMachineValues(range);
+            range = ShakeUtils.getDateRange(fromDate, toDate);
+            List<VendingMachine> machines = machineRepository.getMachines(1);
+            map = purchaseRepository.getPerMachineValues(range, machines);
             values.setFromDate(from);
             values.setRange(range);
             values.setToDate(to);
@@ -117,7 +118,7 @@ public class AdminFacadeImpl implements AdminFacade {
         calendar.add(Calendar.DAY_OF_YEAR, -7);
         final Date fromDate = calendar.getTime();
         //create a range array
-        String[] range = getDateRange(fromDate, toDate);
+        String[] range = ShakeUtils.getDateRange(fromDate, toDate);
 
         /**perMachine.setFromDate(ShakeUtils.SIMPLE_DATE_FORMAT.format(fromDate));
          perMachine.setToDate(ShakeUtils.SIMPLE_DATE_FORMAT.format(toDate));
@@ -138,32 +139,19 @@ public class AdminFacadeImpl implements AdminFacade {
         return content;
     }
 
-    private String[] getDateRange(Date from, Date to) {
-        //get day difference
-        int days = Math.round((to.getTime() - from.getTime()) / 86400000); //convert to days
-        final String[] range = new String[days];
-        long time = from.getTime();
-        String date = "";
-        for (int i = 0; i < days; i++) {
-            date = ShakeUtils.SIMPLE_DATE_FORMAT.format(new Date(time));
-            //add the date to the range array
-            range[i] = date;
-            time = time + 86400000;
-        }
-        return range;
-    }
+
 
     @Override
     public ModelAndView getShakepointUsers(int pageNumber) {
         ModelAndView mav = new ModelAndView("/admin/users");
 
-        List<ShakepointUser> page = null;
+        List<User> page = null;
         try {
             page = userRepository.getUsers(pageNumber);
             List<UserDescription> descs = new ArrayList();
-            for (ShakepointUser user : page) {
+            for (User user : page) {
                 double total = 0;
-                for (ShakepointPurchase purchase : user.getPurchases()) {
+                for (Purchase purchase : user.getPurchases()) {
                     total += purchase.getTotal();
                 }
                 descs.add(new UserDescription(user.getId(), user.getName(), user.getEmail(), total));
@@ -179,11 +167,11 @@ public class AdminFacadeImpl implements AdminFacade {
     public TechnicianMachinesContent getTechnicianMachinesContent(String techId) {
         TechnicianMachinesContent content = new TechnicianMachinesContent();
         //get technician
-        ShakepointUser dto = userRepository.getTechnician(techId);
+        User dto = userRepository.getTechnician(techId);
         content.setTechnician(TransformationUtils.createTechnician(dto));
-        List<ShakepointMachine> allMachines = machineRepository.getMachines(1);
+        List<VendingMachine> allMachines = machineRepository.getMachines(1);
         content.setAllMachines(TransformationUtils.createSimpleMachines(allMachines));
-        List<ShakepointMachine> assignedMachines = machineRepository.getTechnicianMachines(techId, 1);
+        List<VendingMachine> assignedMachines = machineRepository.getTechnicianMachines(techId, 1);
         content.setAsignedMachines(TransformationUtils.createSimpleMachines(assignedMachines));
         return content;
     }
@@ -198,24 +186,24 @@ public class AdminFacadeImpl implements AdminFacade {
 
     @Override
     public SimpleMachineProduct addMachineProduct(String machineId, String productId, int slotNumber, Principal principal) {
-        final ShakepointUser addedBy = userRepository.getUserByEmail(principal.getName());
+        final User addedBy = userRepository.getUserByEmail(principal.getName());
         SimpleMachineProduct response = null;
-        ShakepointMachineProductStatus newMachineProduct = new ShakepointMachineProductStatus();
+        VendingMachineProductStatus newMachineProduct = new VendingMachineProductStatus();
         newMachineProduct.setPercentage(100);
-        ShakepointMachine machine = machineRepository.getMachine(machineId);
+        VendingMachine machine = machineRepository.getMachine(machineId);
         newMachineProduct.setMachine(machine);
-        ShakepointProduct product = productRepository.getProduct(productId);
+        Product product = productRepository.getProduct(productId);
         newMachineProduct.setProduct(product);
         newMachineProduct.setSlotNumber(slotNumber);
         String message = "No se puede agregar el paquete a la maquina.\nLa maquina debe de contener los productos del paquete para ofrecerlos: \n";
         String productsMessage = "";
         //check the product
-        ShakepointProduct p = productRepository.getProduct(productId);
+        Product p = productRepository.getProduct(productId);
         if (p.getType() == ProductType.COMBO) {
             boolean success = true;
             //check if the machine already has the needed products
-            List<ShakepointProduct> products = productRepository.getComboProducts(p.getId(), 1);
-            for (ShakepointProduct cp : products) {
+            List<Product> products = productRepository.getComboProducts(p.getId(), 1);
+            for (Product cp : products) {
                 if (!machineRepository.containProduct(machineId, cp.getId())) {
                     productsMessage += cp.getName() + "\n";
                     if (success)
@@ -246,7 +234,7 @@ public class AdminFacadeImpl implements AdminFacade {
 
     @Override
     public SimpleProduct deleteMachineProduct(String id) {
-        ShakepointMachineProductStatus status = machineRepository.getMachineProduct(id);
+        VendingMachineProductStatus status = machineRepository.getMachineProduct(id);
         //delete the machine product
         machineRepository.deleteMachineProduct(id);
         return TransformationUtils.createSimpleProduct(productRepository.getProduct(status.getProduct().getId()));
@@ -258,7 +246,7 @@ public class AdminFacadeImpl implements AdminFacade {
             pageNumber = 1;
         ModelAndView mav = new ModelAndView("admin/products");
         //get a products page
-        List<ShakepointProduct> page = null;
+        List<Product> page = null;
         try {
             page = productRepository.getProducts(pageNumber);
             List<SimpleProduct> simpleProducts = TransformationUtils.createSimpleProducts(page);
@@ -285,7 +273,7 @@ public class AdminFacadeImpl implements AdminFacade {
     public ModelAndView getComboView(String productId) {
         ModelAndView mav = new ModelAndView("/admin/combo");
         //get product
-        ShakepointProduct p = productRepository.getProduct(productId);
+        Product p = productRepository.getProduct(productId);
         if (p.getType() == ProductType.COMBO) {
             mav.addObject("productId", productId);
         } else {
@@ -312,7 +300,7 @@ public class AdminFacadeImpl implements AdminFacade {
             if (validateProduct(product, file)) {
                 //TODO: should create file here and upload to S3 or save it
                 //TODO: check if file have content
-                ShakepointProduct productEntity = new ShakepointProduct();
+                Product productEntity = new Product();
                 //product is valid
                 if (product.isCombo()) {
                     //create a new combo
@@ -346,7 +334,7 @@ public class AdminFacadeImpl implements AdminFacade {
     @Override
     public ModelAndView getTechnicians() {
         ModelAndView mav = new ModelAndView();
-        List<ShakepointUser> techs = null;
+        List<User> techs = null;
         try {
             techs = userRepository.getTechnicians();
             List<Technician> dtos = TransformationUtils.createTechnicianDtoList(techs);
@@ -374,7 +362,7 @@ public class AdminFacadeImpl implements AdminFacade {
         //get principal id 
         String username = principal.getName();
         final String id = userRepository.getUserId(username);
-        ShakepointUser user = TransformationUtils.getUserFromTechnician(dto, id);
+        User user = TransformationUtils.getUserFromTechnician(dto, id);
         //add the new technician
         try {
             userRepository.addShakepointUser(user);
@@ -391,7 +379,7 @@ public class AdminFacadeImpl implements AdminFacade {
     @Override
     public ModelAndView getMachinesView(int pageNumber) {
         ModelAndView mav = new ModelAndView();
-        List<ShakepointMachine> page = null;
+        List<VendingMachine> page = null;
 
         try {
             page = machineRepository.getMachines(pageNumber);
@@ -413,7 +401,7 @@ public class AdminFacadeImpl implements AdminFacade {
         List<Technician> techs = TransformationUtils.createTechnicianDtoList(userRepository.getTechnicians());
         mav.addObject("technicians", techs);
         //get all products
-        List<ShakepointProduct> products = productRepository.getProducts(1);
+        List<Product> products = productRepository.getProducts(1);
         mav.addObject("products", products);
         return mav;
     }
@@ -423,7 +411,7 @@ public class AdminFacadeImpl implements AdminFacade {
         ModelAndView mav = new ModelAndView();
         String currentUser = userRepository.getUserId(principal.getName());
         //create a new machine 
-        ShakepointMachine machine = TransformationUtils.getMachineFromDTO(dto, currentUser);
+        VendingMachine machine = TransformationUtils.getMachineFromDTO(dto, currentUser);
         machine.setTechnician(userRepository.getTechnician(dto.getTechnicianId()));
         try {
             machineRepository.addMachine(machine);
@@ -445,8 +433,8 @@ public class AdminFacadeImpl implements AdminFacade {
 
     @Override
     public String updateTechnicianMachine(String techId, String machineId, int option) {
-        ShakepointUser technician = userRepository.getTechnician(techId);
-        ShakepointMachine machine = machineRepository.getMachine(machineId);
+        User technician = userRepository.getTechnician(techId);
+        VendingMachine machine = machineRepository.getMachine(machineId);
         switch (option) {
             case 0:
                 //delete
@@ -469,7 +457,7 @@ public class AdminFacadeImpl implements AdminFacade {
         int alertedProducts = machineRepository.getAlertedproducts(machineId);
         List<SimpleMachineProduct> productsPage = TransformationUtils.createSimpleMachineProducts(machineRepository.getMachineProducts(machineId));
         List<SimpleProduct> all = TransformationUtils.createSimpleProducts(productRepository.getProducts(1));
-        ShakepointMachine machine = machineRepository.getMachine(machineId);
+        VendingMachine machine = machineRepository.getMachine(machineId);
         machine.setProducts(null);//Avoid lazy loading errors when sending this to the UI
 
         //if the machine has a technician
@@ -515,11 +503,11 @@ public class AdminFacadeImpl implements AdminFacade {
      @Override public ComboContentResponse getComboContent(String productId) {
      ComboContentResponse response = new ComboContentResponse();
      //get current combo product
-     ShakepointProduct combo = productRepository.getProduct(productId);
+     Product combo = productRepository.getProduct(productId);
      if(combo.getType() == ProductType.COMBO){
      //get all products
-     List<ShakepointProduct> comboProducts = productRepository.getComboProducts(productId, 1);
-     List<ShakepointProduct> allProducts = productRepository.getProducts(1, ProductType.SIMPLE);
+     List<Product> comboProducts = productRepository.getComboProducts(productId, 1);
+     List<Product> allProducts = productRepository.getProducts(1, ProductType.SIMPLE);
 
      response.setCombo(combo);
      response.setComboProducts(comboProducts);

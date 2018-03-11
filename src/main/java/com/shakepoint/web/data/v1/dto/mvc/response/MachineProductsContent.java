@@ -1,8 +1,7 @@
 package com.shakepoint.web.data.v1.dto.mvc.response;
 
 import com.shakepoint.web.data.v1.dto.rest.response.SimpleMachineProduct;
-import com.shakepoint.web.data.v1.entity.ShakepointMachine;
-import com.shakepoint.web.data.v1.entity.ShakepointProduct;
+import com.shakepoint.web.data.v1.entity.VendingMachine;
 
 import java.util.List;
 
@@ -10,7 +9,7 @@ public class MachineProductsContent {
 	private int alertedProducts;
 	private List<SimpleMachineProduct> machineProducts;
 	private List<SimpleProduct> products;
-	private ShakepointMachine machine;
+	private VendingMachine machine;
 	private Technician technician;
 	private List<Technician> technicians;
 	public MachineProductsContent() {
@@ -34,10 +33,10 @@ public class MachineProductsContent {
 	public void setProducts(List<SimpleProduct> products) {
 		this.products = products;
 	}
-	public ShakepointMachine getMachine() {
+	public VendingMachine getMachine() {
 		return machine;
 	}
-	public void setMachine(ShakepointMachine machine) {
+	public void setMachine(VendingMachine machine) {
 		this.machine = machine;
 	}
 	public Technician getTechnician() {

@@ -1,19 +1,14 @@
 package com.shakepoint.web.util;
 
 import com.shakepoint.web.core.machine.ProductType;
-import com.shakepoint.web.core.machine.PurchaseStatus;
 import com.shakepoint.web.core.repository.MachineRepository;
 import com.shakepoint.web.data.dto.res.rest.UserProfileResponse;
 import com.shakepoint.web.data.dto.res.rest.UserPurchaseResponse;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewProductRequest;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewTechnicianRequest;
-import com.shakepoint.web.data.v1.dto.mvc.response.SimpleMachine;
-import com.shakepoint.web.data.v1.dto.mvc.response.SimpleProduct;
-import com.shakepoint.web.data.v1.dto.mvc.response.TechnicianMachine;
-import com.shakepoint.web.data.v1.dto.rest.request.PurchaseRequest;
+import com.shakepoint.web.data.v1.dto.mvc.response.*;
 import com.shakepoint.web.data.v1.dto.rest.request.SignupRequest;
 import com.shakepoint.web.data.v1.dto.rest.request.UserProfileRequest;
-import com.shakepoint.web.data.v1.dto.mvc.response.Technician;
 import com.shakepoint.web.data.security.SecurityRole;
 import com.shakepoint.web.data.v1.dto.rest.response.ProductDTO;
 import com.shakepoint.web.data.v1.dto.rest.response.PurchaseCodeResponse;
@@ -28,8 +23,8 @@ import java.util.Date;
 import java.util.List;
 
 public class TransformationUtils {
-    public static ShakepointProduct createProductFromDto(NewProductRequest product) {
-        ShakepointProduct p = new ShakepointProduct();
+    public static Product createProductFromDto(NewProductRequest product) {
+        Product p = new Product();
         p.setName(product.getName());
         p.setCreationDate(ShakeUtils.DATE_FORMAT.format(new Date()));
         p.setDescription(product.getDescription());
@@ -40,8 +35,8 @@ public class TransformationUtils {
         return p;
     }
 
-    public static ShakepointUser getUser(SignupRequest request, BCryptPasswordEncoder encoder) {
-        ShakepointUser user = new ShakepointUser();
+    public static User getUser(SignupRequest request, BCryptPasswordEncoder encoder) {
+        User user = new User();
         user.setActive(true);
         user.setConfirmed(false);
         user.setCreationDate(ShakeUtils.DATE_FORMAT.format(new Date()));
@@ -52,10 +47,10 @@ public class TransformationUtils {
         return user;
     }
 
-    public static List<Technician> createTechnicianDtoList(List<ShakepointUser> techs) {
+    public static List<Technician> createTechnicianDtoList(List<User> techs) {
         List<Technician> list = new ArrayList();
         Technician dto;
-        for (ShakepointUser user : techs) {
+        for (User user : techs) {
             dto = new Technician();
             dto.setCreationDate(user.getCreationDate());
             dto.setName(user.getName());
@@ -67,8 +62,8 @@ public class TransformationUtils {
         return list;
     }
 
-    public static ShakepointMachine getMachineFromDTO(NewMachineRequest dto, String id) {
-        ShakepointMachine machine = new ShakepointMachine();
+    public static VendingMachine getMachineFromDTO(NewMachineRequest dto, String id) {
+        VendingMachine machine = new VendingMachine();
         machine.setCreationDate(ShakeUtils.DATE_FORMAT.format(new Date()));
         machine.setDescription(dto.getDescription());
         machine.setName(dto.getName());
@@ -81,8 +76,8 @@ public class TransformationUtils {
         return machine;
     }
 
-    public static ShakepointUserProfile getProfile(String userId, UserProfileRequest request) {
-        ShakepointUserProfile profile = new ShakepointUserProfile();
+    public static UserProfile getProfile(String userId, UserProfileRequest request) {
+        UserProfile profile = new UserProfile();
         try {
             //creates a date
             Date date = ShakeUtils.SLASHES_SIMPLE_DATE_FORMAT.parse(request.getBirthday());
@@ -97,29 +92,29 @@ public class TransformationUtils {
         return profile;
     }
 
-    public static Technician createTechnician(ShakepointUser dto) {
+    public static Technician createTechnician(User dto) {
         return new Technician(dto.getId(), dto.getName(), dto.getEmail(), dto.getCreationDate(), dto.isActive());
     }
 
-    public static List<SimpleProduct> createSimpleProducts(List<ShakepointProduct> page) {
+    public static List<SimpleProduct> createSimpleProducts(List<Product> page) {
         List<SimpleProduct> products = new ArrayList();
-        for (ShakepointProduct p : page) {
+        for (Product p : page) {
             products.add(createSimpleProduct(p));
         }
         return products;
     }
 
-    public static List<SimpleMachine> createSimpleMachines(List<ShakepointMachine> page) {
+    public static List<SimpleMachine> createSimpleMachines(List<VendingMachine> page) {
         List<SimpleMachine> machines = new ArrayList();
-        for (ShakepointMachine m : page) {
+        for (VendingMachine m : page) {
             machines.add(new SimpleMachine(m.getId(), m.getName(), m.getDescription()));
         }
 
         return machines;
     }
 
-    public static ShakepointUser getUserFromTechnician(NewTechnicianRequest dto, String addedBy) {
-        ShakepointUser user = new ShakepointUser();
+    public static User getUserFromTechnician(NewTechnicianRequest dto, String addedBy) {
+        User user = new User();
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(11);
@@ -133,71 +128,90 @@ public class TransformationUtils {
         return user;
     }
 
-    public static SimpleMachineProduct createSimpleMachineProduct(ShakepointMachineProductStatus machineProduct) {
+    public static SimpleMachineProduct createSimpleMachineProduct(VendingMachineProductStatus machineProduct) {
         return new SimpleMachineProduct(machineProduct.getId(), machineProduct.getProduct().getName(),
                 machineProduct.getProduct().getLogoUrl(), machineProduct.getProduct().getType().getValue(),
                 machineProduct.getSlotNumber());
     }
 
-    public static List<SimpleMachineProduct> createSimpleMachineProducts(List<ShakepointMachineProductStatus> s) {
+    public static List<SimpleMachineProduct> createSimpleMachineProducts(List<VendingMachineProductStatus> s) {
         List<SimpleMachineProduct> list = new ArrayList();
-        for (ShakepointMachineProductStatus status : s) {
+        for (VendingMachineProductStatus status : s) {
             list.add(createSimpleMachineProduct(status));
         }
 
         return list;
     }
 
-    public static SimpleProduct createSimpleProduct(ShakepointProduct p) {
+    public static SimpleProduct createSimpleProduct(Product p) {
         return new SimpleProduct(p.getId(), p.getName(), p.getCreationDate(), p.getPrice(), p.getLogoUrl());
     }
 
-    public static List<PurchaseCodeResponse> createPurchaseCodes(List<ShakepointPurchase> activeCodes) {
+    public static List<PurchaseCodeResponse> createPurchaseCodes(List<Purchase> activeCodes) {
         List<PurchaseCodeResponse> codes = new ArrayList();
-        for (ShakepointPurchase code : activeCodes) {
+        for (Purchase code : activeCodes) {
             codes.add(new PurchaseCodeResponse(code.getQrCodeUrl(), code.getProduct().getName(), code.getMachine().getName(), code.getPurchaseDate()));
         }
         return codes;
     }
 
-    public static UserProfileResponse createUserProfile(ShakepointUserProfile userProfile) {
+    public static UserProfileResponse createUserProfile(UserProfile userProfile) {
         UserProfileResponse response = new UserProfileResponse(userProfile.getUser().getName(), userProfile.getUser().getId(),
                 userProfile.getUser().getCreationDate(), true, userProfile.getBirthday(), userProfile.getWeight(),
                 userProfile.getHeight(), getTotalPurchases(userProfile.getUser().getPurchases()), userProfile.getUser().getEmail());
         return response;
     }
 
-    public static double getTotalPurchases(List<ShakepointPurchase> purchases) {
+    public static double getTotalPurchases(List<Purchase> purchases) {
         double total = 0;
-        for (ShakepointPurchase p : purchases) {
+        for (Purchase p : purchases) {
             total += p.getTotal();
         }
         return total;
     }
 
-    public static List<TechnicianMachine> createTechnicianMachinesList(List<ShakepointMachine> machines, MachineRepository instance) {
+    public static List<TechnicianMachine> createTechnicianMachinesList(List<VendingMachine> machines, MachineRepository instance) {
         List<TechnicianMachine> dtos = new ArrayList();
-        for (ShakepointMachine machine : machines) {
+        for (VendingMachine machine : machines) {
             dtos.add(new TechnicianMachine(machine.getId(), machine.getName(), machine.getDescription(), instance.isMachineAlerted(machine.getId()),
                     instance.getMachineProducts(machine.getId()).size(), 6));
         }
         return dtos;
     }
 
-    public static List<ProductDTO> createProducts(List<ShakepointProduct> entities) {
+    public static List<ProductDTO> createProducts(List<Product> entities) {
         List<ProductDTO> productsList = new ArrayList();
-        for (ShakepointProduct p : entities) {
+        for (Product p : entities) {
             productsList.add(new ProductDTO(p.getId(), p.getName(), p.getPrice(), p.getDescription(), p.getLogoUrl()));
         }
         return productsList;
     }
 
-    public static List<UserPurchaseResponse> createPurchases(List<ShakepointPurchase> purchases) {
+    public static List<UserPurchaseResponse> createPurchases(List<Purchase> purchases) {
         List<UserPurchaseResponse> ps = new ArrayList();
 
-        for (ShakepointPurchase p : purchases){
+        for (Purchase p : purchases){
             ps.add(new UserPurchaseResponse(p.getId(), p.getTotal(), p.getProduct().getName(), p.getMachine().getName(), p.getPurchaseDate()));
         }
         return ps;
+    }
+
+    public static List<ProductLevelDescription> createProductLevelDescriptions(List<VendingMachineProductStatus> products) {
+        List<ProductLevelDescription> descriptions = new ArrayList();
+
+        for (VendingMachineProductStatus status : products){
+            descriptions.add(createProductLevelDescription(status));
+        }
+        return descriptions;
+    }
+
+    public static ProductLevelDescription createProductLevelDescription(VendingMachineProductStatus status){
+        return new ProductLevelDescription(
+                status.getPercentage() < 30 ? true : false,
+                status.getProduct().getId(),
+                status.getProduct().getName(),
+                0,
+                status.getProduct().getLogoUrl()
+        );
     }
 }
