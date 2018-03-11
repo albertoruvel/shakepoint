@@ -37,8 +37,8 @@ function getContent(fromDate, toDate){
              headers: headers,
              accept: 'application/json',
              success: function(response){
-                $('#last-signin').val(response.lastSignin);
-                $('#alerted-machines').val(response.alertedMachines);
+                $('#last-signin').text(response.lastSignin);
+                $('#alerted-machines').text(response.alertedMachines);
                 $('#user-name').val(response.partner.name);
                 createPerMachineChart(response.perMachineValues);
                 createMachinesCharts(response.range, response.machines);
