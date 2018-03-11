@@ -57,7 +57,7 @@
                                 <span class="input-group-addon"> a </span>
                                 <input type="text" class="input-sm form-control" name="to" id="to-date-input"/>
                                 <span class="input-group-addon">
-                            		<a href="#" style="font-size: 10px;">Actualizar</a>
+                            		<button id="update-button" class="mdl-button mdl-js-button mdl-button--colored" style="font-size: 10px;">Actualizar</button>
                              	</span>
                             </div>
                             <div id="perMachineTotals" class="analytics center-block" style="margin-bottom: 56px;">

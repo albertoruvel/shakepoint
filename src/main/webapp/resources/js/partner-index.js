@@ -1,24 +1,50 @@
 $(document).ready(function(){
-    var token = $("meta[name='_csrf']").attr("content");
-    var header = $("meta[name='_csrf_header']").attr("content");
-    var headers = {
-    	'X-CSRF-TOKEN': token,
-    };
-    //get per machine values
-    $.ajax({
-        url: '/partner/indexContent',
-        type: 'GET',
-         headers: headers,
-         accept: 'application/json',
-         success: function(response){
-            $('#last-signin').val(response.lastSignin);
-            $('#alerted-machines').val(response.alertedMachines);
-            $('#user-name').val(response.partner.name);
-            createPerMachineChart(response.perMachineValues);
-            createMachinesCharts(response.range, response.machines);
-         }
+
+    $('#update-button').on('click', function(){
+        checkDates();
     });
+    getContent();
 });
+
+function checkDates(){
+    var fromDate = $('#from-date-input').val();
+    var toDate = $('#to-date-input').val();
+
+    if (fromDate === '' || toDate === ''){
+        alert('Debes de introducir fechas validas para continuar');
+        return;
+    }
+
+    getContent(fromDate, toDate);
+}
+
+function validateDate(date){
+    var array = date.split('-');
+    var date = new Date(array[0], array[1], array[2]);
+    return date ;
+}
+
+function getContent(fromDate, toDate){
+    var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+        var headers = {
+        	'X-CSRF-TOKEN': token,
+        };
+        //get per machine values
+        $.ajax({
+            url: '/partner/indexContent?from=' + fromDate + "&to=" toDate,
+            type: 'GET',
+             headers: headers,
+             accept: 'application/json',
+             success: function(response){
+                $('#last-signin').val(response.lastSignin);
+                $('#alerted-machines').val(response.alertedMachines);
+                $('#user-name').val(response.partner.name);
+                createPerMachineChart(response.perMachineValues);
+                createMachinesCharts(response.range, response.machines);
+             }
+        });
+}
 
 function createMachinesCharts(range, machines){
     $('#machines-data-container').html('');
