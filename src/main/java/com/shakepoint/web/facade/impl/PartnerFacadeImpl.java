@@ -150,7 +150,6 @@ public class PartnerFacadeImpl implements PartnerFacade {
             log.info("Will skip order as no products are on it");
             return "FAIL";
         }
-
         //save order
         userRepository.saveUserOrder(order);
 
@@ -169,7 +168,6 @@ public class PartnerFacadeImpl implements PartnerFacade {
         variables = new HashMap();
         variables.put("partnerName", user.getName());
         variables.put("products", products);
-
         //get emails
         String[] array = ordersAdminEmails.split(",");
         for (String email : array) {
@@ -177,9 +175,6 @@ public class PartnerFacadeImpl implements PartnerFacade {
                     new com.shakepoint.email.model.Email(email, Template.NEW_PARTNER_ORDER_REQUEST_ADMIN.getTemplateName(),
                             Template.NEW_PARTNER_ORDER_REQUEST_ADMIN.getSubject(), variables)));
         }
-        log.info("Order emails sent");
-        atts.addAttribute("message", "Se ha creado tu solicitud Shakepoint con ID: " + order.getId());
-
         return "OK";
     }
 
@@ -246,9 +241,7 @@ public class PartnerFacadeImpl implements PartnerFacade {
             for (VendingMachine machine : machines) {
                 item = new MachineProductCountItem();
                 item.setMachineName(machine.getName());
-                log.info("Will check machine " + machine.getName());
                 List<VendingMachineProductStatus> products = machineRepository.getMachineProducts(machine.getId());
-                log.info(String.format("Contains %d products", products.size()));
                 String[] array = new String[products.size()];
                 List<Integer> data = new ArrayList();
                 Integer dataValue;
@@ -258,7 +251,6 @@ public class PartnerFacadeImpl implements PartnerFacade {
                     array[i] = status.getProduct().getName();
                     dataValue = purchaseRepository.getProductCountForDateRange(status.getProduct().getId(), range, machine.getId());
                     data.add(dataValue);
-                    log.info(String.format("Product %s contains %d buys", array[i], dataValue));
                 }
                 item.setProducts(array);
                 item.setData(data);
