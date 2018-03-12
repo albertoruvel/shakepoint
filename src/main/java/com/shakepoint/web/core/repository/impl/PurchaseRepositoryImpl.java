@@ -40,14 +40,6 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
         }
     }
 
-
-    private static final String GET_USER_PURCHASES = "select p.id, p.product_id as productid, p.machine_id as machineId, p.total, p.purchase_date as purchaseDate, p.status, pr.name as productName, pr.logo_url as productLogoUrl, "
-            + "m.name machineName, qr.cashed, qr.qrCodeUrl from purchase p "
-            + "inner join product pr on p.product_id = pr.id "
-            + "inner join machine m on m.id = p.machine_id "
-            + "inner join purchase_qrcode qr on qr.purchase_id = p.id "
-            + "where p.user_id = ?";
-
     @Override
     public List<Purchase> getUserPurchases(String userId, int pageNumber) {
         try {
@@ -101,17 +93,15 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
 
     }
 
-    private static final String GET_TODAY_TOTAL_PURCHASES = "select sum(total) from purchase where purchase_date like '%s";
-
     @Override
     public double getTodayTotalPurchases() {
         Date date = new Date();
-        String dateString = ShakeUtils.SIMPLE_DATE_FORMAT.format(date);
-        String sql = String.format(GET_TODAY_TOTAL_PURCHASES, dateString);
-        sql += "%'";
+        String dateString = ShakeUtils.SLASHES_SIMPLE_DATE_FORMAT.format(date);
         double total = 0;
         try {
-            BigDecimal bigDecimal = (BigDecimal) em.createNativeQuery(sql).getSingleResult();
+            String format = String.format("SELECT SUM(p.total) FROM Purchase p WHERE p.purchaseDate LIKE '%s' AND p.status <> :status", dateString + "%");
+            BigDecimal bigDecimal = (BigDecimal) em.createQuery(format)
+                    .setParameter("status", PurchaseStatus.PRE_AUTH).getSingleResult();
             if (bigDecimal == null) {
                 return 0;
             }
@@ -122,49 +112,47 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
         }
     }
 
-
-    private static final String GET_PER_MACHINE_VALUES = "select avg(p.total) from purchase p inner join machine m on m.id = p.machine_id where p.machine_id = ? and p.purchase_date like '%s'";
-
     @Override
     public Map<String, List<Double>> getPerMachineValues(String[] range, List<VendingMachine> machines) {
         Map<String, List<Double>> map = new HashMap();
-        List<Double> values = null;
-        Double avg = 0.0;
-        Object[] args = null;
-        String format = "";
+        List<Double> values;
+        Double sum;
+        String format;
         for (VendingMachine machine : machines) {
             values = new ArrayList();
             for (String rangeValue : range) {
-                format = String.format(GET_PER_MACHINE_VALUES, rangeValue + "%");
+                format = String.format("SELECT SUM (p.total) FROM Purchase p WHERE p.machine.id = :machineId AND p.purchaseDate LIKE '%s' AND p.status <> :status", rangeValue + "%");
                 try {
-                    avg = (Double) em.createNativeQuery(format).setParameter(1, machine.getId()).getSingleResult();
+                    sum = (Double) em.createQuery(format)
+                            .setParameter("machineId", machine.getId())
+                            .setParameter("status", PurchaseStatus.PRE_AUTH).getSingleResult();
                 } catch (Exception ex) {
                     log.error("Could not get average value", ex);
-                    avg = 0.0;
+                    sum = 0.0;
                 }
-                if (avg == null)
-                    avg = 0.0;
-                values.add(avg);
+                if (sum == null)
+                    sum = 0.0;
+                values.add(sum);
             }
             map.put(machine.getName(), values);
         }
         return map;
     }
 
-    private static final String GET_PER_MACHINE_PRODUCT_COUNT_VALUES = "select count(p.total) from purchase p where p.machine_id = ? and p.purchase_date like '%s'";
     @Override
     public Map<String, List<Double>> getPerMachineProductsCountValues(String[] range, List<VendingMachine> machines) {
         Map<String, List<Double>> map = new HashMap();
-        List<Double> values = null;
-        Double avg = 0.0;
-        Object[] args = null;
-        String format = "";
+        List<Double> values;
+        Double avg;
+        String format;
         for (VendingMachine machine : machines) {
             values = new ArrayList();
             for (String rangeValue : range) {
-                format = String.format(GET_PER_MACHINE_PRODUCT_COUNT_VALUES, rangeValue + "%");
+                format = String.format("SELECT COUNT(p.total) FROM Purchase p WHERE p.machine.id = :machineId AND p.purchaseDate LIKE '%s' AND p.status <> :status", rangeValue + "%");
                 try {
-                    avg = (Double) em.createNativeQuery(format).setParameter(1, machine.getId()).getSingleResult();
+                    avg = (Double) em.createQuery(format)
+                            .setParameter("machineId", machine.getId())
+                            .setParameter("status", PurchaseStatus.PRE_AUTH).getSingleResult();
                 } catch (Exception ex) {
                     log.error("Could not get average value", ex);
                     avg = 0.0;
@@ -196,7 +184,7 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
         return values;
     }
 
-    private static final String GET_TOTAL_INCOME_PER_MACHINE = "select sum(p.total) from purchase p where p.purchase_date like '%s' and p.machine_id = 1";
+    private static final String GET_TOTAL_INCOME_PER_MACHINE = "select sum(p.total) from purchase p where p.purchase_date like '%s' and p.machine_id = ?1";
 
     @Override
     public List<Double> getTotalIncomeValues(String[] range, String machineId) {
