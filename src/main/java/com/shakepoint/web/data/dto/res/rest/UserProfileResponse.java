@@ -105,9 +105,14 @@ public class UserProfileResponse {
     }
 
     public double getCmi() {
-        if (weight > 0 && height > 0)
-            return this.weight / (Math.pow(this.height, 2));
-        else return 0;
+
+        if (weight > 0 && height > 0){
+            //get real mts
+            final double heightMts = height / 100;
+            return this.weight / (Math.pow(heightMts, 2));
+        }else{
+            return 0;
+        }
     }
 
     public String getEmail() {
