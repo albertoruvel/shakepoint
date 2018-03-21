@@ -22,7 +22,7 @@
                     <sec:authorize access="hasRole('ROLE_ADMIN')">
                 <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/admin/products" />">Productos</a>
                 <%--<a class="mdl-navigation__link" style="color: white;" href="<c:url value="technicians" />">Technicians</a>--%>
-                <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/admin//machines" />">Máquinas</a>
+                <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/admin//machines" />">Vendings</a>
                 <form id="logout" action="${logoutUrl}" method="post" >
   					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
   					<button onclick="logout();" class="mdl-navigation__link" style="color: white;background-color: transparent;border: 0px;">Salir</button>
@@ -31,7 +31,7 @@
             <sec:authorize access="hasRole('ROLE_SUPER_ADMIN')">
                 <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/admin/products" />">Productos</a>
                 <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/admin/technicians" />">Socios</a>
-                <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/admin/machines" />">Máquinas</a>
+                <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/admin/machines" />">Vendings</a>
                 <a class="mdl-navigation__link" style="color: white;" href="<c:url value="/admin/users" />">Usuarios</a>
                 <form id="logout" action="${logoutUrl}" method="post" >
   					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
@@ -46,12 +46,6 @@
   						<button onclick="logout();" class="mdl-navigation__link" style="color: white;background-color: transparent;border: 0px;">Salir</button>
 					</form>
             </sec:authorize>
-            <%--<sec:authorize access="hasRole('ROLE_MEMBER')">
-                <a class="mdl-navigation__link" href="">Link</a>
-                <a class="mdl-navigation__link" href="">Link</a>
-                <a class="mdl-navigation__link" href="">Link</a>
-                <a class="mdl-navigation__link" href="">Link</a>  
-            </sec:authorize>--%>
             <sec:authorize access="isAnonymous()">
                 <a class="mdl-navigation__link" style="color: white;" href="<c:url value="signin"/>">Iniciar</a>
                 <%--<a class="mdl-navigation__link" href="<c:url value="apply" />">Apply</a>--%>
