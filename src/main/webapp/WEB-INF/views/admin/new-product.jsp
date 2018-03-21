@@ -99,6 +99,13 @@
                             										class="mdl-textfield__label" path="engineUseTime" for="engineUseTime">Tiempo que se usará el motor para preparar la bebida</label>
                             								</div>
                             							</div>
+                            <div class="form-group">
+                                <select style="width: 60%;height: 36px;" class="center-block" name="productType">
+                                    <c:forEach items="${availableProductTypes}" var="productType">
+                                        <option value="${productType}">${productType}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
 							
 							<%--<div id="url-selection-options" class="form-group">
 							 	<label class="mdl-radio mdl-js-radio mdl-js-ripple-effect"
@@ -112,15 +119,7 @@
 									class="mdl-radio__label">URL del logo</span>
 								</label>
 							</div>--%>
-							<div class="form-group">
 
-								<label
-									class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect center-block"
-									for="type" style="width: 40%;"> <input type="checkbox"
-									name="combo" id="type" class="mdl-checkbox__input"> <span
-									class="mdl-checkbox__label">Este producto es un paquete</span>
-								</label>
-							</div>
 							<div class="row">
 								<button type="submit" id="signInButton"
 									class="mdl-button mdl-js-button mdl-button--colored"

@@ -1,25 +1,42 @@
 package com.shakepoint.web.core.machine;
+
 public enum ProductType {
-    SIMPLE(0), COMBO(1), NOT_VALID(9);
+    PROTEIN(0, "PROTEIN", "Proteína"), AMINO_ACID(1, "AMINO_ACID", "Aminoácido"), OXIDE(9, "OXIDE", "Óxido");
 
     int value;
+    String name;
+    String clientValue;
 
-    ProductType(int value) {
+    ProductType(int value, String name, String clientValue) {
         this.value = value;
+        this.name = name;
+        this.clientValue = clientValue;
     }
 
-    public static ProductType get(int value) {
-        switch (value) {
-            case 0:
-                return SIMPLE;
-            case 1:
-                return COMBO;
+    public static ProductType getProductType(String value) {
+        if (value.toUpperCase().equals("PROTEIN")) {
+            return PROTEIN;
+        } else if (value.toUpperCase().equals("AMINO_ACID")) {
+            return AMINO_ACID;
+        } else if (value.toUpperCase().equals("OXIDE")) {
+            return OXIDE;
+        } else return null;
+    }
+
+    public static String getProductTypeForClient(ProductType type){
+        switch (type){
+            case AMINO_ACID:
+                return AMINO_ACID.clientValue;
+            case OXIDE:
+                return OXIDE.clientValue;
+            case PROTEIN:
+                return PROTEIN.clientValue;
             default:
-                return NOT_VALID;
+                return null;
         }
     }
 
-    public int getValue() {
-        return value;
+    public String getName(){
+        return name;
     }
 }

@@ -17,13 +17,6 @@
                             <strong>Creado en </strong> ${param.creationDate}
                         </p>
                     </div>
-                    <c:if test="${param.type == 1}">
-                        	<div class="mdl-card__menu">
-    							<a href="<c:url value="product/${param.id}/edit"/>" class="mdl-button mdl-js-button mdl-button--icon">
-    								<i class="material-icons">edit</i>
-    							</a>
-  							</div>
-                        </c:if>
                 </div>
             </div>
         </div>

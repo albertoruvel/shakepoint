@@ -44,17 +44,6 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public List<Product> getProducts(int pageNumber, ProductType type) {
-        try {
-            return em.createQuery("SELECT p FROM Product p WHERE p.type = :type")
-                    .setParameter("type", type.getValue())
-                    .getResultList();
-        } catch (Exception ex) {
-            log.error("Could not get products list", ex);
-            return null;
-        }
-    }
-    @Override
     public List<Product> getProducts(int pageNumber) {
         try {
             return em.createQuery("SELECT p FROM Product p").getResultList();

@@ -30,7 +30,7 @@ public class TransformationUtils {
         p.setDescription(product.getDescription());
         p.setLogoUrl(product.getLogoUrl());
         p.setPrice(product.getPrice());
-        p.setType(product.isCombo() ? ProductType.COMBO : ProductType.SIMPLE);
+        p.setType(ProductType.getProductType(product.getProductType()));
         p.setEngineUseTime(product.getEngineUseTime());
         return p;
     }
@@ -130,7 +130,7 @@ public class TransformationUtils {
 
     public static SimpleMachineProduct createSimpleMachineProduct(VendingMachineProductStatus machineProduct) {
         return new SimpleMachineProduct(machineProduct.getId(), machineProduct.getProduct().getName(),
-                machineProduct.getProduct().getLogoUrl(), machineProduct.getProduct().getType().getValue(),
+                machineProduct.getProduct().getLogoUrl(),
                 machineProduct.getSlotNumber());
     }
 
@@ -182,7 +182,7 @@ public class TransformationUtils {
     public static List<ProductDTO> createProducts(List<Product> entities) {
         List<ProductDTO> productsList = new ArrayList();
         for (Product p : entities) {
-            productsList.add(new ProductDTO(p.getId(), p.getName(), p.getPrice(), p.getDescription(), p.getLogoUrl()));
+            productsList.add(new ProductDTO(p.getId(), p.getName(), p.getPrice(), p.getDescription(), p.getLogoUrl(), ProductType.getProductTypeForClient(p.getType())));
         }
         return productsList;
     }

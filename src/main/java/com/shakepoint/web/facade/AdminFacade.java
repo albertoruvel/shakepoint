@@ -64,11 +64,5 @@ public interface AdminFacade {
 
     public TotalIncomeValues getTotalIncomeValues(String from, String to, SimpleDateFormat sdf);
 
-    public ModelAndView getComboView(String productId);
-
     public String deleteMediaContent();
-
-    //public ComboContentResponse getComboContent(String productId);
-
-    //public ProductEntityOld updateComboProduct(String comboId, String productId, int value);
 }

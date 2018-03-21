@@ -80,7 +80,6 @@
 													<jsp:param name="name" value="${product.name}" />
 													<jsp:param name="price" value="${product.price}" />
 													<jsp:param name="logoUrl" value="${product.logoUrl}" />
-													<jsp:param name="combo" value="${product.type}" />
 													<jsp:param name="creationDate"
 														value="${product.creationDate}" />
 													<jsp:param name="location" value="left" />
@@ -98,7 +97,6 @@
 												<jsp:param name="name" value="${product.name}" />
 												<jsp:param name="price" value="${product.price}" />
 												<jsp:param name="logoUrl" value="${product.logoUrl}" />
-												<jsp:param name="combo" value="${product.type}" />
 												<jsp:param name="creationDate"
 													value="${product.creationDate}" />
 												<jsp:param name="location" value="right" />

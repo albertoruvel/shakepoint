@@ -6,13 +6,15 @@ public class ProductDTO {
     private double price;
     private String description;
     private String logoUrl;
+    private String productType;
 
-    public ProductDTO(String id, String name, double price, String description, String logoUrl) {
+    public ProductDTO(String id, String name, double price, String description, String logoUrl, String productType) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.description = description;
         this.logoUrl = logoUrl;
+        this.productType = productType;
     }
 
     public String getId() {
@@ -53,5 +55,13 @@ public class ProductDTO {
 
     public void setLogoUrl(String logoUrl) {
         this.logoUrl = logoUrl;
+    }
+
+    public String getProductType() {
+        return productType;
+    }
+
+    public void setProductType(String productType) {
+        this.productType = productType;
     }
 }

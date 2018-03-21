@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.shakepoint.web.core.email.EmailAsyncSender;
 import com.shakepoint.web.core.email.Template;
+import com.shakepoint.web.core.machine.ProductType;
 import com.shakepoint.web.core.machine.PurchaseStatus;
 import com.shakepoint.web.core.repository.MachineRepository;
 import com.shakepoint.web.core.repository.ProductRepository;
@@ -154,7 +155,7 @@ public class ShopFacadeImpl implements ShopFacade {
     @Override
     public ProductDTO getProductDetails(String productId) {
         Product product = productRepository.getProduct(productId);
-        ProductDTO dto = new ProductDTO(product.getId(), product.getName(), product.getPrice(), product.getDescription(), product.getLogoUrl());
+        ProductDTO dto = new ProductDTO(product.getId(), product.getName(), product.getPrice(), product.getDescription(), product.getLogoUrl(), ProductType.getProductTypeForClient(product.getType()));
         return dto;
     }
 

@@ -187,9 +187,4 @@ public class AdminController {
     public ModelAndView getUsersView(@RequestParam(value="page_number", required=false, defaultValue="1")int pageNumber){
     	return adminFacade.getShakepointUsers(pageNumber);
     }
-    
-    @RequestMapping(value="/product/{productId}/edit", method=RequestMethod.GET)
-    public ModelAndView editCombo(@PathVariable("productId")String productId){
-    	return adminFacade.getComboView(productId); 
-    }
 }

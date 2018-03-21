@@ -140,7 +140,6 @@ public class AdminFacadeImpl implements AdminFacade {
     }
 
 
-
     @Override
     public ModelAndView getShakepointUsers(int pageNumber) {
         ModelAndView mav = new ModelAndView("/admin/users");
@@ -195,39 +194,11 @@ public class AdminFacadeImpl implements AdminFacade {
         Product product = productRepository.getProduct(productId);
         newMachineProduct.setProduct(product);
         newMachineProduct.setSlotNumber(slotNumber);
-        String message = "No se puede agregar el paquete a la maquina.\nLa maquina debe de contener los productos del paquete para ofrecerlos: \n";
-        String productsMessage = "";
-        //check the product
-        Product p = productRepository.getProduct(productId);
-        if (p.getType() == ProductType.COMBO) {
-            boolean success = true;
-            //check if the machine already has the needed products
-            List<Product> products = productRepository.getComboProducts(p.getId(), 1);
-            for (Product cp : products) {
-                if (!machineRepository.containProduct(machineId, cp.getId())) {
-                    productsMessage += cp.getName() + "\n";
-                    if (success)
-                        success = false;
-                }
-            }
-            if (success) {
-                //add the relationship
-                newMachineProduct.setUpdatedBy(addedBy);
-                // add the new entity
-                machineRepository.addMachineProduct(newMachineProduct);
-                response = TransformationUtils.createSimpleMachineProduct(machineRepository.getMachineProduct(newMachineProduct.getId()));
-
-            } else {
-                response = new SimpleMachineProduct(null, null, null, 0, 0);
-            }
-        } else {
-            //product is not a combo
-            //add the relationship
-            newMachineProduct.setUpdatedBy(addedBy);
-            // add the new entity
-            machineRepository.addMachineProduct(newMachineProduct);
-            response = TransformationUtils.createSimpleMachineProduct(machineRepository.getMachineProduct(newMachineProduct.getId()));
-        }
+        //add the relationship
+        newMachineProduct.setUpdatedBy(addedBy);
+        // add the new entity
+        machineRepository.addMachineProduct(newMachineProduct);
+        response = TransformationUtils.createSimpleMachineProduct(machineRepository.getMachineProduct(newMachineProduct.getId()));
 
         return response;
     }
@@ -264,21 +235,15 @@ public class AdminFacadeImpl implements AdminFacade {
         ModelAndView mav = new ModelAndView("admin/new-product");
         //create a new product 
         NewProductRequest product = new NewProductRequest();
-        mav.addObject("product", product);
-
-        return mav;
-    }
-
-    @Override
-    public ModelAndView getComboView(String productId) {
-        ModelAndView mav = new ModelAndView("/admin/combo");
-        //get product
-        Product p = productRepository.getProduct(productId);
-        if (p.getType() == ProductType.COMBO) {
-            mav.addObject("productId", productId);
-        } else {
-            mav.addObject("error", "Este producto no es un paquete, asegurate de seleccionar un producto que se haya definido como paquete");
+        //get all product types
+        ProductType[] types = ProductType.values();
+        String[] typesValues = new String[types.length];
+        for (int i = 0; i < types.length; i ++) {
+            typesValues[i] = types[i].getName();
         }
+        mav.addObject("product", product);
+        mav.addObject("availableProductTypes", typesValues);
+
         return mav;
     }
 
@@ -298,26 +263,12 @@ public class AdminFacadeImpl implements AdminFacade {
         if (product != null) {
             //validate product
             if (validateProduct(product, file)) {
-                //TODO: should create file here and upload to S3 or save it
-                //TODO: check if file have content
                 Product productEntity = new Product();
-                //product is valid
-                if (product.isCombo()) {
-                    //create a new combo
-                    productEntity.setType(ProductType.COMBO);
-                    //save the product
-                    productEntity = TransformationUtils.createProductFromDto(product);
-                    productRepository.createProduct(productEntity);
-                    mav = new ModelAndView("redirect:/admin/success");
-                    atts.addFlashAttribute("message", "Se ha creado el paquete con ID: " + productEntity.getId());
-                    atts.addFlashAttribute("newCombo", productEntity.getId());
-                } else {
-                    productEntity.setType(ProductType.SIMPLE);
-                    productEntity = TransformationUtils.createProductFromDto(product);
-                    productRepository.createProduct(productEntity);
-                    mav = new ModelAndView("redirect:/admin/success");
-                    atts.addFlashAttribute("message", "Se ha guardado el producto con ID: " + productEntity.getId());
-                }
+                productEntity.setType(ProductType.getProductType(product.getProductType()));
+                productEntity = TransformationUtils.createProductFromDto(product);
+                productRepository.createProduct(productEntity);
+                mav = new ModelAndView("redirect:/admin/success");
+                atts.addFlashAttribute("message", "Se ha guardado el producto con ID: " + productEntity.getId());
             } else {
                 //product is not valid
                 mav = new ModelAndView("redirect:/admin/error");
@@ -497,42 +448,5 @@ public class AdminFacadeImpl implements AdminFacade {
             return false;
         return true;
     }
-
-
-    /**
-     @Override public ComboContentResponse getComboContent(String productId) {
-     ComboContentResponse response = new ComboContentResponse();
-     //get current combo product
-     Product combo = productRepository.getProduct(productId);
-     if(combo.getType() == ProductType.COMBO){
-     //get all products
-     List<Product> comboProducts = productRepository.getComboProducts(productId, 1);
-     List<Product> allProducts = productRepository.getProducts(1, ProductType.SIMPLE);
-
-     response.setCombo(combo);
-     response.setComboProducts(comboProducts);
-     response.setProducts(allProducts);
-     }
-     return response;
-     }**/
-
-    /**@Override public ProductEntityOld updateComboProduct(String comboId, String productId, int value){
-    ProductEntityOld p = null;
-
-    //switch among values
-    switch(value){
-    case 0:
-    //delete
-    log.info("Deleting combo product");
-    p = productRepository.deleteComboProduct(comboId, productId);
-    break;
-    case 1:
-    //add
-    log.info("Adding new combo product");
-    p = productRepository.addComboProduct(comboId, productId);
-    break;
-    }
-    return p;
-    }**/
 
 }

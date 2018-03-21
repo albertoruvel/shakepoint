@@ -7,6 +7,7 @@ public class NewProductRequest {
     private String logoUrl;
     private boolean combo;
     private String engineUseTime;
+    private String productType;
 
     public NewProductRequest() {
     }
@@ -57,5 +58,13 @@ public class NewProductRequest {
 
     public void setEngineUseTime(String engineUseTime) {
         this.engineUseTime = engineUseTime;
+    }
+
+    public String getProductType() {
+        return productType;
+    }
+
+    public void setProductType(String productType) {
+        this.productType = productType;
     }
 }

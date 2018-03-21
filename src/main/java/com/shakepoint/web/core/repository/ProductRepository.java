@@ -15,7 +15,6 @@ import java.util.List;
  * @author Alberto Rubalcaba
  */
 public interface ProductRepository {
-    public List<Product> getProducts(int pageNumber, ProductType type);
     public List<Product> getProducts(int pageNumber);
     public void createProduct(Product p);
     public List<Product> getMachineProducts(String machineId, int pageNumber);

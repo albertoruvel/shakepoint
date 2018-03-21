@@ -8,7 +8,6 @@ public class SimpleProduct {
     private String creationDate;
     private double price;
     private String logoUrl;
-    private int type;
 
     public SimpleProduct() {
     }
@@ -57,13 +56,6 @@ public class SimpleProduct {
         return logoUrl;
     }
 
-    public int getType() {
-        return type;
-    }
-
-    public void setType(ProductType type) {
-        this.type = type.getValue();
-    }
 
     public void setLogoUrl(String logoUrl) {
         this.logoUrl = logoUrl;

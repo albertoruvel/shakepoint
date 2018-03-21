@@ -4,14 +4,12 @@ public class SimpleMachineProduct {
     private String id;
     private String productName;
     private String productLogoUrl;
-    private int type;
     private int slotNumber;
 
-    public SimpleMachineProduct(String id, String productName, String productLogoUrl, int type, int slotNumber) {
+    public SimpleMachineProduct(String id, String productName, String productLogoUrl, int slotNumber) {
         this.id = id;
         this.productName = productName;
         this.productLogoUrl = productLogoUrl;
-        this.type = type;
         this.slotNumber = slotNumber;
     }
 
@@ -37,14 +35,6 @@ public class SimpleMachineProduct {
 
     public void setProductLogoUrl(String productLogoUrl) {
         this.productLogoUrl = productLogoUrl;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     public int getSlotNumber() {
