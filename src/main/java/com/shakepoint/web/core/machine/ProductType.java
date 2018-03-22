@@ -1,7 +1,7 @@
 package com.shakepoint.web.core.machine;
 
 public enum ProductType {
-    PROTEIN(0, "PROTEIN", "Proteína"), AMINO_ACID(1, "AMINO_ACID", "Aminoácido"), OXIDE(9, "OXIDE", "Óxido");
+    PROTEIN(0, "PROTEIN", "Proteína"), AMINO_ACID(1, "AMINO_ACID", "Aminoácido"), OXIDE(9, "OXIDE", "Pre-Entreno");
 
     int value;
     String name;
