@@ -18,9 +18,14 @@ import com.shakepoint.web.facade.AdminFacade;
 import com.shakepoint.web.util.ShakeUtils;
 import com.shakepoint.web.util.TransformationUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,8 +54,12 @@ public class AdminFacadeImpl implements AdminFacade {
     @Autowired
     private JmsHandler jmsHandler;
 
+    @Value("${com.shakepoint.web.nutritional.tmp}")
+    private String nutritionalDataTmpFolder;
+
     private static final String MACHINE_CONNECTION_QUEUE_NAME = "machine_connection";
     private static final String DELETE_MEDIA_CONTENT_QUEUE_NAME = "delete_media_content";
+    private static final String NUTRITIONAL_DATA_QUEUE_NAME = "nutritional_data";
     private final Logger log = Logger.getLogger(getClass());
 
     @Override
@@ -267,6 +276,8 @@ public class AdminFacadeImpl implements AdminFacade {
                 productEntity.setType(ProductType.getProductType(product.getProductType()));
                 productEntity = TransformationUtils.createProductFromDto(product);
                 productRepository.createProduct(productEntity);
+                processFile(file, productEntity.getId());
+                jmsHandler.send(NUTRITIONAL_DATA_QUEUE_NAME, productEntity.getId());
                 mav = new ModelAndView("redirect:/admin/success");
                 atts.addFlashAttribute("message", "Se ha guardado el producto con ID: " + productEntity.getId());
             } else {
@@ -280,6 +291,19 @@ public class AdminFacadeImpl implements AdminFacade {
             atts.addFlashAttribute("error", "No se ha podido crear producto");
         }
         return mav;
+    }void processFile(MultipartFile file, final String productId) {
+        try{
+            byte[] bytes = file.getBytes();
+            File tmpFile = new File(nutritionalDataTmpFolder + File.separator + productId + ".jpg");
+            FileOutputStream stream = new FileOutputStream(tmpFile);
+            stream.write(bytes);
+            stream.close();
+        }catch(IOException ex){
+            log.error("Could not read file from request", ex);
+        }catch(NullPointerException ex){
+            log.error("Provided file is null", ex);
+        }
+
     }
 
     @Override
@@ -445,6 +469,8 @@ public class AdminFacadeImpl implements AdminFacade {
             if (file == null)
                 return false;
         } else if (product.getPrice() <= 0)
+            return false;
+        else if (file.getOriginalFilename().isEmpty())
             return false;
         return true;
     }

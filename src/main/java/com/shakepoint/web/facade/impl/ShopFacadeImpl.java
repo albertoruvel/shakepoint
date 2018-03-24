@@ -100,7 +100,7 @@ public class ShopFacadeImpl implements ShopFacade {
         } else {
             user = userRepository.getUserByEmail(p.getName());
             PaymentDetails paymentDetails = payWorksClientService.authorizePayment(request.getCardNumber(), request.getCardExpirationDate(), request.getCvv(), purchase.getTotal());
-            if (paymentDetails == null){
+            if (paymentDetails == null) {
                 log.info("No payment details from payworks");
                 return new PurchaseQRCode(null, false, "Ha ocurrido un problema al realizar el pago, intenta nuevamente");
             } else if (paymentDetails.getAuthCode() != null && paymentDetails.getPayworksResult().equals("A")) {
@@ -121,7 +121,7 @@ public class ShopFacadeImpl implements ShopFacade {
                 //declined
                 log.info("Declined");
                 return new PurchaseQRCode(null, false, "La tarjeta proporcionada ha sido declinada");
-            } else if (paymentDetails.getPayworksResult().equals("T")){
+            } else if (paymentDetails.getPayworksResult().equals("T")) {
                 log.info("Timeout on provider");
                 return new PurchaseQRCode(null, false, "No se ha obtenido respuesta del autorizador, revisa los datos e intenta nuevamente");
             } else {
@@ -155,7 +155,8 @@ public class ShopFacadeImpl implements ShopFacade {
     @Override
     public ProductDTO getProductDetails(String productId) {
         Product product = productRepository.getProduct(productId);
-        ProductDTO dto = new ProductDTO(product.getId(), product.getName(), product.getPrice(), product.getDescription(), product.getLogoUrl(), ProductType.getProductTypeForClient(product.getType()));
+        ProductDTO dto = new ProductDTO(product.getId(), product.getName(), product.getPrice(), product.getDescription(),
+                product.getLogoUrl(), ProductType.getProductTypeForClient(product.getType()), product.getNutritionalDataUrl());
         return dto;
     }
 

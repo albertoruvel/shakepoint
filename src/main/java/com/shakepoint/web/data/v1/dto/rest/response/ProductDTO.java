@@ -7,14 +7,16 @@ public class ProductDTO {
     private String description;
     private String logoUrl;
     private String productType;
+    private String nutritionalDataUrl;
 
-    public ProductDTO(String id, String name, double price, String description, String logoUrl, String productType) {
+    public ProductDTO(String id, String name, double price, String description, String logoUrl, String productType, String nutriData) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.description = description;
         this.logoUrl = logoUrl;
         this.productType = productType;
+        this.nutritionalDataUrl = nutriData;
     }
 
     public String getId() {
@@ -63,5 +65,13 @@ public class ProductDTO {
 
     public void setProductType(String productType) {
         this.productType = productType;
+    }
+
+    public String getNutritionalDataUrl() {
+        return nutritionalDataUrl;
+    }
+
+    public void setNutritionalDataUrl(String nutritionalDataUrl) {
+        this.nutritionalDataUrl = nutritionalDataUrl;
     }
 }

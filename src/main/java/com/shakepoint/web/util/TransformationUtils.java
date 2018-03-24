@@ -182,7 +182,8 @@ public class TransformationUtils {
     public static List<ProductDTO> createProducts(List<Product> entities) {
         List<ProductDTO> productsList = new ArrayList();
         for (Product p : entities) {
-            productsList.add(new ProductDTO(p.getId(), p.getName(), p.getPrice(), p.getDescription(), p.getLogoUrl(), ProductType.getProductTypeForClient(p.getType())));
+            productsList.add(new ProductDTO(p.getId(), p.getName(), p.getPrice(), p.getDescription(), p.getLogoUrl(),
+                    ProductType.getProductTypeForClient(p.getType()), p.getNutritionalDataUrl()));
         }
         return productsList;
     }

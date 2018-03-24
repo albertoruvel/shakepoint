@@ -40,4 +40,13 @@
 
     <bean class="com.shakepoint.web.core.shop.PayWorksClientService"/>
 
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+
+        <!-- setting maximum upload size -->
+        <property name="maxUploadSize" value="100000"/>
+    </bean>
+
+    <bean class="org.springframework.web.multipart.support.StandardServletMultipartResolver"/>
+
 </beans>

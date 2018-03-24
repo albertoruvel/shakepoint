@@ -97,8 +97,15 @@
                             									<input name="engineUseTime" class="mdl-textfield__input center"
                             										path="engineUseTime" type="text" id="engineUseTime" /> <label
                             										class="mdl-textfield__label" path="engineUseTime" for="engineUseTime">Tiempo que se usará el motor para preparar la bebida</label>
-                            								</div>
-                            							</div>
+                            	</div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="nutritionalInfo">Selecciona un archivo local para la información nutrimental</label>
+                                <input id="nutritionalInfo" style="margin:0 auto !important; width:50%;" name="nutritionalData" type="file" accept=".jpg, .jpeg">
+                            </div>
+
                             <div class="form-group">
                                 <select style="width: 60%;height: 36px;" class="center-block" name="productType">
                                     <c:forEach items="${availableProductTypes}" var="productType">

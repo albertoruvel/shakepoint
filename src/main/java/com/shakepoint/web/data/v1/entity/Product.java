@@ -35,6 +35,9 @@ public class Product {
     @Column(name = "engine_use_time")
     private String engineUseTime;
 
+    @Column(name = "nutritional_data_url")
+    private String nutritionalDataUrl;
+
     public Product() {
         id = UUID.randomUUID().toString();
     }
@@ -102,5 +105,13 @@ public class Product {
 
     public void setType(ProductType type) {
         this.type = type;
+    }
+
+    public String getNutritionalDataUrl() {
+        return nutritionalDataUrl;
+    }
+
+    public void setNutritionalDataUrl(String nutritionalDataUrl) {
+        this.nutritionalDataUrl = nutritionalDataUrl;
     }
 }

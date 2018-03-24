@@ -1,5 +1,7 @@
 package com.shakepoint.web.data.v1.dto.mvc.request;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class NewProductRequest {
     private String name;
     private double price;

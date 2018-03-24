@@ -85,9 +85,9 @@ public class AdminController {
         return adminFacade.getNewProductView(); 
     }
     
-    @RequestMapping(value="/new-product", method=RequestMethod.POST)
+    @RequestMapping(value="/new-product", method=RequestMethod.POST, consumes = "multipart/form-data")
     public ModelAndView createProduct(@ModelAttribute("product")NewProductRequest product, RedirectAttributes atts,
-                                      @RequestParam("file")MultipartFile file){
+                                      @RequestParam("nutritionalData")MultipartFile file){
         return adminFacade.createNewProduct(product, atts, file);
     }
     
