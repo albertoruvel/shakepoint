@@ -276,6 +276,7 @@ public class AdminFacadeImpl implements AdminFacade {
                 productEntity.setType(ProductType.getProductType(product.getProductType()));
                 productEntity = TransformationUtils.createProductFromDto(product);
                 productRepository.createProduct(productEntity);
+                log.info("Product description: \n" + productEntity.getDescription());
                 processFile(file, productEntity.getId());
                 jmsHandler.send(NUTRITIONAL_DATA_QUEUE_NAME, productEntity.getId());
                 mav = new ModelAndView("redirect:/admin/success");
