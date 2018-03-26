@@ -10,7 +10,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,14 +29,14 @@ public class PayWorksClientService {
     @Value("${com.shakepoint.web.admin.banorte.terminal}")
     private String terminalId;
 
-    @Value("${com.shakepoint.web.admin.banorte.currentMode}")
-    private String currentMode;
-
     @Value("${com.shakepoint.web.admin.banorte.commandTransaction}")
     private String commandTransaction;
 
     @Value("${com.shakepoint.web.admin.banorte.debugMode}")
     private Boolean debug;
+
+    @Value("${com.shakepoint.web.admin.banorte.cnfFile}")
+    private String environmentConfigurationFile;
 
     @Autowired
     private RetrofitConfiguration configuration;
@@ -47,7 +47,6 @@ public class PayWorksClientService {
 
     @PostConstruct
     public void init() {
-        log.info(String.format("Creating PayWorks service client for %s", configuration.getServerUrl()));
         client = new Retrofit.Builder()
                 .baseUrl(configuration.getServerUrl())
                 .build().create(PayWorksClient.class);
@@ -62,8 +61,10 @@ public class PayWorksClientService {
                     "123123", "123123123", "A", "Test purchase have been accepted");
             return details;
         }else{
+            //get current mode
+            final String mode = getCurrentProfileMode();
             try{
-                Response<ResponseBody> response = client.authorizePayment(currentMode, amount, commandTransaction, user, merchantId, password, cardNumber, cardExpDate, cvv, "manual", "ES", terminalId)
+                Response<ResponseBody> response = client.authorizePayment(mode, amount, commandTransaction, user, merchantId, password, cardNumber, cardExpDate, cvv, "manual", "ES", terminalId)
                         .execute();
                 Headers headers = response.headers();
                 if (response.errorBody() != null){
@@ -78,6 +79,35 @@ public class PayWorksClientService {
                 log.error("Could not complete payment :(", ex);
                 return null;
             }
+        }
+    }
+
+    private String getCurrentProfileMode() {
+        try{
+            File file = new File(environmentConfigurationFile);
+            if (file.exists()){
+                BufferedReader reader = new BufferedReader(new FileReader(file));
+                final String mode = reader.readLine();
+                reader.close();
+                return mode;
+            }else {
+                log.error("There is no file on directory " + environmentConfigurationFile);
+                return null;
+            }
+        }catch(IOException ex){
+            log.error("Could not read file " + environmentConfigurationFile, ex);
+            return null;
+        }
+    }
+
+    public void savePayWorksMode(PayWorksMode mode){
+        try{
+            File file = new File(environmentConfigurationFile);
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            writer.write(mode.getValue());
+            writer.close();
+        }catch(IOException ex){
+            log.error("Could not write mode", ex);
         }
     }
 

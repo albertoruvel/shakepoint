@@ -56,13 +56,18 @@ public class AdminController {
     AdminIndexContent getIndexContent(){
     	return adminFacade.getIndexContent(); 
     }
+
+    @RequestMapping(value = "/write_payworks_mode", method = RequestMethod.POST)
+    public void writePayWorksMode(@RequestParam(value="mode")String mode){
+        adminFacade.writePayWorksMode(mode);
+    }
     
     @RequestMapping(value="/get_index_per_machine_values", method=RequestMethod.GET, 
     		produces="application/json")
     public @ResponseBody
     PerMachineValues getIndexPerMachineValues(
-    									@RequestParam(value="from", required=true)String from, 
-    									@RequestParam(value="to", required=true)String to){
+    									@RequestParam(value="from")String from,
+    									@RequestParam(value="to")String to){
     	return adminFacade.getIndexPerMachineValues(from, to, ShakeUtils.SLASHES_SIMPLE_DATE_FORMAT);
     }
     

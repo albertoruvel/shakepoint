@@ -57,6 +57,11 @@
                             Esta opcion eliminara todo el contenido en Amazon S3 (use con cautela)
                         </p>
                         <button class="mdl-button mdl-js-button mdl-button--colored" data-bind="click: deleteMediaContent">Eliminar contenido en Amazon S3</button>
+
+                        <h4>Elije el modo de pago para el ambiente</h4>
+                        <select style="width: 50%;height: 36px;margin-bottom: 24px;" class="center-block"
+                        		data-bind="options: payWorksModes, value: selectedPayWorksMode, optionsCaption: 'Seleccione un modo de pago', event: {change: $root.savePayWorksMode}">
+                        </select>
                         </div>
                         
                         <div id="main-card" class="mdl-card mdl-shadow--2dp center-block" style="padding: 16px; ">

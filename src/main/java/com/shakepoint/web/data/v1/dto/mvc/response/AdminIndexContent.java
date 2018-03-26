@@ -1,77 +1,84 @@
 package com.shakepoint.web.data.v1.dto.mvc.response;
 
 public class AdminIndexContent {
-	private int activeMachines; 
-	private int alertedMachines; 
-	private int registeredTechnicians; 
-	private double todayTotal; 
-	private PerMachineValues perMachineValues;
-	private TotalIncomeValues totalIncomeValues;
-	
-	
-	public AdminIndexContent() {
-		super();
-	}
+    private int activeMachines;
+    private int alertedMachines;
+    private int registeredTechnicians;
+    private double todayTotal;
+    private PerMachineValues perMachineValues;
+    private TotalIncomeValues totalIncomeValues;
+    private String[] modes;
 
 
-	public int getActiveMachines() {
-		return activeMachines;
-	}
+    public AdminIndexContent() {
+        super();
+    }
 
 
-	public void setActiveMachines(int activeMachines) {
-		this.activeMachines = activeMachines;
-	}
+    public int getActiveMachines() {
+        return activeMachines;
+    }
 
 
-	public int getAlertedMachines() {
-		return alertedMachines;
-	}
+    public void setActiveMachines(int activeMachines) {
+        this.activeMachines = activeMachines;
+    }
 
 
-	public void setAlertedMachines(int alertedMachines) {
-		this.alertedMachines = alertedMachines;
-	}
+    public int getAlertedMachines() {
+        return alertedMachines;
+    }
 
 
-	public int getRegisteredTechnicians() {
-		return registeredTechnicians;
-	}
+    public void setAlertedMachines(int alertedMachines) {
+        this.alertedMachines = alertedMachines;
+    }
 
 
-	public void setRegisteredTechnicians(int registeredTechnicians) {
-		this.registeredTechnicians = registeredTechnicians;
-	}
+    public int getRegisteredTechnicians() {
+        return registeredTechnicians;
+    }
 
 
-	public double getTodayTotal() {
-		return todayTotal;
-	}
+    public void setRegisteredTechnicians(int registeredTechnicians) {
+        this.registeredTechnicians = registeredTechnicians;
+    }
 
 
-	public void setTodayTotal(double todayTotal) {
-		this.todayTotal = todayTotal;
-	}
+    public double getTodayTotal() {
+        return todayTotal;
+    }
 
 
-	public PerMachineValues getPerMachineValues() {
-		return perMachineValues;
-	}
+    public void setTodayTotal(double todayTotal) {
+        this.todayTotal = todayTotal;
+    }
 
 
-	public void setPerMachineValues(PerMachineValues perMachineValues) {
-		this.perMachineValues = perMachineValues;
-	}
+    public PerMachineValues getPerMachineValues() {
+        return perMachineValues;
+    }
 
 
-	public TotalIncomeValues getTotalIncomeValues() {
-		return totalIncomeValues;
-	}
+    public void setPerMachineValues(PerMachineValues perMachineValues) {
+        this.perMachineValues = perMachineValues;
+    }
 
 
-	public void setTotalIncomeValues(TotalIncomeValues totalIncomeValues) {
-		this.totalIncomeValues = totalIncomeValues;
-	}
-	
-	
+    public TotalIncomeValues getTotalIncomeValues() {
+        return totalIncomeValues;
+    }
+
+
+    public void setTotalIncomeValues(TotalIncomeValues totalIncomeValues) {
+        this.totalIncomeValues = totalIncomeValues;
+    }
+
+    public String[] getModes() {
+        return modes;
+    }
+
+    public void setModes(String[] modes) {
+        this.modes = modes;
+    }
 }

@@ -7,6 +7,8 @@ import com.shakepoint.web.core.repository.MachineRepository;
 import com.shakepoint.web.core.repository.ProductRepository;
 import com.shakepoint.web.core.repository.PurchaseRepository;
 import com.shakepoint.web.core.repository.UserRepository;
+import com.shakepoint.web.core.shop.PayWorksClientService;
+import com.shakepoint.web.core.shop.PayWorksMode;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewProductRequest;
 import com.shakepoint.web.data.v1.dto.mvc.response.*;
 import com.shakepoint.web.data.v1.dto.rest.response.SimpleMachineProduct;
@@ -56,6 +58,9 @@ public class AdminFacadeImpl implements AdminFacade {
 
     @Value("${com.shakepoint.web.nutritional.tmp}")
     private String nutritionalDataTmpFolder;
+
+    @Autowired
+    private PayWorksClientService payWorksClientService;
 
     private static final String MACHINE_CONNECTION_QUEUE_NAME = "machine_connection";
     private static final String DELETE_MEDIA_CONTENT_QUEUE_NAME = "delete_media_content";
@@ -128,13 +133,6 @@ public class AdminFacadeImpl implements AdminFacade {
         final Date fromDate = calendar.getTime();
         //create a range array
         String[] range = ShakeUtils.getDateRange(fromDate, toDate);
-
-        /**perMachine.setFromDate(ShakeUtils.SIMPLE_DATE_FORMAT.format(fromDate));
-         perMachine.setToDate(ShakeUtils.SIMPLE_DATE_FORMAT.format(toDate));
-         perMachine.setRange(range);
-         Map<String, List<Double>> values = purchaseRepository.getPerMachineValues(range);
-
-         perMachine.setValues(values);**/
         String from = ShakeUtils.SIMPLE_DATE_FORMAT.format(fromDate);
         String to = ShakeUtils.SIMPLE_DATE_FORMAT.format(toDate);
         perMachine = getIndexPerMachineValues(from, to, ShakeUtils.SIMPLE_DATE_FORMAT);
@@ -144,6 +142,13 @@ public class AdminFacadeImpl implements AdminFacade {
         totalIncome.setRange(range);
 
         content.setTotalIncomeValues(totalIncome);
+
+        PayWorksMode[] modesEnum = PayWorksMode.values();
+        String[] modes = new String[modesEnum.length];
+        for (int i = 0; i < modesEnum.length; i ++){
+            modes[i] = modesEnum[i].getValue();
+        }
+        content.setModes(modes);
 
         return content;
     }
@@ -262,6 +267,14 @@ public class AdminFacadeImpl implements AdminFacade {
         log.info("Will delete S3 content, sending JMS message to connector....");
         jmsHandler.send(DELETE_MEDIA_CONTENT_QUEUE_NAME, "Do it!");
         return "OK";
+    }
+
+    @Override
+    public void writePayWorksMode(String mode) {
+        log.info("Will write PayWorks mode");
+        //translate mode
+        final PayWorksMode currentMode = PayWorksMode.get(mode);
+        payWorksClientService.savePayWorksMode(currentMode);
     }
 
 

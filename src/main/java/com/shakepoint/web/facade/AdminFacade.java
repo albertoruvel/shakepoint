@@ -65,4 +65,6 @@ public interface AdminFacade {
     public TotalIncomeValues getTotalIncomeValues(String from, String to, SimpleDateFormat sdf);
 
     public String deleteMediaContent();
+
+    public void writePayWorksMode(String mode);
 }

@@ -58,6 +58,19 @@ function AdminIndexViewModel(){
 	configDatepicker(); 
 	
 	var self = this;
+	self.payWorksModes = ko.observableArray([]);
+	self.selectedPayWorksMode = ko.observable(0);
+	self.savePayWorksMode = function(){
+	    $.ajax({
+	        type: "POST",
+	        url: "/admin/write_payworks_mode?mode=" + self.selectedPayWorksMode(),
+	        headers: headers,
+	        success: function(response){
+	        },
+	        error: function(response){
+	        }
+	    });
+	};
 	self.activeMachines = ko.observable(0); 
 	self.alertedMachines = ko.observable(0); 
 	self.todayTotal = ko.observable(0); 
@@ -128,12 +141,19 @@ function AdminIndexViewModel(){
 		accept: 'application/json', 
 		success: function(response){
 			 createPerMachineChart(response.perMachineValues);
-			 createTotalIncomeChart(response.totalIncomeValues); 
+			 createTotalIncomeChart(response.totalIncomeValues);
+			 createPayWorksModes(response.modes, self);
 		}, 
 		error: function(error){
-			
+
 		}
 	}); 
+}
+
+function createPayWorksModes(modes, self){
+    for (var i = 0; i < modes.length; i ++){
+        self.payWorksModes.push(modes[i]);
+    }
 }
 
 function getTotalIncomeChart(from, to, headers){
