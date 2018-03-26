@@ -15,23 +15,32 @@ import com.shakepoint.web.data.v1.dto.rest.response.PurchaseCodeResponse;
 import com.shakepoint.web.data.v1.dto.rest.response.SimpleMachineProduct;
 import com.shakepoint.web.data.v1.entity.*;
 import com.shakepoint.web.data.v1.dto.mvc.request.NewMachineRequest;
+import org.apache.log4j.Logger;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class TransformationUtils {
+
+    private static final Logger log = Logger.getLogger(TransformationUtils.class);
+
     public static Product createProductFromDto(NewProductRequest product) {
         Product p = new Product();
-        p.setName(product.getName());
-        p.setCreationDate(ShakeUtils.DATE_FORMAT.format(new Date()));
-        p.setDescription(product.getDescription());
-        p.setLogoUrl(product.getLogoUrl());
-        p.setPrice(product.getPrice());
-        p.setType(ProductType.getProductType(product.getProductType()));
-        p.setEngineUseTime(product.getEngineUseTime());
+        try{
+            p.setName(product.getName());
+            p.setCreationDate(ShakeUtils.DATE_FORMAT.format(new Date()));
+            p.setDescription(new String(product.getDescription().getBytes(), "UTF-8"));
+            p.setLogoUrl(product.getLogoUrl());
+            p.setPrice(product.getPrice());
+            p.setType(ProductType.getProductType(product.getProductType()));
+            p.setEngineUseTime(product.getEngineUseTime());
+        }catch(UnsupportedEncodingException ex){
+            log.info("Could not transform encoding", ex);
+        }
         return p;
     }
 
@@ -181,9 +190,13 @@ public class TransformationUtils {
 
     public static List<ProductDTO> createProducts(List<Product> entities) {
         List<ProductDTO> productsList = new ArrayList();
-        for (Product p : entities) {
-            productsList.add(new ProductDTO(p.getId(), p.getName(), p.getPrice(), p.getDescription(), p.getLogoUrl(),
-                    ProductType.getProductTypeForClient(p.getType()), p.getNutritionalDataUrl()));
+        try{
+            for (Product p : entities) {
+                productsList.add(new ProductDTO(p.getId(), p.getName(), p.getPrice(), new String(p.getDescription().getBytes(), "UTF-8"), p.getLogoUrl(),
+                        ProductType.getProductTypeForClient(p.getType()), p.getNutritionalDataUrl()));
+            }
+        }catch(UnsupportedEncodingException ex){
+            log.info("Could not transform encoding", ex);
         }
         return productsList;
     }
