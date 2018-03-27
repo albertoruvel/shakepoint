@@ -15,7 +15,7 @@
         <script type="text/javascript" src="<c:url value="/resources/bower_components/jquery/jquery.min.js" />"></script>
         <script type="text/javascript" src="<c:url value="/resources/bower_components/material-design-lite/material.min.js" />"></script>
         <script type="text/javascript" src="<c:url value="/resources/bower_components/bootstrap/js/bootstrap.min.js" />"></script>
-        <script type="text/javascript" src="<c:url value="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"/>"></script>
+        <script type="text/javascript" src="<c:url value="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"/>"></script>
         <script type="text/javascript" src="<c:url value="/resources/js/bootstrap-datepicker.js"/>"></script>
         <script src="https://code.highcharts.com/highcharts.js"></script>
         <script src="<c:url value="/resources/js/admin-index.js"/>"></script>

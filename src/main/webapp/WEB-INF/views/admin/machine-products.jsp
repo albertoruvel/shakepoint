@@ -19,7 +19,7 @@
 <script type="text/javascript"
 	src="<c:url value="/resources/bower_components/bootstrap/js/bootstrap.min.js" />"></script>
 <script type="text/javascript"
-	src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
+	src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
 <script type="text/javascript"
 	src="<c:url value="/resources/js/machine-products.js" />"></script>
 <link rel="stylesheet"
