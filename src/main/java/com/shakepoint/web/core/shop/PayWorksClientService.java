@@ -53,7 +53,7 @@ public class PayWorksClientService {
     }
 
     public PaymentDetails authorizePayment(String cardNumber, String cardExpDate, String cvv, double amount) {
-        cardNumber = cardNumber.trim();
+        cardNumber = cardNumber.replaceAll(" ", "");
         PaymentDetails details;
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
         if (debug) {
