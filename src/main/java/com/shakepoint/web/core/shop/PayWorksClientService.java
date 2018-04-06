@@ -53,6 +53,7 @@ public class PayWorksClientService {
     }
 
     public PaymentDetails authorizePayment(String cardNumber, String cardExpDate, String cvv, double amount) {
+        cardNumber.trim();
         PaymentDetails details;
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
         if (debug) {
@@ -63,7 +64,6 @@ public class PayWorksClientService {
         } else {
             //get current mode
             final String mode = getCurrentProfileMode();
-            log.info(String.format("Will authorize payment with following values: CardNumber: %s -- ExpirationDate: %s -- CVV: %s -- ProfileMode: %s", cardNumber, cardExpDate, cvv, mode));
             try {
                 Response<ResponseBody> response = client.authorizePayment(mode, amount, commandTransaction, user, merchantId, password, cardNumber, cardExpDate, cvv, "manual", "ES", terminalId)
                         .execute();
