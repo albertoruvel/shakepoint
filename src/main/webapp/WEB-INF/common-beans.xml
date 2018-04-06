@@ -23,8 +23,8 @@
     <bean name="emailAsyncSender" class="com.shakepoint.web.core.email.impl.EmailAsyncSenderImpl"/>
 
     <bean name="jmsJndi" class="org.springframework.jndi.JndiObjectFactoryBean">
-        <property name="jndiName" value="java:jboss/exported/ConnectionFactory"/>
-    </bean>
+    <property name="jndiName" value="java:jboss/exported/ConnectionFactory"/>
+</bean>
 
     <bean name="jmsHandler" class="com.shakepoint.integration.jms.client.handler.JmsHandler" >
         <property name="connectionFactory" ref="jmsJndi"/>

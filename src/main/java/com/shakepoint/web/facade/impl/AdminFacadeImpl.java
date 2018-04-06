@@ -145,7 +145,7 @@ public class AdminFacadeImpl implements AdminFacade {
 
         PayWorksMode[] modesEnum = PayWorksMode.values();
         String[] modes = new String[modesEnum.length];
-        for (int i = 0; i < modesEnum.length; i ++){
+        for (int i = 0; i < modesEnum.length; i++) {
             modes[i] = modesEnum[i].getValue();
         }
         content.setModes(modes);
@@ -252,7 +252,7 @@ public class AdminFacadeImpl implements AdminFacade {
         //get all product types
         ProductType[] types = ProductType.values();
         String[] typesValues = new String[types.length];
-        for (int i = 0; i < types.length; i ++) {
+        for (int i = 0; i < types.length; i++) {
             typesValues[i] = types[i].getName();
         }
         mav.addObject("product", product);
@@ -304,16 +304,18 @@ public class AdminFacadeImpl implements AdminFacade {
             atts.addFlashAttribute("error", "No se ha podido crear producto");
         }
         return mav;
-    }void processFile(MultipartFile file, final String productId) {
-        try{
+    }
+
+    void processFile(MultipartFile file, final String productId) {
+        try {
             byte[] bytes = file.getBytes();
             File tmpFile = new File(nutritionalDataTmpFolder + File.separator + productId + ".jpg");
             FileOutputStream stream = new FileOutputStream(tmpFile);
             stream.write(bytes);
             stream.close();
-        }catch(IOException ex){
+        } catch (IOException ex) {
             log.error("Could not read file from request", ex);
-        }catch(NullPointerException ex){
+        } catch (NullPointerException ex) {
             log.error("Provided file is null", ex);
         }
 

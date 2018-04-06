@@ -52,30 +52,31 @@ public class PayWorksClientService {
                 .build().create(PayWorksClient.class);
     }
 
-    public PaymentDetails authorizePayment(String cardNumber, String cardExpDate, String cvv, double amount){
+    public PaymentDetails authorizePayment(String cardNumber, String cardExpDate, String cvv, double amount) {
         PaymentDetails details;
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-        if (debug){
+        if (debug) {
             log.info("DEBUG purchase have been created");
             details = new PaymentDetails("testAuthCode", dateFormat.format(new Date()), dateFormat.format(new Date()),
                     "123123", "123123123", "A", "Test purchase have been accepted");
             return details;
-        }else{
+        } else {
             //get current mode
             final String mode = getCurrentProfileMode();
-            try{
+            log.info(String.format("Will authorize payment with following values: CardNumber: %s -- ExpirationDate: %s -- CVV: %s -- ProfileMode: %s", cardNumber, cardExpDate, cvv, mode));
+            try {
                 Response<ResponseBody> response = client.authorizePayment(mode, amount, commandTransaction, user, merchantId, password, cardNumber, cardExpDate, cvv, "manual", "ES", terminalId)
                         .execute();
                 Headers headers = response.headers();
-                if (response.errorBody() != null){
+                if (response.errorBody() != null) {
                     log.error(response.errorBody().string());
                     return null;
-                }else{
+                } else {
                     details = getDetailsFromResponse(headers);
                     return details;
                 }
 
-            }catch(IOException ex){
+            } catch (IOException ex) {
                 log.error("Could not complete payment :(", ex);
                 return null;
             }
@@ -83,30 +84,30 @@ public class PayWorksClientService {
     }
 
     private String getCurrentProfileMode() {
-        try{
+        try {
             File file = new File(environmentConfigurationFile);
-            if (file.exists()){
+            if (file.exists()) {
                 BufferedReader reader = new BufferedReader(new FileReader(file));
                 final String mode = reader.readLine();
                 reader.close();
                 return mode;
-            }else {
+            } else {
                 log.error("There is no file on directory " + environmentConfigurationFile);
                 return null;
             }
-        }catch(IOException ex){
+        } catch (IOException ex) {
             log.error("Could not read file " + environmentConfigurationFile, ex);
             return null;
         }
     }
 
-    public void savePayWorksMode(PayWorksMode mode){
-        try{
+    public void savePayWorksMode(PayWorksMode mode) {
+        try {
             File file = new File(environmentConfigurationFile);
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
             writer.write(mode.getValue());
             writer.close();
-        }catch(IOException ex){
+        } catch (IOException ex) {
             log.error("Could not write mode", ex);
         }
     }
@@ -120,6 +121,10 @@ public class PayWorksClientService {
         final String payworksResult = headers.get("RESULTADO_PAYW");
         final String message = headers.get("TEXTO");
 
+        if (getCurrentProfileMode().equals("PRD")) {
+            log.info(String.format("TransactionResult: \nAuthCode: %s\nRequestDate: %s\nResponseDate: %s\nMerchantID: %s\nReference: %s\nResult: %s\nMessage: %s",
+                    authCode, requestDate, responseDate, merchantId, reference, payworksResult, message));
+        }
         return new PaymentDetails(authCode, requestDate, responseDate, merchantId, reference, payworksResult, message);
     }
 }

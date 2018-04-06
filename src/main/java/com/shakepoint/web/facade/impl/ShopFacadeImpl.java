@@ -23,7 +23,6 @@ import com.shakepoint.web.data.v1.entity.*;
 import com.shakepoint.web.util.TransformationUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.shakepoint.web.core.qr.QrCodeCreator;
 import com.shakepoint.web.facade.ShopFacade;
 
 public class ShopFacadeImpl implements ShopFacade {
@@ -40,8 +39,6 @@ public class ShopFacadeImpl implements ShopFacade {
     @Autowired
     private ProductRepository productRepository;
 
-    @Autowired
-    private QrCodeCreator qrCodeCreator;
 
     @Autowired
     private EmailAsyncSender emailSender;
