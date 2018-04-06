@@ -62,9 +62,7 @@
     </mvc:interceptors>
 
     <mvc:resources mapping="/resources/**" location="/resources/"/>
-    <!-- <mvc:resources mapping="/static/qr-codes/**" location="file:///C:/shakepoint-tmp/qr/"/>
-     <mvc:resources mapping="/static/logos/**" location="file:///C:/shakepoint-tmp/logos/"/>
- -->
+
     <bean name="mainViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
         <property name="prefix" value="/WEB-INF/views/"/>
@@ -106,8 +104,6 @@
             <security:password-encoder ref="passwordEncoder"/>
         </security:authentication-provider>
     </security:authentication-manager>
-
-    <bean name="qrCodeCreator" class="com.shakepoint.web.core.qr.impl.QrCodeCreatorImpl"/>
 
     <context:component-scan base-package="com.shakepoint.web.controller"/>
 
