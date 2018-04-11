@@ -96,7 +96,8 @@ public class ShopFacadeImpl implements ShopFacade {
             return new PurchaseQRCode(null, false, "La compra especificada ya ha sido comprada por alguien mas, refresca los productos y vuelve a intentar");
         } else {
             user = userRepository.getUserByEmail(p.getName());
-            PaymentDetails paymentDetails = payWorksClientService.authorizePayment(request.getCardNumber(), request.getCardExpirationDate(), request.getCvv(), purchase.getTotal());
+            PaymentDetails paymentDetails = payWorksClientService.authorizePayment(request.getCardNumber(),
+                    request.getCardExpirationDate(), request.getCvv(), purchase.getTotal(), purchase.getId());
             if (paymentDetails == null) {
                 log.info("No payment details from payworks");
                 return new PurchaseQRCode(null, false, "Ha ocurrido un problema al realizar el pago, intenta nuevamente");
