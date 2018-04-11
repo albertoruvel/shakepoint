@@ -52,7 +52,7 @@ public class PayWorksClientService {
                 .build().create(PayWorksClient.class);
     }
 
-    public PaymentDetails authorizePayment(String cardNumber, String cardExpDate, String cvv, double amount, String purchaseId) {
+    public PaymentDetails authorizePayment(String cardNumber, String cardExpDate, String cvv, double amount, String controlNumber) {
         cardNumber = cardNumber.replaceAll(" ", "");
         PaymentDetails details;
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
@@ -66,7 +66,7 @@ public class PayWorksClientService {
             final String mode = getCurrentProfileMode();
             try {
                 Response<ResponseBody> response = client.authorizePayment(mode, amount, commandTransaction, user,
-                        merchantId, password, cardNumber, cardExpDate, cvv, "MANUAL", "ES", terminalId, purchaseId)
+                        merchantId, password, cardNumber, cardExpDate, cvv, "MANUAL", "ES", terminalId, controlNumber)
                         .execute();
                 Headers headers = response.headers();
                 if (response.errorBody() != null) {

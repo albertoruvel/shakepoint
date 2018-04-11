@@ -97,7 +97,7 @@ public class ShopFacadeImpl implements ShopFacade {
         } else {
             user = userRepository.getUserByEmail(p.getName());
             PaymentDetails paymentDetails = payWorksClientService.authorizePayment(request.getCardNumber(),
-                    request.getCardExpirationDate(), request.getCvv(), purchase.getTotal(), purchase.getId());
+                    request.getCardExpirationDate(), request.getCvv(), purchase.getTotal(), purchase.getControlNumber());
             if (paymentDetails == null) {
                 log.info("No payment details from payworks");
                 return new PurchaseQRCode(null, false, "Ha ocurrido un problema al realizar el pago, intenta nuevamente");
