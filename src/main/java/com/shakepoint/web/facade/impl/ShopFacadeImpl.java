@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.shakepoint.integration.jms.client.handler.JmsHandler;
 import com.shakepoint.web.core.email.EmailAsyncSender;
 import com.shakepoint.web.core.email.Template;
 import com.shakepoint.web.core.machine.ProductType;
@@ -39,6 +40,8 @@ public class ShopFacadeImpl implements ShopFacade {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private JmsHandler jmsHandler;
 
     @Autowired
     private EmailAsyncSender emailSender;
@@ -48,6 +51,7 @@ public class ShopFacadeImpl implements ShopFacade {
 
     private final Logger log = Logger.getLogger(getClass());
     private static final String EMAIL_SENDER_QUEUE_NAME = "shakepoint.integration.email.send";
+    private static final String RETRY_UPLOAD_QUEUE_NAME = "retry_file_upload";
 
 
     @Override
@@ -102,6 +106,11 @@ public class ShopFacadeImpl implements ShopFacade {
                 log.info("No payment details from payworks");
                 return new PurchaseQRCode(null, false, "Ha ocurrido un problema al realizar el pago, intenta nuevamente");
             } else if (paymentDetails.getAuthCode() != null && paymentDetails.getPayworksResult().equals("A")) {
+                //check if purchase already contains a qr code
+                if (purchase.getQrCodeUrl() == null) {
+                    //try to retry upload for purchase
+                    jmsHandler.send(RETRY_UPLOAD_QUEUE_NAME, purchase.getId());
+                }
                 //payment went well
                 purchase.setUser(user);
                 purchase.setStatus(PurchaseStatus.AUTHORIZED);
@@ -113,7 +122,6 @@ public class ShopFacadeImpl implements ShopFacade {
                 Map<String, Object> args = new HashMap();
                 args.put("productNames", productNames);
                 emailSender.sendEmail(user.getEmail(), Template.SUCCESSFUL_PURCHASE, args);
-                log.info("Payment went successfully");
                 return new PurchaseQRCode(purchase.getQrCodeUrl(), true, "Compra realizada con éxito");
             } else if (paymentDetails.getPayworksResult().equals("D")) {
                 //declined
@@ -127,16 +135,6 @@ public class ShopFacadeImpl implements ShopFacade {
                 return new PurchaseQRCode(null, false, "La tarjeta proporcionada ha sido rechazada");
             }
         }
-    }
-
-    private PurchaseResponse getPurchaseResponse(String message, String purchaseId, boolean success, double total, String qrCodeUrl) {
-        PurchaseResponse response = new PurchaseResponse();
-        response.setMessage(message);
-        response.setPurchaseId(purchaseId);
-        response.setSuccess(success);
-        response.setTotal(total);
-        response.setQrCodeUrl(qrCodeUrl);
-        return response;
     }
 
 
