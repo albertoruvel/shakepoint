@@ -1,10 +1,7 @@
 package com.shakepoint.web.facade.impl;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.shakepoint.integration.jms.client.handler.JmsHandler;
 import com.shakepoint.web.core.email.EmailAsyncSender;
@@ -86,6 +83,11 @@ public class ShopFacadeImpl implements ShopFacade {
         return response;
     }
 
+    private String createControlNumber(){
+        final String controlNumber = UUID.randomUUID().toString().replace("-", "").substring(0, 6);
+        return controlNumber;
+    }
+
     @Override
     public PurchaseQRCode confirmPurchase(ConfirmPurchaseRequest request, Principal p) {
         PurchaseQRCode code = null;
@@ -100,6 +102,10 @@ public class ShopFacadeImpl implements ShopFacade {
             return new PurchaseQRCode(null, false, "La compra especificada ya ha sido comprada por alguien mas, refresca los productos y vuelve a intentar");
         } else {
             user = userRepository.getUserByEmail(p.getName());
+            final String controlNumber = createControlNumber();
+            purchase.setControlNumber(controlNumber);
+            //update purchase
+            purchaseRepository.update(purchase);
             PaymentDetails paymentDetails = payWorksClientService.authorizePayment(request.getCardNumber(),
                     request.getCardExpirationDate(), request.getCvv(), purchase.getTotal(), purchase.getControlNumber());
             if (paymentDetails == null) {
